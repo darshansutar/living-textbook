@@ -1,0 +1,25 @@
+subject_definitions:
+<Subject 1> is Meera from <Picture 1>, an original 13-year-old Indian schoolgirl in a faceted low-poly 3D style: medium-brown skin, two neat black plaits, large dark-brown eyes, white short-sleeved school shirt, dark-red tie, navy-blue pleated pinafore with two small dark-red bows, white knee socks and black shoes.
+<Subject 2> is the sunny study corner from <Picture 2>: a window on the left with warm morning light, a light wooden desk, a terracotta seedling pot near the window, a wall shelf with books, and on the right of the desk a glass beaker, a grey clamp stand and a cream desk lamp.
+<Subject 3> is the pond-weed experiment from <Picture 3>: a clear glass beaker of water holding a green Elodea sprig, a small glass test tube held upside down over it by a grey clamp, a cream lamp shining warm light, and small silvery oxygen bubbles; its clamp-stand position follows <Picture 4>.
+<Picture 4> is the inspected two-shot storyboard. Its upper picture defines [Shot 1] and its lower picture defines [Shot 2], including composition, visible inventory and the printed CAMERA, ACTION and timing instructions.
+
+summary:
+[reference generation] A 7-second 3D faceted low-poly educational sequence. Two full-frame colour shots follow <Picture 4>: a close-up of <Subject 3> with oxygen bubbles rising into the tube, then <Subject 1> in <Subject 2> watching the experiment. One hard cut at 00:03.000.
+
+retention_analysis:
+<Subject 1> (appears in [Shot 2]): fully_preserved - Meera's face, plaits, uniform colours and proportions are retained.
+<Subject 2> (appears in [Shot 2]): fully_preserved - window, desk, seedling pot, shelf and the beaker, clamp stand and lamp layout are retained.
+<Subject 3> (appears in [Shot 1], [Shot 2]): partially_preserved - beaker, Elodea, tube, lamp and bubbles are retained, with the clamp stand placed to the right of the beaker as in <Picture 4>.
+<Picture 4>: fully_preserved - preserve the two compositions, visible inventories, spatial relationships and planned actions. Render one edge-to-edge colour scene at a time; the sheet layout and captions serve only as production guidance.
+
+detailed_description:
+The target video is a polished 3D faceted low-poly animation with hard-edged planes, painterly warm shading, saturated colours and warm daylight from the left. Render each illustrated scene individually as an edge-to-edge, full-frame colour shot. At the specified time, switch directly to the next fully formed shot using a hard cut. Treat the storyboard layout and caption strips exclusively as production guidance.
+[Shot 1] 0-3 seconds, matching the upper picture of <Picture 4>. A close-up of <Subject 3> on the wooden desk: the clear glass beaker sits left of centre with the green Elodea sprig angled inside; the small test tube hangs upside down in the water above the sprig, held by the grey clamp stand standing to the right of the beaker; the cream lamp on the far right shines bright warm light onto the beaker. Window-frame shadows fall across the wall behind. ACTION 0-2 s: a steady stream of small silvery bubbles rises from the Elodea leaves into the mouth of the tube and gathers at its top. CAMERA: static close-up. HOLD 2-3 s: the bubbles keep rising gently. No people appear.
+[Shot 2] At 00:03.000, hard cut to the lower picture of <Picture 4>: a medium-wide shot of <Subject 2>. The window and the seedling pot are on the left; <Subject 1> stands in front of the desk at centre-left in side view facing right towards the beaker, lamp and clamp stand on the right of the desk, with a thin column of bubbles visible in the tube. ACTION 3-6 s: Meera watches the bubbles, her eyes following them upward, and a small closed-lip smile forms; her hands stay relaxed at her sides. CAMERA: a slow pull-back to a medium-wide shot. HOLD 6-7 s: she keeps watching, still. Meera remains silent, lips completely closed, with no speech-like mouth or jaw movement.
+
+overall_soundscape:
+Silent visual sequence; approved original narration is added during assembly.
+
+non_diegetic_music:
+N/A

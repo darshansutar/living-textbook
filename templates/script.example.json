@@ -1,0 +1,26 @@
+{
+  "title": "Do Plants Eat Soil?",
+  "source": "intake.json source",
+  "narration": [
+    { "id": "N1", "step": "Explain / common explanation line 2", "text": "The leaf takes in carbon dioxide from the air through tiny pores called stomata. Water travels up from the roots.", "must_show": ["CO2 entering stomata", "water rising from roots"] },
+    { "id": "N2", "step": "Explain / common explanation line 3", "text": "Chlorophyll, the green pigment in leaves, captures light energy. The plant uses that energy to combine carbon dioxide and water into sugar. Oxygen is released. That oxygen is the bubbles you saw.", "must_show": ["chloroplasts in light", "CO2 + water -> sugar", "oxygen bubbles"] }
+  ],
+  "clips": [
+    { "id": "C1-stomata", "narration": "N1", "sentences": [1, 2], "beats": ["leaf underside", "stomata take in CO2", "water from roots"] },
+    { "id": "C2-chlorophyll", "narration": "N2", "sentences": [1, 2], "beats": ["chloroplasts capture light", "CO2 + water become sugar"] },
+    { "id": "C3-oxygen", "narration": "N2", "sentences": [3, 4], "beats": ["oxygen bubbles", "the experiment seen earlier"] }
+  ],
+  "choice_mapping": {
+    "ideas": { "soil": ["A", "r1"], "water": ["B", "r2"], "sunlight": ["D", "r4"], "correct": ["C", "r3"], "not_sure": ["r5"] },
+    "pieces": ["SAY_A", "SAY_B", "SAY_C", "SAY_D", "SAY_r1", "SAY_r2", "SAY_r3", "SAY_r4", "SAY_A_r1", "SAY_B_r2", "SAY_D_r4", "LOOK_SOIL", "LOOK_WATER", "LOOK_SUN", "RIGHT", "WHY", "POINTS_C", "NEXT", "NOT_SURE"],
+    "playback": { "A+r1": ["SAY_A_r1", "LOOK_SOIL"], "C+r3": ["SAY_C", "RIGHT", "NEXT"], "C+r1": ["SAY_C", "RIGHT", "WHY", "SAY_r1", "LOOK_SOIL"] }
+  },
+  "static": [
+    { "id": "cover", "kind": "cover", "text": "Do Plants Eat Soil?" },
+    { "id": "A", "kind": "answer", "text": "From the soil: the roots absorb it and turn it into plant", "idea": "roots eating soil" },
+    { "id": "r5", "kind": "reason", "text": "I'm not sure yet", "idea": "calm open question, no symbols" }
+  ],
+  "cast": [],
+  "locations": ["sunny study corner with seedling pot and pond-weed experiment"],
+  "source_check": "every narration line, option and feedback line compared with the source: identical"
+}

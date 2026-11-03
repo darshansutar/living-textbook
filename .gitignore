@@ -1,0 +1,22 @@
+# productions and test runs: media, provider links, local state
+projects/
+tests/
+logs/
+*.mp4
+*.mp3
+*.wav
+*.zip
+
+# images only inside docs are tracked
+*.png
+*.jpg
+*.jpeg
+!docs/**/*.png
+!docs/**/*.jpg
+
+node_modules/
+__pycache__/
+*.pyc
+.env
+.DS_Store
+tmp/

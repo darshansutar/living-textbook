@@ -1,0 +1,23 @@
+subject_definitions:
+<Subject 1> is <the environment / scene master> from <Picture 1>: <the features to keep, left-to-right layout, light>.
+<Subject 2> is <the macro / cutaway / prop sheet> from <Picture 2>: <structures, particle designs, background>.
+<Picture N> is the inspected <two|three>-shot storyboard. Its top picture defines [Shot 1], its <middle|lower> picture defines [Shot 2]<, and its bottom picture defines [Shot 3]>, including composition, visible inventory and the printed CAMERA, ACTION and timing instructions.
+
+summary:
+[reference generation] A <render_seconds>-second <3D faceted low-poly | 2.5D | 2D> educational sequence about <beat>, with no people. <Two|Three> full-frame colour shots follow <Picture N>: <shot 1 in a few words>, <shot 2>, <shot 3>. Hard cut<s> at <00:0X.000>< and 00:0Y.000>.
+
+retention_analysis:
+<Subject 1> (appears in [Shot 1]): fully_preserved - <what is kept>.
+<Subject 2> (appears in [Shot 2]): fully_preserved - <what is kept>.
+<Picture N>: fully_preserved - preserve the <two|three> compositions, visible inventories, spatial relationships and planned actions. Render one edge-to-edge colour scene at a time; the sheet layout and captions serve only as production guidance.
+
+detailed_description:
+The target video is <style sentence from the inspected assets>. Render each illustrated scene individually as an edge-to-edge, full-frame colour shot. At the specified time, switch directly to the next fully formed shot using a hard cut. Treat the storyboard layout and caption strips exclusively as production guidance. <No people appear in any shot.>
+[Shot 1] <g0>-<g1> seconds, matching the top picture of <Picture N>. <Detailed description of the ACTUAL inspected panel: composition, where each object is, background, light.> ACTION <a0>-<a1> s: <start state, visible motion, settled state>. CAMERA: <move, direction, extent, speed>. HOLD <h0>-<h1> s: <settled state>.
+[Shot 2] At 00:0<g0>.000, hard cut to the <middle|lower> picture of <Picture N>: <detailed panel description>. ACTION <a0>-<a1> s: <...>. CAMERA: <...>. HOLD <h0>-<h1> s: <...>.
+
+overall_soundscape:
+Silent visual sequence; approved original narration is added during assembly.
+
+non_diegetic_music:
+N/A

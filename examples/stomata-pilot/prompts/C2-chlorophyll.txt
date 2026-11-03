@@ -1,0 +1,21 @@
+subject_definitions:
+<Subject 1> is the leaf interior from <Picture 1>: a faceted low-poly cross-section of a green leaf with rows of rounded cells packed with glowing green oval chloroplasts, golden sunlight beams from the top-left, carbon-dioxide molecules (one dark charcoal sphere between two red spheres), small glossy blue water drops and small white six-sided sugar molecules.
+<Picture 2> is the inspected two-shot storyboard. Its upper picture defines [Shot 1] and its lower picture defines [Shot 2], including composition, visible inventory and the printed CAMERA, ACTION and timing instructions.
+
+summary:
+[reference generation] A 12-second 3D faceted low-poly educational sequence inside a leaf. Two full-frame colour shots follow <Picture 2>: sunlight entering the cells of <Subject 1> while the chloroplasts glow, then a close-up of one cell where carbon dioxide and water become sugar. One hard cut at 00:06.000.
+
+retention_analysis:
+<Subject 1> (appears in [Shot 1], [Shot 2]): fully_preserved - leaf cross-section, green chloroplasts, sunlight beams and the molecule designs are retained.
+<Picture 2>: fully_preserved - preserve the two compositions, visible inventories, spatial relationships and planned actions. Render one edge-to-edge colour scene at a time; the sheet layout and captions serve only as production guidance.
+
+detailed_description:
+The target video is a polished 3D faceted low-poly animation with hard-edged planes, painterly shading, saturated leaf greens and warm golden light. Render each illustrated scene individually as an edge-to-edge, full-frame colour shot. At the specified time, switch directly to the next fully formed shot using a hard cut. Treat the storyboard layout and caption strips exclusively as production guidance.
+[Shot 1] 0-6 seconds, matching the upper picture of <Picture 2>. A wide cross-section of <Subject 1>: the cut leaf spans the frame, its faceted outer skin curving across the top, with three rows of rounded cells each holding several green oval chloroplasts. Broad golden sunlight beams enter from the top-left corner and cross the left cells. ACTION 0-5 s: the beams brighten and spread further across the rows, and the chloroplasts they touch glow a brighter, more vivid green, the glow passing from the left cells towards the right. CAMERA: a slow push-in towards the centre cells. HOLD 5-6 s: the glowing cells stay steady. No people appear.
+[Shot 2] At 00:06.000, hard cut to the lower picture of <Picture 2>: a close-up of one cell of <Subject 1>, its faceted wall framing the image, with five large green oval chloroplasts inside. Sunlight beams enter from the top-left. On the left, three carbon-dioxide molecules and three glossy blue water drops float inside the cell; on the right, white six-sided sugar molecules sit beside the chloroplasts. ACTION 6-11 s: the carbon-dioxide molecules and water drops drift right and flow into the central chloroplasts; as they disappear, new small white six-sided sugar molecules appear beside the chloroplasts and drift gently to the right. CAMERA: static close-up. HOLD 11-12 s: the sugar molecules settle on the right. No people appear.
+
+overall_soundscape:
+Silent visual sequence; approved original narration is added during assembly.
+
+non_diegetic_music:
+N/A
