@@ -1,0 +1,65 @@
+{
+  "schema": "living-textbook/chapter@1",
+  "language": "en",
+  "chapter": {
+    "id": "g7-sci-10", "book": "Curiosity", "class": 7, "subject": "Science",
+    "number": 10, "title": "Life Processes in Plants",
+    "cover": "media/stills/cover.jpg",
+    "story_world": "Ravi's chilli nursery near Haveri, Karnataka"
+  },
+  "concepts": [
+    { "id": "c1", "title": "Plants need light", "icon": "media/stills/map_c1.png" },
+    { "id": "c2", "title": "Leaves make food", "icon": "media/stills/map_c2.png" }
+  ],
+  "settings": { "vote_seconds": 10, "captions": true },
+  "episodes": [
+    {
+      "id": "e1", "title": "The Yellow Seedlings", "concepts": ["c1", "c2"],
+      "screens": [
+        { "id": "e1.title", "type": "title", "title": "Life Processes in Plants", "subtitle": "Episode 1 · The Yellow Seedlings", "image": "media/stills/e1_title.jpg" },
+        { "id": "e1.op", "type": "video", "role": "opener", "src": "media/screens/e1.op.mp4",
+          "captions": [{ "start": 0.3, "end": 4.6, "text": "This is Ravi. Every morning he helps his Ajji in their chilli nursery near Haveri." }],
+          "overlays": [] },
+        { "id": "e1.c1.s1", "type": "video", "role": "wonder", "concept": "c1", "src": "media/screens/e1.c1.s1.mp4", "captions": [], "overlays": [] },
+        { "id": "e1.c1.s2", "type": "question_cards", "concept": "c1", "prompt": "What do you want to find out?", "audio": "media/audio/e1_c1_s2_n1.mp3",
+          "cards": [
+            { "text": "Is the grass dead?", "image": "media/stills/e1.c1.s2_card1.jpg" },
+            { "text": "Why did it turn yellow?", "image": "media/stills/e1.c1.s2_card2.jpg" },
+            { "text": "Does grass need light?", "image": "media/stills/e1.c1.s2_card3.jpg" }
+          ] },
+        { "id": "e1.c1.s3", "type": "activity", "concept": "c1", "mode": "simulator", "template": "compare_setups",
+          "config": {
+            "run_label": "2 weeks later",
+            "setups": [
+              { "label": "A", "conditions": { "sunlight": true, "water": true }, "start": "media/stills/a101_A_start.jpg", "result": "media/stills/a101_A_end.jpg" },
+              { "label": "B", "conditions": { "sunlight": true, "water": false }, "start": "media/stills/a101_B_start.jpg", "result": "media/stills/a101_B_end.jpg" },
+              { "label": "C", "conditions": { "sunlight": false, "water": true }, "start": "media/stills/a101_C_start.jpg", "result": "media/stills/a101_C_end.jpg" }
+            ]
+          } },
+        { "id": "e1.c1.s4", "type": "vote", "concept": "c1", "observation": true, "question": "Which plant grew best?", "seconds": 10,
+          "options": [
+            { "text": "Pot A: sun and water", "image": "media/stills/e1.c1.s4_opt1.jpg", "correct": true, "reveal_audio": "media/audio/e1_c1_s4_rA.mp3", "reveal_text": "Yes. The plant with both sunlight and water grew tall and green." },
+            { "text": "Pot B: sun, no water", "image": "media/stills/e1.c1.s4_opt2.jpg", "correct": false, "reveal_audio": "media/audio/e1_c1_s4_rB.mp3", "reveal_text": "Look again. Without water, the plant in the sun dried up." },
+            { "text": "Pot C: dark, with water", "image": "media/stills/e1.c1.s4_opt3.jpg", "correct": false, "reveal_audio": "media/audio/e1_c1_s4_rC.mp3", "reveal_text": "Many people think water is enough. But in the dark, this plant grew thin and pale." }
+          ] },
+        { "id": "e1.c1.s4r", "type": "reveal", "vote": "e1.c1.s4" },
+        { "id": "e1.c1.s5", "type": "video", "role": "explain", "concept": "c1", "src": "media/screens/e1.c1.s5.mp4",
+          "captions": [{ "start": 0.3, "end": 3.9, "text": "After two weeks, the plant with sunlight and water grew best." }],
+          "overlays": [{ "text": "Sunlight + Water = Growth", "at": 4.5, "until": 8.0, "anchor": "top", "style": "equation" }] },
+        { "id": "e1.c1.s6", "type": "mcq", "concept": "c1",
+          "question": "A tarpaulin lay on Ajji's paddy seedlings for a week. What will they look like?",
+          "image": "media/stills/e1.c1.s6_scene.jpg", "answer": 1,
+          "options": [
+            { "text": "Greener than before", "feedback_audio": "media/audio/e1_c1_s6_f0.mp3", "feedback_text": "Not quite. Without light, the seedlings cannot grow green." },
+            { "text": "Pale and yellow", "feedback_audio": "media/audio/e1_c1_s6_f1.mp3", "feedback_text": "Right. A week without light turns them pale and yellow." },
+            { "text": "Exactly the same", "feedback_audio": "media/audio/e1_c1_s6_f2.mp3", "feedback_text": "Look at the grass under the stone. Without light, plants change." }
+          ] },
+        { "id": "e1.c2f", "type": "fact", "title": "Did you know?", "text": "Vrikshayurveda, an old Indian text, recorded how to care for plants, soil and crops.",
+          "image": "media/stills/e1.c2f_fact.jpg", "audio": "media/audio/e1_c2f_n1.mp3", "source": "NCERT Class 7 Science, p.140" },
+        { "id": "e1.cliff", "type": "still", "role": "cliffhanger", "image": "media/stills/e1.cliff.jpg", "audio": "media/audio/e1_cliff_n1.mp3",
+          "captions": [{ "start": 0.2, "end": 5.5, "text": "These seedlings have sunlight and water. So why are they still weak? Next time, we find out." }] },
+        { "id": "e1.score", "type": "score", "text": "Episode 1 complete", "audio": "media/audio/e1_score_n1.mp3" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "chapter": "Class 7 Science, Ch 10 Life Processes in Plants (Curiosity)",
+  "anatomy": {
+    "opening": "Have you ever seen plants eating food like animals do? (p.137); four children guess what makes plants grow (p.138)",
+    "summary_box": "In a Nutshell (p.150)",
+    "end_questions_block": "Let Us Enhance Our Learning (pp.150-152)"
+  },
+  "concepts": [
+    {
+      "id": "c1",
+      "title": "Plants need sunlight and water to grow",
+      "ncert_ref": "10.1, pp.138-139",
+      "idea": "A plant kept in sunlight with water grows best; without water it dies; in the dark it grows poorly.",
+      "key_facts": ["The results indicate that plants require both sunlight and water for their growth."],
+      "size": "big",
+      "activities": ["10.1"],
+      "prompts": ["Have you observed any changes in a plant during its life span?", "children's guesses: water / sunlight / food from soil / maybe ___"],
+      "figures": ["Fig. 10.1 pots A, B, C"],
+      "end_questions": ["Q6"],
+      "misconceptions": [
+        { "belief": "Plants take their food from the soil through roots", "why_tempting": "roots are in soil; fertiliser makes plants grow (the book's own speech bubble)" },
+        { "belief": "Water alone is enough", "why_tempting": "watered plants grow better" }
+      ],
+      "prior_knowledge": "Grade 6: all living beings grow and need food",
+      "local_hooks": ["yellow grass under a stone or a parked bullock cart", "chilli seedlings in the shade of a neem tree stay pale"]
+    },
+    {
+      "id": "c2",
+      "title": "Leaves make starch; chlorophyll is needed",
+      "ncert_ref": "10.2.1, pp.140-143",
+      "idea": "Green parts of leaves make food (starch) in sunlight; chlorophyll is essential; leaves are food factories.",
+      "key_facts": ["If the colour of the leaf changes to blue-black, it indicates the presence of starch.", "chlorophyll helps in preparing starch in the presence of sunlight"],
+      "size": "big",
+      "activities": ["10.2", "10.3"],
+      "misconceptions": [
+        { "belief": "Food is made in the roots", "why_tempting": "roots like potato store food" },
+        { "belief": "The whole leaf makes food, green or not", "why_tempting": "it is all one leaf" }
+      ],
+      "local_hooks": ["croton leaf with green and white patches in a courtyard", "Betadine on potato and rice"]
+    },
+    {
+      "id": "c2f",
+      "title": "Vrikshayurveda",
+      "ncert_ref": "Fascinating Facts, p.140",
+      "size": "fact"
+    }
+  ],
+  "activities": [
+    {
+      "id": "10.1",
+      "title": "Let us test some explanations",
+      "concept": "c1",
+      "book_steps": ["three pots of soil, similar chilli or tomato saplings", "A: sun + water; B: sun, no water; C: dark + water", "observe two weeks, record height, leaves, colour"],
+      "duration": "2 weeks",
+      "safety": "none",
+      "expected": "A grows best; B may die; C grows poorly and yellows",
+      "local_substitute": "used bottles instead of pots"
+    },
+    {
+      "id": "10.2",
+      "title": "Starch test in a leaf (demonstration activity)",
+      "concept": "c2",
+      "duration": "20 min",
+      "safety": "teacher only: boiling water and alcohol near heat (Caution box)",
+      "expected": "decolourised leaf turns blue-black with iodine",
+      "local_substitute": "Betadine (povidone-iodine) on a potato slice and cooked rice is safe for students"
+    }
+  ],
+  "end_questions": [
+    { "id": "Q3", "text": "A potato slice shows the presence of starch... Where does the starch in potatoes come from?", "concepts": ["c2", "c6"], "type": "short answer -> MCQ-able" },
+    { "id": "Q6", "text": "Krishna set up an experiment with two potted plants...", "concepts": ["c1", "c2"], "type": "MCQ-able" }
+  ],
+  "visual_inventory": ["Fig. 10.1 pots A/B/C (p.138)", "Fig. 10.2 starch test set-up (p.140)", "Fig. 10.4 oxygen bubbles set-ups A/B (p.145)"],
+  "coverage": { "sections": "10 of 10", "activities": "8 of 8", "boxes": "4 of 4", "end_questions": "10 of 10" }
+}

@@ -1,4 +1,0 @@
-{
-  "C1-stomata-v2": {"job": "video_0459eecdfab34577ba33", "refs": ["en2ref_970016160af2bfaf.png", "en2ref_2b664a70d8561be6.png", "en2ref_3645607eb1461ea1.png", "en2ref_2f10d64bacdde97a.png"], "duration": 11, "quality": "ultra", "seed": 3420371919, "replaces": "C1-stomata (character removed)"},
-  "C3-oxygen-v2": {"job": "video_152fcefbc73c495bb574", "refs": ["en2ref_970016160af2bfaf.png", "en2ref_892656b6ebeee852.png", "en2ref_80f415dbe550a58a.png"], "duration": 7, "quality": "ultra", "seed": 3357840012, "replaces": "C3-oxygen (character removed)"}
-}

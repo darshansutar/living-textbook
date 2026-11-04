@@ -18,7 +18,10 @@ For each `renders/<clip>.mp4`: FFmpeg scene detection finds hard cuts (score >= 
 Open the frame sheet and play the clip. Check every shot against its panel:
 
 - correct shot order and hard cuts (no dissolves, mixed panels, borders, captions or storyboard layout in the picture)
-- exact inventory: no extra, duplicated or missing objects; **no people unless the script has them**
+- exact inventory: no extra, duplicated or missing objects; **only the planned cast**, on-model with their character sheets
+- characters never speak: no lip movement or talking mouths
+- **no generated text, letters or digits** anywhere (dials, boards, papers, signs); overlay areas left clear
+- regional details correct (clothing, crops, houses, tools)
 - layout identical to the scene master (left/right positions, camera side, lighting)
 - the labelled action happens (start state, motion, settled state) and the camera move
 - style and colours match the assets; particle designs consistent

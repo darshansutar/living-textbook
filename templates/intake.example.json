@@ -1,28 +1,32 @@
 {
-  "schema_version": "1.0",
-  "project": "plants",
-  "source": {
-    "kind": "google_doc",
-    "uri": "https://docs.google.com/document/d/<id>/edit",
-    "local_copy": "source/script.md",
-    "sha256": "<sha256 of local_copy>"
+  "schema_version": "2.0",
+  "project": "g7-sci-10-life-processes-in-plants",
+  "chapter": {
+    "book": "Curiosity: Textbook of Science",
+    "class": 7,
+    "subject": "Science",
+    "number": 10,
+    "title": "Life Processes in Plants",
+    "pdfs": [{ "path": "source/chapter.pdf", "sha256": "<sha256>" }]
   },
+  "region": { "states": ["Karnataka"], "notes": "chilli nurseries around Haveri; Monday shandy" },
+  "language": "en",
   "style": {
     "reference": "refs/style.jpg",
     "sha256": "<sha256>",
-    "description": "Faceted low-poly 3D: hard-edged planes, painterly warm shading on each facet, saturated colours, bold flat backgrounds, warm daylight from the left.",
+    "description": "NCERT-illustration-inspired, enhanced: clean 2D illustration, soft cel shading with gentle depth, warm natural Indian daylight from the left, earthy saturated palette, simple readable shapes for projection.",
     "use": "style_only"
   },
   "narrator": {
-    "voice_id": "BpHR2xqius01V38lkvV9",
-    "name": "Ritika - Calm Online Tutor",
+    "voice_id": "<asked at lt-audio>",
+    "name": "<asked at lt-audio>",
     "model": "eleven_v3"
   },
-  "cast_from_script": [],
   "answers": {
-    "source": "user message: 'this is the script' (pasted POE script v2)",
-    "style": "user message: 'use this as style base' (style 1.jpg)",
-    "narrator": "script header: Narrator Ritika (BpHR2xqius01V38lkvV9)"
+    "chapter": "user message: '<words>' (chapter 10.pdf)",
+    "class_subject": "read from the running head, confirmed by user: '<words>'",
+    "region": "user message: '<words>'",
+    "style": "user message: '<words>'"
   },
   "confirmed_by": "user",
   "status": "complete"
