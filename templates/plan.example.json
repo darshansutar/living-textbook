@@ -1,23 +1,23 @@
 {
-  "project": "Living Textbook \u00b7 Style 1 stomata pilot",
-  "source": "POE \u2014 Do Plants Eat Soil? v3, 3e Common explanation lines 2-3",
-  "style_reference": "refs/style-1.jpg (style only; identity not used)",
-  "narrator_voice": "Ritika, Calm Online Tutor (BpHR2xqius01V38lkvV9)",
+  "project": "g7-sci-10 · example clip timing (format reference)",
+  "source": "script.json screens e1.c2.s5 (explain)",
+  "style_reference": "refs/style.jpg (style only)",
+  "narrator_voice": "<from intake.json narrator>",
   "narration_audio": {
-    "N1": {
-      "file": "audio/N1.mp3",
+    "e1_c2_s5_n1": {
+      "file": "audio/e1_c2_s5_n1.mp3",
       "seconds": 7.92
     },
-    "N2": {
-      "file": "audio/N2.mp3",
+    "e1_c2_s5_n2": {
+      "file": "audio/e1_c2_s5_n2.mp3",
       "seconds": 13.68
     }
   },
-  "cue_note": "Measured from ElevenLabs eleven_v3 audio (Codex). Sentence pauses: N1 5.27-5.83; N2 4.28-4.66, 9.52-9.94, 11.23-11.65. Mid-sentence cue N1 2.9 is estimated.",
+  "cue_note": "Measured from ElevenLabs eleven_v3 audio (Codex). Sentence pauses: e1_c2_s5_n1 5.27-5.83; e1_c2_s5_n2 4.28-4.66, 9.52-9.94, 11.23-11.65. Mid-sentence cue e1_c2_s5_n1 2.9 is estimated.",
   "clips": [
     {
       "id": "C1-stomata",
-      "narration": "N1",
+      "narration": "e1_c2_s5_n1",
       "audio_interval": [
         0,
         7.92
@@ -55,7 +55,20 @@
             "window"
           ],
           "camera": "slow push-in towards the seedling leaf",
-          "action_text": "a light breeze tips one seedling leaf up so its pale underside faces the camera"
+          "action_text": "a light breeze tips one seedling leaf up so its pale underside faces the camera",
+          "overlays": [
+            {
+              "text": "CO<sub>2</sub>",
+              "at": 1.0,
+              "until": 3.5,
+              "anchor": {
+                "x": 70,
+                "y": 30
+              },
+              "style": "label"
+            }
+          ],
+          "overlay_area": "calm sky area upper right of the leaf, left empty for the CO2 label"
         },
         {
           "shot": 2,
@@ -111,11 +124,12 @@
           "camera": "slow tilt up from roots to leaf",
           "action_text": "blue water droplets travel up from the roots through the stem into the leaf"
         }
-      ]
+      ],
+      "screen": "e1.c2.s5"
     },
     {
       "id": "C2-chlorophyll",
-      "narration": "N2",
+      "narration": "e1_c2_s5_n2",
       "audio_interval": [
         0,
         9.73
@@ -182,11 +196,12 @@
           "camera": "static close-up",
           "action_text": "CO2 molecules and water drops flow into a chloroplast and small white six-sided sugar molecules form and drift out"
         }
-      ]
+      ],
+      "screen": "e1.c2.s5"
     },
     {
       "id": "C3-oxygen",
-      "narration": "N2",
+      "narration": "e1_c2_s5_n2",
       "audio_interval": [
         9.73,
         13.68
@@ -255,7 +270,8 @@
           "camera": "slow pull-back to a medium-wide shot",
           "action_text": "bubbles keep rising into the tube under the lamp light; nobody in the room"
         }
-      ]
+      ],
+      "screen": "e1.c2.s5"
     }
   ],
   "revision": "v2: character removed (style reference is style only)",
@@ -264,67 +280,5 @@
     768
   ],
   "fps": 24,
-  "title": "Do Plants Eat Soil?",
-  "static": [
-    {
-      "id": "cover",
-      "kind": "cover",
-      "text": "Do Plants Eat Soil?",
-      "file": "static/cover.png"
-    },
-    {
-      "id": "A",
-      "kind": "answer",
-      "text": "From the soil: the roots absorb it and turn it into plant",
-      "file": "static/option_A.png"
-    },
-    {
-      "id": "B",
-      "kind": "answer",
-      "text": "From water alone: the plant drinks it and grows",
-      "file": "static/option_B.png"
-    },
-    {
-      "id": "C",
-      "kind": "answer",
-      "text": "From carbon dioxide in the air, joined with water using light energy",
-      "file": "static/option_C.png"
-    },
-    {
-      "id": "D",
-      "kind": "answer",
-      "text": "From sunlight: light turns directly into plant material",
-      "file": "static/option_D.png"
-    },
-    {
-      "id": "r1",
-      "kind": "reason",
-      "text": "The roots absorb soil, so the plant's body is mostly made from soil",
-      "file": "static/option_r1.png"
-    },
-    {
-      "id": "r2",
-      "kind": "reason",
-      "text": "Plants drink water, so water must become most of the plant",
-      "file": "static/option_r2.png"
-    },
-    {
-      "id": "r3",
-      "kind": "reason",
-      "text": "Plants take in carbon dioxide and use light energy to make sugars",
-      "file": "static/option_r3.png"
-    },
-    {
-      "id": "r4",
-      "kind": "reason",
-      "text": "Plants need sunlight, so sunlight must become their food",
-      "file": "static/option_r4.png"
-    },
-    {
-      "id": "r5",
-      "kind": "reason",
-      "text": "I'm not sure yet",
-      "file": "static/option_r5.png"
-    }
-  ]
+  "title": "Do Plants Eat Soil?"
 }

@@ -46,7 +46,7 @@ const jobs = JSON.parse(fs.readFileSync(process.argv[2] || 'renders/jobs.json', 
 const pending = Object.entries(jobs).filter(([k, v]) => v && v.job);
 const done = {};
 const t0 = Date.now();
-while (Object.keys(done).length < pending.length && Date.now() - t0 < 40 * 60 * 1000) {
+while (Object.keys(done).length < pending.length && Date.now() - t0 < 90 * 60 * 1000) {
   for (const [clip, v] of pending) {
     if (done[clip]) continue;
     const r = await rpc('tools/call', { name: 'video_status', arguments: { job_id: v.job } });

@@ -1,26 +1,54 @@
 {
-  "title": "Do Plants Eat Soil?",
-  "source": "intake.json source",
+  "chapter": "g7-sci-10",
+  "episode": "e1",
+  "screens": [
+    { "id": "e1.title", "type": "title", "title": "Life Processes in Plants", "subtitle": "Episode 1 · The Yellow Seedlings" },
+    { "id": "e1.op", "type": "video", "role": "opener", "narration": ["e1.op.n1", "e1.op.n2"],
+      "beats": ["Ravi's nursery at sunrise near Haveri", "rows of chilli seedlings; some are pale yellow", "Ravi looks worried; the Monday shandy is 14 days away"] },
+
+    { "id": "e1.c1.s1", "type": "video", "role": "wonder", "concept": "c1", "narration": [], "seconds": 12,
+      "beats": ["Ravi lifts a flat stone in a green field", "the grass underneath is pale yellow"] },
+    { "id": "e1.c1.s2", "type": "question_cards", "concept": "c1", "prompt": "What do you want to find out?", "prompt_line": "e1.c1.s2.n1",
+      "cards": ["Is the grass dead?", "Why did it turn yellow?", "Does grass need light?"] },
+    { "id": "e1.c1.s3", "type": "activity", "concept": "c1", "activity": "10.1" },
+    { "id": "e1.c1.s4", "type": "vote", "concept": "c1", "observation": true, "question": "Which plant grew best?",
+      "options": [
+        { "text": "Pot A: sun and water", "idea": "healthy green plant", "correct": true, "reveal_line": "e1.c1.s4.rA" },
+        { "text": "Pot B: sun, no water", "idea": "dry wilted plant", "correct": false, "reveal_line": "e1.c1.s4.rB" },
+        { "text": "Pot C: dark, with water", "idea": "pale thin plant", "correct": false, "misconception": "c1: water alone is enough", "reveal_line": "e1.c1.s4.rC" }
+      ] },
+    { "id": "e1.c1.s4r", "type": "reveal", "vote": "e1.c1.s4" },
+    { "id": "e1.c1.s5", "type": "video", "role": "explain", "concept": "c1", "narration": ["e1.c1.s5.n1", "e1.c1.s5.n2", "e1.c1.s5.n3"],
+      "beats": ["pots A, B, C after two weeks (NCERT Fig. 10.1)", "plants need both sunlight and water to grow", "back to the stone: no light, so the grass could not grow green"],
+      "overlays": [{ "text": "Sunlight + Water = Growth", "during_line": "e1.c1.s5.n2", "anchor": "top", "style": "equation" }] },
+    { "id": "e1.c1.s6", "type": "mcq", "concept": "c1",
+      "question": "A tarpaulin lay on Ajji's paddy seedlings for a week. What will they look like?",
+      "scenario": "tarpaulin lifted off a small paddy nursery bed",
+      "options": ["Greener than before", "Pale and yellow", "Exactly the same"], "answer": 1,
+      "feedback": ["e1.c1.s6.f0", "e1.c1.s6.f1", "e1.c1.s6.f2"],
+      "misconceptions_used": ["c1: water alone is enough"], "source_question": "Q6 (adapted)" },
+
+    { "id": "e1.c2f", "type": "fact", "concept": "c2f", "narration": ["e1.c2f.n1"], "picture": "an old palm-leaf manuscript beside a healthy fruit tree", "source": "Fascinating Facts, p.140" },
+
+    { "id": "e1.cliff", "type": "still", "role": "cliffhanger", "narration": ["e1.cliff.n1"], "picture": "seedlings under Ajji's plastic cover, in sun, watered, still weak" },
+    { "id": "e1.score", "type": "score", "narration": ["e1.score.n1"], "text": "Episode 1 complete" }
+  ],
   "narration": [
-    { "id": "N1", "step": "Explain / common explanation line 2", "text": "The leaf takes in carbon dioxide from the air through tiny pores called stomata. Water travels up from the roots.", "must_show": ["CO2 entering stomata", "water rising from roots"] },
-    { "id": "N2", "step": "Explain / common explanation line 3", "text": "Chlorophyll, the green pigment in leaves, captures light energy. The plant uses that energy to combine carbon dioxide and water into sugar. Oxygen is released. That oxygen is the bubbles you saw.", "must_show": ["chloroplasts in light", "CO2 + water -> sugar", "oxygen bubbles"] }
+    { "id": "e1.op.n1", "screen": "e1.op", "purpose": "story", "text": "This is Ravi. Every morning he helps his Ajji in their chilli nursery near Haveri." },
+    { "id": "e1.op.n2", "screen": "e1.op", "purpose": "story", "text": "In fourteen days, the seedlings go to the Monday shandy. But some of them are turning yellow." },
+    { "id": "e1.c1.s2.n1", "screen": "e1.c1.s2", "purpose": "prompt", "text": "What do you want to find out?" },
+    { "id": "e1.c1.s4.rA", "screen": "e1.c1.s4", "purpose": "reveal-A", "text": "Yes. The plant with both sunlight and water grew tall and green." },
+    { "id": "e1.c1.s4.rB", "screen": "e1.c1.s4", "purpose": "reveal-B", "text": "Look again. Without water, the plant in the sun dried up." },
+    { "id": "e1.c1.s4.rC", "screen": "e1.c1.s4", "purpose": "reveal-C", "text": "Many people think water is enough. But in the dark, this plant grew thin and pale." },
+    { "id": "e1.c1.s5.n1", "screen": "e1.c1.s5", "purpose": "explain", "text": "After two weeks, the plant with sunlight and water grew best." },
+    { "id": "e1.c1.s5.n2", "screen": "e1.c1.s5", "purpose": "explain", "text": "Plants require both sunlight and water for their growth." },
+    { "id": "e1.c1.s5.n3", "screen": "e1.c1.s5", "purpose": "explain", "text": "Under the stone there was no light. So the grass could not grow green." },
+    { "id": "e1.c1.s6.f0", "screen": "e1.c1.s6", "purpose": "feedback-0", "text": "Not quite. Without light, the seedlings cannot grow green." },
+    { "id": "e1.c1.s6.f1", "screen": "e1.c1.s6", "purpose": "feedback-1", "text": "Right. A week without light turns them pale and yellow." },
+    { "id": "e1.c1.s6.f2", "screen": "e1.c1.s6", "purpose": "feedback-2", "text": "Look at the grass under the stone. Without light, plants change." },
+    { "id": "e1.c2f.n1", "screen": "e1.c2f", "purpose": "fact", "text": "Did you know? An old Indian text called Vrikshayurveda recorded how to care for plants, soil and crops." },
+    { "id": "e1.cliff.n1", "screen": "e1.cliff", "purpose": "cliffhanger", "text": "These seedlings have sunlight and water. So why are they still weak? Next time, we find out." },
+    { "id": "e1.score.n1", "screen": "e1.score", "purpose": "score", "text": "Well done. You found out what plants need to grow." }
   ],
-  "clips": [
-    { "id": "C1-stomata", "narration": "N1", "sentences": [1, 2], "beats": ["leaf underside", "stomata take in CO2", "water from roots"] },
-    { "id": "C2-chlorophyll", "narration": "N2", "sentences": [1, 2], "beats": ["chloroplasts capture light", "CO2 + water become sugar"] },
-    { "id": "C3-oxygen", "narration": "N2", "sentences": [3, 4], "beats": ["oxygen bubbles", "the experiment seen earlier"] }
-  ],
-  "choice_mapping": {
-    "ideas": { "soil": ["A", "r1"], "water": ["B", "r2"], "sunlight": ["D", "r4"], "correct": ["C", "r3"], "not_sure": ["r5"] },
-    "pieces": ["SAY_A", "SAY_B", "SAY_C", "SAY_D", "SAY_r1", "SAY_r2", "SAY_r3", "SAY_r4", "SAY_A_r1", "SAY_B_r2", "SAY_D_r4", "LOOK_SOIL", "LOOK_WATER", "LOOK_SUN", "RIGHT", "WHY", "POINTS_C", "NEXT", "NOT_SURE"],
-    "playback": { "A+r1": ["SAY_A_r1", "LOOK_SOIL"], "C+r3": ["SAY_C", "RIGHT", "NEXT"], "C+r1": ["SAY_C", "RIGHT", "WHY", "SAY_r1", "LOOK_SOIL"] }
-  },
-  "static": [
-    { "id": "cover", "kind": "cover", "text": "Do Plants Eat Soil?" },
-    { "id": "A", "kind": "answer", "text": "From the soil: the roots absorb it and turn it into plant", "idea": "roots eating soil" },
-    { "id": "r5", "kind": "reason", "text": "I'm not sure yet", "idea": "calm open question, no symbols" }
-  ],
-  "cast": [],
-  "locations": ["sunny study corner with seedling pot and pond-weed experiment"],
-  "source_check": "every narration line, option and feedback line compared with the source: identical"
+  "source_check": "<every concept, key fact, activity and end question compared with analysis.json: result>"
 }

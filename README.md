@@ -1,70 +1,59 @@
 # Living Textbook
 
-An automation workflow that turns a finished lesson script into a **narrated, animated, interactive roleplay** for the Starling player. It is the [Starling automation](https://github.com/darshansutar/starling-automation) storyboard method, adapted for narration-only educational content:
-
-- **No dialogue.** Every clip is narration over picture: no speaking characters, no lip-sync.
-- **Storyboards, not code.** Science content (stomata, cells, experiments) is made with the standard Starling storyboard method: Codex images, labelled black-and-white 1x2/1x3 boards, EN2 Ultra animation.
-- **Static roleplay images.** The cover page and one text-free picture per answer, reason, confidence level and check question, mapped in `roleplay.json`.
+Turns an **NCERT chapter PDF** (any subject, Classes 5-10) into an interactive, narrated, animated lesson that a teacher projects to the class. Each chapter becomes a short series of episodes; each concept is taught with one of three flows (**Story**, **Challenge**, **Wonder**): a real rural-Indian hook, a class vote, the NCERT explanation and a check. Activities run as live do-alongs, on-screen simulators or take-home missions. One generic HTML player plays every chapter.
 
 ```
-Intake -> Script -> Narration audio -> Visual plan -> Assets -> Storyboards -> Static images
-       -> Animation prompts -> EN2 Ultra renders -> Review (re-time / one repair) -> Edit + stitch -> ZIP
+Chapter PDF -> Analyse -> Episode plan -> [approval] -> Script -> Activities -> Narration -> Visual plan
+           -> Assets + storyboards -> Stills -> EN2 Ultra -> Review -> Edit -> chapter.json + player -> ZIP
 ```
 
-Full explanation: [docs/Living_Textbook_Workflow.pdf](docs/Living_Textbook_Workflow.pdf) and [docs/WORKFLOW.md](docs/WORKFLOW.md). Each skill is also exported as a Word document in [docs/skill-documents](docs/skill-documents).
+Design: [docs/Living_Textbook_Flow_Report.pdf](docs/Living_Textbook_Flow_Report.pdf) · Pipeline: [docs/WORKFLOW.md](docs/WORKFLOW.md) · Agent rules: [AGENTS.md](AGENTS.md)
 
 ## Contents
 
 | Path | What it is |
 |---|---|
-| `skills/` | 10 skills: master, intake, script, audio, visual plan, images, static images, animation, review, assembly |
-| `pipeline/` | Tested scripts for every mechanical step (below) |
-| `templates/` | intake / script / plan examples and prompt templates for Codex (assets, panels, static images, audio) and EN2 |
-| `examples/stomata-pilot/` | The first pilot: plan, prompts, boards list, job IDs, cut detection, review and edit plan (text only) |
-| `docs/` | Workflow PDF, workflow markdown, skill Word documents |
+| `skills/` | 14 skills: master, intake, chapter analysis, episode plan, script (+ `flows.md`), activities, audio, visual plan, images, stills, animation, review, assembly, package (+ `chapter-schema.md`) |
+| `pipeline/` | Scripts for the mechanical steps (below) |
+| `player/` | The one generic offline HTML player (`index.html`, `player.js`, `player.css`) - copied unchanged into every package |
+| `templates/` | Example `intake`, `analysis`, `episodes`, `script`, `plan`, `chapter` JSON and Codex / EN2 prompt templates |
+| `docs/` | Design report (PDF + HTML source) and workflow summary |
 
 ## Providers
 
 | Need | Provider |
 |---|---|
-| Images: assets, storyboard panels, cover and option images | Codex native image generation (`codex exec`) |
+| Chapter text and page pictures | PyMuPDF (`extract_chapter.py`) |
+| Images: character sheets, scenes, sheets, storyboards, stills | Codex native image generation (`codex exec`) |
 | Narration | ElevenLabs `eleven_v3` through Codex's connected ElevenLabs app |
-| Animation | EN2 reference-to-video, Ultra (`quality=true`) |
+| Animation | EN2 reference-to-video, Ultra |
 | Edit | FFmpeg |
 
 ## Pipeline scripts
 
 | Script | Stage | Does |
 |---|---|---|
-| `codex_run.py` | images, audio | Runs one Codex step with a prompt file and attached references, sandboxed to the project |
-| `harvest_audio.py` | audio | Downloads the ElevenLabs files Codex generated (Codex's sandbox cannot), measures durations and pauses |
+| `extract_chapter.py` | intake / analysis | Chapter text per page, page pictures, outline of sections, activities, figures, NCERT boxes |
+| `codex_run.py` | images, audio | Runs one Codex step with a prompt file and attached references |
+| `harvest_audio.py` | audio | Downloads the ElevenLabs files Codex generated, measures durations and pauses |
 | `assemble_boards.py` | storyboards | Stacks panels and prints SHOT/time/CAMERA/ACTION strips from `plan.json` |
-| `en2_upload.mjs` | animation | Uploads references to EN2 through its MCP; upload names are checked against SHA-256 |
-| `en2_collect.mjs` | animation | Polls EN2 jobs and downloads finished renders |
-| `review_cuts.py` | review | Detects real cut times, flags drift, writes timestamped frame sheets |
-| `build_edit.py` | assembly | Builds edit spans from the observed cuts so every shot covers its narration |
-| `assemble_edit.py` | assembly | Trims, joins and lays the narration under each clip; optional cover opener; final video |
-| `package.py` | delivery | Writes `roleplay.json` and the delivery ZIP with a SHA-256 manifest |
+| `en2_upload.mjs` / `en2_submit.mjs` / `en2_collect.mjs` | animation | Hash-checked uploads, submission, polling and download |
+| `review_cuts.py` | review | Real cut times, drift flags, frame sheets |
+| `build_edit.py` / `assemble_edit.py` | edit | Spans from observed cuts; narrated (or silent wonder) clip segments; one file per video screen in `output/screens/` |
+| `build_chapter.py` | package | `script.json` + measured narration + edit timing + media -> `package/chapter.json` (captions, overlays, activities), player and media copied in |
+| `package.py` | package | Validates `chapter.json`, media and the unchanged player, writes `chapter.js` and the lesson ZIP (+ production record) |
+
+The player, `build_chapter.py` and the per-screen edit were tested end to end on a synthetic project (all 11 screen types, the 3 activity modes and the 4 simulators, played through in headless Chrome). The next step is the first real pilot episode.
 
 ## Setup
 
-1. Python 3.10+ with Pillow (`pip install pillow`), Node 18+, FFmpeg and ffprobe on PATH.
-2. Codex CLI signed in, with image generation and the ElevenLabs app connected, and the EN2 video MCP configured (`[mcp_servers.en2_video]` in `~/.codex/config.toml`, or set `EN2_MCP_URL`). The MCP URL contains a personal token: never commit it.
-3. An assistant session (Claude Code or Codex) with the EN2 video MCP for `video_generate` / `video_status`, and the Google Drive connector to read script documents.
-4. Read `AGENTS.md` and `skills/living-textbook-master/SKILL.md`.
+1. Python 3.10+ with Pillow and PyMuPDF (`pip install pillow pymupdf`), Node 18+, FFmpeg and ffprobe on PATH.
+2. Codex CLI signed in, with image generation and the ElevenLabs app connected, and the EN2 video MCP configured (`[mcp_servers.en2_video]` in `~/.codex/config.toml`, or `EN2_MCP_URL`). The MCP URL contains a personal token: never commit it.
+3. Read `AGENTS.md` and `skills/living-textbook-master/SKILL.md`.
 
 ## Start a production
 
 ```
-mkdir projects/<slug>            # media stays out of Git
-copy templates/*.json projects/<slug>/
-# then follow skills/living-textbook-master/SKILL.md stage by stage
-python pipeline/codex_run.py --project projects/<slug> --prompt prompts/codex-audio.md --name audio
-python pipeline/harvest_audio.py --project projects/<slug> --name audio
-...
-python pipeline/package.py --project projects/<slug>
+python pipeline/extract_chapter.py --project projects/<slug> "<chapter.pdf>"
+# then follow skills/living-textbook-master/SKILL.md stage by stage; stop at the episode-plan checkpoint
 ```
-
-## Pilot results (3 Nov 2026)
-
-"Do Plants Eat Soil?" explanation lines, faceted low-poly style, no characters. Three EN2 Ultra clips (stomata 11 s, chlorophyll 12 s, oxygen 7 s) followed their boards with clean hard cuts, correct layouts and no leaked storyboard text. EN2 placed one cut 2.25 s early; `build_edit.py` re-timed the spans and no repair render was needed. Details in `examples/stomata-pilot/`.

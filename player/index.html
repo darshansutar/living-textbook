@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Living Textbook</title>
+<link rel="stylesheet" href="player.css">
+</head>
+<body>
+<!-- Generic Living Textbook player. Never edited per chapter: all content is in chapter.json / chapter.js. -->
+<div id="app">
+  <div id="stage" aria-live="polite">
+    <div id="screen"></div>
+    <div id="captions" hidden></div>
+    <div id="progress"></div>
+    <div id="teacher-panel" hidden></div>
+    <div id="bar">
+      <button id="btn-home" title="Chapter home (H)">&#8962;</button>
+      <button id="btn-back" title="Back (Left arrow)">&#9664; Back</button>
+      <button id="btn-replay" title="Replay narration (R)">&#8635;</button>
+      <span class="spacer"></span>
+      <button id="btn-map" title="Chapter map (M)">Map</button>
+      <button id="btn-cc" title="Captions (C)">CC</button>
+      <button id="btn-teacher" title="Teacher view (T)">Teacher</button>
+      <button id="btn-full" title="Full screen (F)">&#x26F6;</button>
+      <button id="btn-next" class="primary" title="Next (Right arrow / Space)">Next &#9654;</button>
+    </div>
+  </div>
+</div>
+<noscript>This lesson needs JavaScript. Open index.html in Chrome or Edge.</noscript>
+<script src="chapter.js"></script>
+<script src="player.js"></script>
+</body>
+</html>

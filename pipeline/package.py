@@ -1,11 +1,25 @@
-"""Pack a finished Living Textbook project into one delivery ZIP.
+"""Validate and pack a Living Textbook lesson.
 
-Includes the final video and per-clip segments, the static roleplay images (cover, answer,
-reason, confidence and check images), narration audio and cues, storyboards and panels,
-assets, animation prompts, the timing plan, edit plan, job IDs and the review record, plus a
-MANIFEST.json with a SHA-256 for every file.
+The shippable lesson is the folder projects/<slug>/package/:
+    index.html, player.js, player.css     the standard player (copied unchanged from player/)
+    chapter.json                           the chapter content (schema: skills/lt-package/chapter-schema.md)
+    chapter.js                             chapter.json as a script (rewritten here) so file:// works offline
+    media/                                 screen videos, narration audio, stills
 
-    python pipeline/package.py --project projects/plants
+Checks before packing:
+  * chapter.json parses and has chapter/episodes/screens
+  * every screen id is unique and every screen type is a known type
+  * every media path referenced anywhere in chapter.json exists inside package/
+  * every vote / mcq has exactly one correct option and an answer index in range
+  * every activity has a known mode (and simulator template); every reveal points at a vote
+  * the player files match player/ in this repo (the player is never edited per chapter)
+
+Writes:
+  <slug>-lesson-<date>.zip       package/ + MANIFEST.json (SHA-256 per file)  -> what goes to schools
+  <slug>-production-<date>.zip   only with --archive: the production record (analysis, episodes,
+                                 script, plan, prompts, boards, job IDs, review)
+
+    python pipeline/package.py --project projects/<slug> [--archive]
 """
 import argparse
 import hashlib
@@ -14,67 +28,107 @@ import zipfile
 from datetime import date
 from pathlib import Path
 
-INCLUDE = ["output", "static", "audio", "storyboards", "assets", "prompts", "renders/jobs*.json", "renders/cuts.json",
-           "plan.json", "edit.json", "review.json", "intake.json", "roleplay.json"]
-SKIP_SUFFIX = {".review.png"}
+REPO = Path(__file__).resolve().parent.parent
+MODES = {"do_along", "simulator", "mission"}
+TEMPLATES = {"compare_setups", "zoom_scale", "dial", "tap_diagram"}
+TYPES = {"title", "video", "still", "vote", "reveal", "question_cards", "mcq", "activity", "fact", "recap", "score"}
+MEDIA_KEYS = {"src", "image", "audio", "still", "icon", "result_still", "result_video", "consequence_src",
+              "reveal_audio", "feedback_audio"}
+ARCHIVE = ["intake.json", "analysis.json", "episodes.json", "script.json", "plan.json", "edit.json", "review.json",
+           "audio/narration.json", "prompts", "storyboards", "renders/jobs*.json", "renders/cuts.json", "source/outline.json"]
 
 
-def files(project):
-    for pattern in INCLUDE:
-        for p in sorted(project.glob(pattern)):
-            if p.is_dir():
-                yield from (f for f in sorted(p.rglob("*")) if f.is_file() and "rejected" not in f.parts)
-            elif p.is_file():
-                yield p
+def walk_media(node, found):
+    """Collect media references: values of the known media keys, and any string under media/
+    (simulator configs use their own keys, e.g. setups[].start / result)."""
+    if isinstance(node, dict):
+        for k, v in node.items():
+            if isinstance(v, str) and (k in MEDIA_KEYS or v.startswith("media/")):
+                found.add(v)
+            else:
+                walk_media(v, found)
+    elif isinstance(node, list):
+        for v in node:
+            if isinstance(v, str) and v.startswith("media/"):
+                found.add(v)
+            else:
+                walk_media(v, found)
 
 
-def write_roleplay(project):
-    """roleplay.json: which static image belongs to which roleplay element, plus the video segments."""
-    plan = json.loads((project / "plan.json").read_text(encoding="utf-8"))
-    edit = json.loads((project / "edit.json").read_text(encoding="utf-8")) if (project / "edit.json").exists() else {"segments": []}
-    items = plan.get("static", [])
-    missing = [s["file"] for s in items if not (project / s["file"]).exists()]
-    if missing:
-        raise SystemExit(f"static images missing: {missing}")
-    by_kind = {}
-    for s in items:
-        by_kind.setdefault(s["kind"], []).append({k: s[k] for k in ("id", "text", "file") if k in s})
-    segs = sorted((project / "output" / "segments").glob("*.mp4"))
-    roleplay = {
-        "title": plan.get("title") or plan.get("project"),
-        "cover": next((s["file"] for s in items if s["kind"] == "cover"), None),
-        "answers": by_kind.get("answer", []),
-        "reasons": by_kind.get("reason", []),
-        "confidence": by_kind.get("confidence", []),
-        "checks": by_kind.get("check", []),
-        "other_stills": by_kind.get("other", []),
-        "clips": [{"clip": s["clip"], "segment": next((str(p.relative_to(project)).replace("\\", "/") for p in segs if p.stem.endswith(s["clip"])), None)}
-                  for s in edit["segments"]],
-        "final_video": edit.get("output"),
-    }
-    (project / "roleplay.json").write_text(json.dumps(roleplay, indent=2), encoding="utf-8")
-    print(f"wrote roleplay.json ({len(items)} stills)")
+def validate(pkg):
+    cj = pkg / "chapter.json"
+    if not cj.exists():
+        raise SystemExit(f"{cj} missing")
+    ch = json.loads(cj.read_text(encoding="utf-8"))
+    errors, ids, reveals = [], set(), []
+    if not ch.get("chapter") or not ch.get("episodes"):
+        errors.append("chapter.json needs 'chapter' and 'episodes'")
+    for ep in ch.get("episodes", []):
+        for sc in ep.get("screens", []):
+            sid = sc.get("id")
+            if sid in ids:
+                errors.append(f"duplicate screen id {sid}")
+            ids.add(sid)
+            if sc.get("type") not in TYPES:
+                errors.append(f"{sid}: unknown type {sc.get('type')}")
+            if sc.get("type") == "activity":
+                if sc.get("mode") not in MODES:
+                    errors.append(f"{sid}: activity mode {sc.get('mode')} unknown")
+                elif sc["mode"] == "simulator" and sc.get("template") not in TEMPLATES:
+                    errors.append(f"{sid}: simulator template {sc.get('template')} unknown")
+            if sc.get("type") == "reveal":
+                reveals.append((sid, sc.get("vote")))
+            if sc.get("type") in ("vote", "mcq"):
+                opts = sc.get("options", [])
+                if sc["type"] == "vote" and sum(1 for o in opts if o.get("correct")) != 1 and not sc.get("observation"):
+                    errors.append(f"{sid}: vote needs exactly one correct option")
+                if sc["type"] == "mcq" and not (isinstance(sc.get("answer"), int) and 0 <= sc["answer"] < len(opts)):
+                    errors.append(f"{sid}: mcq answer index out of range")
+    votes = {sc.get("id") for ep in ch.get("episodes", []) for sc in ep.get("screens", []) if sc.get("type") == "vote"}
+    errors += [f"{sid}: reveal points at unknown vote {v}" for sid, v in reveals if v not in votes]
+    media = set()
+    walk_media(ch, media)
+    missing = sorted(m for m in media if not (pkg / m).exists())
+    errors += [f"missing media: {m}" for m in missing]
+    for f in ("index.html", "player.js", "player.css"):
+        if not (pkg / f).exists():
+            errors.append(f"player file missing: {f}")
+        elif (REPO / "player" / f).exists() and (pkg / f).read_bytes() != (REPO / "player" / f).read_bytes():
+            errors.append(f"{f} differs from player/{f}; copy the standard player (build_chapter.py does) - never edit it per chapter")
+    if errors:
+        raise SystemExit("package invalid:\n  " + "\n  ".join(errors))
+    (pkg / "chapter.js").write_text("window.CHAPTER = " + cj.read_text(encoding="utf-8").strip() + ";\n", encoding="utf-8")
+    n = sum(len(ep.get("screens", [])) for ep in ch["episodes"])
+    print(f"chapter.json ok: {len(ch['episodes'])} episodes, {n} screens, {len(media)} media files")
+
+
+def zip_dir(zpath, root, files):
+    manifest = {}
+    with zipfile.ZipFile(zpath, "w", zipfile.ZIP_DEFLATED) as z:
+        for f in files:
+            rel = str(f.relative_to(root)).replace("\\", "/")
+            z.write(f, rel)
+            manifest[rel] = hashlib.sha256(f.read_bytes()).hexdigest()
+        z.writestr("MANIFEST.json", json.dumps(manifest, indent=2))
+    print(f"wrote {zpath.name}: {len(manifest)} files, {zpath.stat().st_size / 1e6:.1f} MB")
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--project", required=True)
+    ap.add_argument("--archive", action="store_true", help="also write the production-record ZIP")
     args = ap.parse_args()
     project = Path(args.project).resolve()
-    if not (project / "output" / "final.mp4").exists():
-        raise SystemExit("output/final.mp4 missing: run assemble_edit.py first")
-    write_roleplay(project)
-    zpath = project / f"{project.name}-living-textbook-{date.today().isoformat()}.zip"
-    manifest = {}
-    with zipfile.ZipFile(zpath, "w", zipfile.ZIP_DEFLATED) as z:
-        for f in files(project):
-            if any(f.name.endswith(s) for s in SKIP_SUFFIX):
-                continue
-            rel = str(f.relative_to(project)).replace("\\", "/")
-            z.write(f, rel)
-            manifest[rel] = hashlib.sha256(f.read_bytes()).hexdigest()
-        z.writestr("MANIFEST.json", json.dumps(manifest, indent=2))
-    print(f"wrote {zpath.name}: {len(manifest)} files, {zpath.stat().st_size / 1e6:.1f} MB")
+    pkg = project / "package"
+    validate(pkg)
+    today = date.today().isoformat()
+    zip_dir(project / f"{project.name}-lesson-{today}.zip", pkg, sorted(f for f in pkg.rglob("*") if f.is_file()))
+    if args.archive:
+        files = []
+        for pattern in ARCHIVE:
+            for p in sorted(project.glob(pattern)):
+                files += [f for f in sorted(p.rglob("*")) if f.is_file() and "rejected" not in f.parts] if p.is_dir() else [p]
+        zip_dir(project / f"{project.name}-production-{today}.zip", project, files)
 
 
 if __name__ == "__main__":

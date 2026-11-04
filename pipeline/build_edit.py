@@ -11,6 +11,10 @@ The narration therefore keeps its original speed and the cut may land slightly b
 boundary (fine editorially). If the last shot still cannot cover its narration the clip needs a
 repair, and the script stops with a clear message.
 
+Every segment carries the clip's `screen` (plan.json), so assemble_edit.py can write one file per
+video screen. Silent clips (wonder screens: no `narration` in plan.json) get spans from their
+planned `required` lengths and no audio.
+
     python pipeline/build_edit.py --project projects/plants [--cover static/cover.png --cover-seconds 3]
 """
 import argparse
@@ -55,19 +59,28 @@ def main():
         if not status.startswith("verified") and not args.include_unverified:
             print(f"skip {clip['id']}: visual_status={status}")
             continue
+        if not clip.get("screen"):
+            raise SystemExit(f"{clip['id']}: plan.json clip has no 'screen'")
         c = cuts[clip["id"]]
-        a0, a1 = clip["audio_interval"]
-        spans = spans_for(clip, c["cuts_observed"], c["duration"])
-        segments.append({
+        # a reviewer may pin the cut points used for the edit (soft dissolves, extra push-in cuts)
+        used = review.get(clip["id"], {}).get("cuts_used", c["cuts_observed"])
+        spans = spans_for(clip, used, c["duration"])
+        seg = {
             "clip": clip["id"],
+            "screen": clip["screen"],
             "video": f"renders/{clip['id']}.mp4",
             "spans": spans,
-            "audio": narr[clip["narration"]]["file"],
-            "audio_in": [a0, a1],
             "visual_status": status,
-        })
+        }
+        if clip.get("narration"):
+            if clip["narration"] not in narr:
+                raise SystemExit(f"{clip['id']}: narration '{clip['narration']}' not in audio/narration.json")
+            seg["audio"] = narr[clip["narration"]]["file"]
+            seg["audio_in"] = list(clip["audio_interval"])
+        segments.append(seg)
         print(clip["id"], spans)
-    edit = {"size": plan.get("size", [1344, 768]), "fps": plan.get("fps", 24), "segments": segments, "output": "output/final.mp4"}
+    edit = {"size": plan.get("size", [1344, 768]), "fps": plan.get("fps", 24), "segments": segments,
+            "screens_dir": "output/screens", "output": "output/final.mp4"}
     if args.cover:
         edit["cover"] = {"image": args.cover, "seconds": args.cover_seconds}
     (project / "edit.json").write_text(json.dumps(edit, indent=2), encoding="utf-8")

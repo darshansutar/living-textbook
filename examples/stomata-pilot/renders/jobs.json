@@ -1,6 +1,0 @@
-{
-  "C1-stomata": {"job": "video_a6a9af5b8a9d4558a90c", "refs": ["en2ref_a8ecd6b76dee8646.png", "en2ref_970016160af2bfaf.png", "en2ref_2b664a70d8561be6.png", "en2ref_3645607eb1461ea1.png", "en2ref_659367ae95ad1d16.png"], "duration": 11, "quality": "ultra", "seed": 2900416410},
-  "C2-chlorophyll": {"job": "video_f3591ea93a1247ee84ea", "refs": ["en2ref_26f9487a8874bd66.png", "en2ref_d7a8480058286c8d.png"], "duration": 12, "quality": "ultra", "seed": 609860756},
-  "C3-oxygen": {"job": "video_0398a7b6692d4ddbbfd2", "refs": ["en2ref_a8ecd6b76dee8646.png", "en2ref_970016160af2bfaf.png", "en2ref_892656b6ebeee852.png", "en2ref_c6cdb75f6d9c442d.png"], "duration": 7, "quality": "ultra", "seed": 2891273530},
-  "folder": "Living Textbook/Style 1 Stomata Pilot/03 Nov"
-}

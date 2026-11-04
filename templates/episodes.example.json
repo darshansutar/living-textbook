@@ -1,0 +1,33 @@
+{
+  "chapter": "g7-sci-10",
+  "story_world": {
+    "place": "a chilli-seedling nursery at the edge of a village near Haveri, Karnataka; neem tree, red-soil field, village pond",
+    "problem": "Ravi must have healthy green seedlings ready for the Monday shandy in 14 days, but some are turning yellow",
+    "payoff": "Ravi sells strong green seedlings at the shandy, and explains (in pictures) how leaves make food",
+    "cast": [
+      { "id": "ravi", "role": "main", "description": "12-year-old boy, short black hair, half-sleeve checked shirt, khaki shorts, rubber slippers", "speaks": false },
+      { "id": "ajji", "role": "support", "description": "Ravi's grandmother, cotton saree, works the nursery", "speaks": false }
+    ]
+  },
+  "episodes": [
+    {
+      "id": "e1",
+      "title": "The Yellow Seedlings",
+      "period": 1,
+      "opener": true,
+      "loops": [
+        { "concept": "c1", "flow": "wonder", "hook": "Ravi lifts a flat stone in the field: the grass under it is pale yellow", "activity": { "id": "10.1", "mode": "simulator", "template": "compare_setups" } },
+        { "concept": "c2", "flow": "wonder", "hook": "A croton leaf in the courtyard is half green, half white", "activity": { "id": "10.2", "mode": "do_along", "substitute": "Betadine on potato, cooked rice and a leaf" } },
+        { "concept": "c2f", "flow": "fact" }
+      ],
+      "cliffhanger": "The seedlings under Ajji's plastic cover are in sunlight and watered, but still weak. What is missing?",
+      "consequence_clips": [],
+      "screen_minutes": 15
+    }
+  ],
+  "finale": {
+    "practice": [{ "activity": "brick-on-grass", "mode": "mission" }],
+    "mcq_round": ["Q3", "Q4", "Q6", "Q7"]
+  },
+  "checkpoint": { "approved_by": "user", "date": "<YYYY-MM-DD>", "words": "<user's approval message>" }
+}

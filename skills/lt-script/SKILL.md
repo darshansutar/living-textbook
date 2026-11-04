@@ -1,50 +1,49 @@
 ---
 name: lt-script
-description: Turn a Living Textbook source script into script.json - every narration line split into renderable clips, the choice-to-narration mapping for Predict-Observe-Explain lessons, and the list of static images the roleplay needs.
+description: Write the Living Textbook script - every screen of every episode following the approved flow templates, every narration line, vote options built from misconceptions with reveal lines, MCQs with feedback, recaps, cliffhangers and fact cards - into script.json, checked against the NCERT chapter.
 ---
 
 # Living Textbook - Script
 
-Read the complete source (intake). Keep its words exactly; do not rewrite narration unless the user asks. Produce `script.json` (see `templates/script.example.json`).
+Input: approved `episodes.json`, `analysis.json`, the chapter text. Output: `script.json` (template `templates/script.example.json`). Follow `flows.md` (same folder) exactly for screen order.
 
-## 1. Narration lines
+## Voice of the narration
 
-List every spoken line with a stable ID (`N1`, `N2`, ...), the exact text, where it plays (step, branch or option) and what it must show. One audio file per line. Visible text on screen (option labels, captions) is interface text, not narration.
+- Spoken to a whole Class 5-10 room by a warm teacher-narrator. Short sentences (<= 18 words), present tense, plain words; every new term said once, then defined the book's way.
+- Indian English that translates cleanly: no idioms, puns or rhymes that only work in English; numbers said the way they are written on screen ("three point four five").
+- The story is told about the characters ("Ravi lifts the stone..."), never in their voice. No dialogue, no quotes from characters.
+- Facts, definitions, equations and units exactly as the chapter states them. Indian names for local things where natural (gud, shandy, kolhu), explained on first use.
 
-## 2. Clips
+## 1. Screens
 
-A clip is one EN2 render: a 1x2 or 1x3 storyboard covering one narration line or one part of it. EN2 renders at most 15 s, and every shot carries a 1-2 s buffer, so plan a clip at about 11 s of narration or less. Split longer lines at sentence boundaries (the measured pauses from lt-audio confirm the split). Record for each clip: ID (`C1-stomata`), narration ID, which sentences it covers, and the beats it must show.
+For every episode, list its screens in order. Each screen gets: `id` (`e1.c2.s3`: episode, concept, screen), `type`, `role` (for video), and its content:
 
-## 3. Choice mapping (Predict-Observe-Explain)
+| Type | Script must give |
+|---|---|
+| `title` | title text, subtitle |
+| `video` | role, narration line IDs (none for `wonder`), what must be shown (beats), story state before/after |
+| `still` | narration line ID, what the picture shows |
+| `vote` | question text, options (`text`, `idea`, `correct`), reveal line ID per option, optional `consequence` video beats |
+| `reveal` | (built from its vote) |
+| `question_cards` | prompt line ID, 3 cards (text <= 8 words), which card the explanation answers (all lead to the same explain) |
+| `mcq` | question text, scenario (what the picture shows, if any), options, answer, feedback line ID per option |
+| `activity` | activity ID from episodes.json (lt-activities fills the details) |
+| `fact` | narration line ID, picture idea, NCERT ref |
+| `recap` | narration line ID + one recall `mcq` |
+| `score` | end line ID |
 
-For choice-based lessons record, per option, which narration plays. The default Living Textbook mapping:
+On-screen text (titles, questions, options, card text, overlays) lives in the screen as strings; **it is never in a picture**. Numbers, equations and labels a video needs are listed as `overlays` with the time they appear (lt-assembly / player draws them).
 
-- Group every answer and reason by the **idea** behind it (soil, water, sunlight, correct, not sure ...).
-- Six cases decide what plays: both right; same wrong idea twice (one merged clip); right answer + wrong reason; wrong answer + right reason; two different wrong ideas; not sure.
-- Narration is built from short pieces: `SAY_<option>` ("You said ..."), `LOOK_<idea>` ("Look again: ..." pointing at evidence from the Observe film), `RIGHT`, `WHY` (the "but why ...?" bridge), `POINTS_<answer>`, `NEXT`, `NOT_SURE`, then the common explanation.
-- Write the playback order for every answer x reason combination.
+## 2. Narration lines
 
-If the lesson's player plays one opener only, also record the single-clip fallback (one rendered clip per combination).
+One list `narration[]`, one line per audio file: `id` (screen id + suffix, e.g. `e1.c2.s1.n1`), exact text, screen, and `purpose` (story, explain, reveal-A, feedback-2, recap...). Split long explanations into several lines at sentence boundaries; a video clip covers about 11 s of narration or less (lt-visual-plan joins clips into one screen video).
 
-## 4. Static images
+## 3. Questions
 
-List every still the roleplay shows (lt-static-images makes them):
+- Every vote and MCQ distractor comes from the concept's `misconceptions` (cite it). One correct answer.
+- Finale MCQs come from the chapter's end questions, rewritten into the story world or another rural-Indian setting, keeping what the book asks. Record the source question.
+- Feedback lines are short (one or two sentences), kind, and explain why.
 
-| Kind | One per | Example source field |
-|---|---|---|
-| cover | lesson | title / hook |
-| answer | answer option | option text |
-| reason | reason option | reason text |
-| confidence | confidence level | level text |
-| check | check question (and its scenario) | question text |
-| other | any still the script asks for (diagram card, end card) | as written |
+## 4. Fidelity check
 
-Give each an ID, the exact option text it illustrates and the idea it must show without words.
-
-## 5. Inventory
-
-List the on-screen cast **from the script only** (usually none for science lessons), the locations, and the key props/evidence (experiment set-ups, specimens, diagrams). Never add a character because the style reference is a portrait.
-
-## Check before handing on
-
-Compare script.json with the source line by line: every narration line, option, feedback line and route is present and identical. Record the comparison in script.json `source_check`.
+Before hand-off, compare against `analysis.json`: every concept has its screens; every key fact appears in an explain narration; every activity is placed; every end question is used or listed in teacher notes; no fact contradicts or exceeds the chapter. Record the result in `script.json.source_check`. Then show the user the script of the episode being produced (narration + questions) and get a yes before lt-audio.
