@@ -22,7 +22,7 @@ import json
 from pathlib import Path
 
 
-def spans_for(clip, observed, duration):
+def spans_for(clip, observed, duration, tol=0.04):
     starts = [0.0] + list(observed)
     ends = list(observed) + [duration]
     if len(starts) != len(clip["shots"]):
@@ -34,7 +34,7 @@ def spans_for(clip, observed, duration):
         take = min(need, e - s)
         carry = round(need - take, 3)
         spans.append([round(s, 3), round(s + take, 3)])
-    if carry > 0.04:
+    if carry > tol:
         raise SystemExit(f"{clip['id']}: footage is {carry}s short of the narration; needs a repair render")
     return spans
 
@@ -64,7 +64,8 @@ def main():
         c = cuts[clip["id"]]
         # a reviewer may pin the cut points used for the edit (soft dissolves, extra push-in cuts)
         used = review.get(clip["id"], {}).get("cuts_used", c["cuts_observed"])
-        spans = spans_for(clip, used, c["duration"])
+        # silent (wonder) clips have no narration to cover; a few frames short only shortens the screen
+        spans = spans_for(clip, used, c["duration"], tol=0.04 if clip.get("narration") else 0.12)
         seg = {
             "clip": clip["id"],
             "screen": clip["screen"],

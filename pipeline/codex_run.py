@@ -42,8 +42,18 @@ def main():
     for r in args.ref:
         cmd += ["-i", r]
     cmd += ["-o", str(last), "-"]
-    with prompt.open("rb") as stdin, log.open("wb") as out:
-        code = subprocess.run(cmd, stdin=stdin, stdout=out, stderr=subprocess.STDOUT, shell=(sys.platform == "win32")).returncode
+    # projects/ is git-ignored, so `rg --files` inside a project lists nothing and Codex
+    # wrongly concludes the attached references are missing. Tell it up front.
+    note = ""
+    if args.ref:
+        note = ("NOTE: every attached reference file exists in this working directory: "
+                + ", ".join(args.ref)
+                + ". This folder is git-ignored, so `rg --files` will not list it; check files with "
+                "Test-Path / Get-ChildItem or just use the attached images. Never stop because a "
+                "reference seems missing.\n\n")
+    payload = note.encode("utf-8") + prompt.read_bytes()
+    with log.open("wb") as out:
+        code = subprocess.run(cmd, input=payload, stdout=out, stderr=subprocess.STDOUT, shell=(sys.platform == "win32")).returncode
     print(f"codex exit {code}; log {log.relative_to(project)}")
     if last.exists():
         print(last.read_text(encoding="utf-8", errors="replace")[-2000:])

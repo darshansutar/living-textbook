@@ -25,7 +25,7 @@ projects/<slug>/package/
   media/stills/...                        from stills/ (compressed JPG 1600 px wide, map icons PNG 256 px)
 ```
 
-Episodes already in `package/chapter.json` are kept; the episodes in the given script(s) replace theirs. The script lists every missing still, audio or screen file at the end; produce them (or fix names) and run it again. Read its warnings: they name narration that is not accepted, overlays without a time and activities lt-activities has not filled.
+Episodes already in `package/chapter.json` are kept; the episodes in the given script(s) replace theirs. The script lists every missing still, audio or screen file at the end; produce them (or fix names) and run it again. Read its warnings: they name narration that is not accepted, and overlays without a time.
 
 ## 2. What build_chapter.py maps (check it)
 
@@ -35,8 +35,7 @@ It maps `script.json` screen by screen into the schema:
 - `still`, `fact`, `recap` -> picture + narration audio + caption text.
 - `vote` -> options with text, picture, `correct`, `reveal_audio`/`reveal_text`; a `reveal` screen follows it referencing the vote id.
 - `mcq` -> question, scenario picture, options with feedback audio/text, `answer` index.
-- `activity` -> mode fields from lt-activities.
-- `activity` -> the lt-activities fields; `stills/...` paths become `media/stills/...`, `line`/`*_line` narration IDs become `audio`/`*_audio` (+ text), `narration` becomes the intro `audio`, `observe` becomes a vote.
+- `activity` -> legacy screen type (not used by the simple loop); fields copied as given.
 - `concepts` -> id, title (`script.json` `concepts` overrides `analysis.json`), map icon `stills/map_<id>`. Text strings exactly as in `script.json`.
 
 Picture names follow lt-stills: `cover`, `<ep>_title`, `<screen>` (still, recap), `<screen>_opt<k>`, `<screen>_card<k>`, `<screen>_scene`, `<screen>_fact`, `map_<concept>`. A vote option's consequence clip is the video screen `<vote-id>.opt<k>`.
@@ -53,4 +52,4 @@ Checks the schema basics, unique screen ids, known screen types, activity modes 
 
 ## 4. Teacher test (mandatory before delivery)
 
-Open `index.html` from the unzipped folder, offline, in Chrome or Edge on a projector-sized window, and play the episode as a teacher would: every screen, every vote with a different majority choice, every MCQ right and wrong, the activity screens (timers, "Show result", simulator controls), the chapter map, captions on and off, teacher view, keyboard controls (Right/Space next, Left back, 1-9 choose, R replay, C captions, M map, T teacher view, F full screen, H home). `index.html?screen=<id>&teacher=1` opens any screen directly for re-checks. Note any failure against its screen id in `review.json.package_test`. Content problems go back to their stage; a player bug is fixed in `player/` for **all** chapters and re-tested on every packaged chapter.
+Open `index.html` from the unzipped folder, offline, in Chrome or Edge on a projector-sized window, and play the episode as a teacher would: every screen and every narration line, every vote with a different class choice (the right answer and its line appear on the same screen), every check right and wrong, only Back and Next visible to the class, the Menu (chapter home, replay, captions, chapter map, teacher notes, full screen), keyboard controls (Right/Space next, Left back, 1-9 choose, R replay, C captions, M map, T teacher notes, F full screen, H home). `index.html?screen=<id>&teacher=1` opens any screen directly for re-checks. Note any failure against its screen id in `review.json.package_test`. Content problems go back to their stage; a player bug is fixed in `player/` for **all** chapters and re-tested on every packaged chapter.

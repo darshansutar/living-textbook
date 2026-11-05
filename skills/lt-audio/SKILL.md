@@ -13,7 +13,7 @@ Audio comes before any visual planning. Codex has the ElevenLabs app connected; 
 
 ## 1. Generate (Codex)
 
-Write `prompts/codex-audio.md` from `templates/codex-audio.md`:
+Write `prompts/codex-audio.md` from `templates/codex-audio.md`. The prompt must tell Codex to print each returned download URL in its reply (`URL <file> <url>`): harvest_audio.py finds the files only through those URLs, and a run without them has to be generated again (2026-11-05).
 
 - voice ID, model `eleven_v3`
 - one file per narration line of the episode being produced: `audio/<line-id>.mp3` (dots in IDs become underscores: `audio/e1_c2_s1_n1.mp3`), text copied exactly from `script.json`

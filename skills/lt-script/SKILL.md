@@ -20,17 +20,11 @@ For every episode, list its screens in order. Each screen gets: `id` (`e1.c2.s3`
 
 | Type | Script must give |
 |---|---|
-| `title` | title text, subtitle |
-| `video` | role, narration line IDs (none for `wonder`), what must be shown (beats), story state before/after |
-| `still` | narration line ID, what the picture shows |
-| `vote` | question text, options (`text`, `idea`, `correct`), reveal line ID per option, optional `consequence` video beats |
-| `reveal` | (built from its vote) |
-| `question_cards` | prompt line ID, 3 cards (text <= 8 words), which card the explanation answers (all lead to the same explain) |
-| `mcq` | question text, scenario (what the picture shows, if any), options, answer, feedback line ID per option |
-| `activity` | activity ID from episodes.json (lt-activities fills the details) |
-| `fact` | narration line ID, picture idea, NCERT ref |
-| `recap` | narration line ID + one recall `mcq` |
-| `score` | end line ID |
+| `title` | title text, subtitle, welcome narration line ID |
+| `video` | role (`hook` or `explain`), narration line IDs, what must be shown (beats) |
+| `vote` | question text, `prompt_line` (the question read aloud), options (`text`, `idea`, `correct`, optional `image`), reveal line ID per option |
+| `mcq` | question text, `question_line` (read aloud), scenario (what the picture shows), options, answer, feedback line ID per option |
+| `still` | narration line IDs, what the picture shows (recap + next time) |
 
 On-screen text (titles, questions, options, card text, overlays) lives in the screen as strings; **it is never in a picture**. Numbers, equations and labels a video needs are listed as `overlays` with the time they appear (lt-assembly / player draws them).
 

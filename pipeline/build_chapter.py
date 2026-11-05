@@ -264,9 +264,13 @@ class Builder:
             for seg, t, _ in timeline:
                 if seg.get("audio"):
                     a0 = (seg.get("audio_in") or [0])[0]
-                    lid = by_stem.get(Path(seg["audio"]).stem)
-                    if lid and lid not in line_start:
-                        line_start[lid] = t - a0
+                    entry = self.narr.get(Path(seg["audio"]).stem, {})
+                    # a joined file (join_narration.py) carries several lines at known offsets
+                    parts = entry.get("parts") or [{"line": Path(seg["audio"]).stem, "at": 0.0}]
+                    for part in parts:
+                        lid = by_stem.get(part["line"])
+                        if lid and lid not in line_start:
+                            line_start[lid] = t - a0 + part["at"]
         else:  # no edit.json yet: lines back to back from 0
             t = 0.0
             for l in sc.get("narration", []):
@@ -343,6 +347,8 @@ class Builder:
     def build_mcq(self, sc):
         sid = sc["id"]
         out = {"question": sc.get("question", ""), "answer": sc.get("answer", 0)}
+        if sc.get("question_line"):  # the question is read aloud (simple loop, 2026-11-05)
+            out["audio"] = self.audio(sc["question_line"])
         img = self.still(sc.get("image") or f"{sid}_scene", optional=not sc.get("scenario") and not sc.get("image"))
         if img:
             out["image"] = img
@@ -401,6 +407,9 @@ class Builder:
         if t == "title":
             out.update(title=sc.get("title", ""), subtitle=sc.get("subtitle", ""),
                        image=self.still(sc.get("image") or f"{ep_id}_title"))
+            if narr:  # narrated welcome
+                out["audio"] = self.audio(narr, name=sid)
+                out["captions"] = self.lines_captions(narr)
         elif t == "video":
             out["src"] = self.video(sid)
             out["captions"], out["overlays"] = self.video_timing(sc)

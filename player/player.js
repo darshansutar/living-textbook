@@ -37,6 +37,9 @@
     get(k, d) { try { const v = localStorage.getItem('lt:' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
     set(k, v) { try { localStorage.setItem('lt:' + k, JSON.stringify(v)); } catch (e) { /* storage blocked */ } }
   };
+  // theme colours for drawn SVG (read from player.css so the simulators follow the Starling palette)
+  const THEME = (() => { const cs = getComputedStyle(document.documentElement), g = (n, d) => (cs.getPropertyValue(n) || '').trim() || d;
+    return { ink: g('--ink', '#f5f0eb'), dim: g('--dim', '#9e9287'), accent: g('--primary', '#f5be73'), track: g('--track', '#2b2622'), bad: g('--bad', '#f08a7a') }; })();
   const fmt = s => { s = Math.max(0, Math.ceil(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
 
   const UI_DEFAULT = {
@@ -179,12 +182,7 @@
   function show(i, dir) {
     const sc = S.ep.screens[i];
     S.idx = i;
-    // the chapter map appears automatically before the first screen of each concept
-    if (dir > 0 && sc.concept && concept(sc.concept) && isFirstOfConcept(i) && !S.mapShown[S.ep.id + sc.concept]) {
-      S.mapShown[S.ep.id + sc.concept] = true;
-      showMap(sc.concept, () => render(sc));
-      return;
-    }
+    // the chapter map opens only on request (Map button / M); it no longer interrupts the lesson
     render(sc);
   }
   function isFirstOfConcept(i) {
@@ -192,6 +190,7 @@
     return !S.ep.screens.slice(0, i).some(s => s.concept === c);
   }
   function render(sc) {
+    if (typeof closeMenu === 'function') closeMenu();
     closeMap();
     clearScreen();
     stopAudio();
@@ -219,7 +218,8 @@
     const meta = [c.class ? ui.classWord + ' ' + c.class : '', c.subject, c.number ? ui.chapter + ' ' + c.number : ''].filter(Boolean).join(' · ');
     screenEl.appendChild(h('div', { class: 'titlecard' },
       c.cover ? h('img', { class: 'full', src: c.cover, alt: '' }) : null,
-      h('div', { class: 'text' }, h('p', { text: meta }), h('h1', { text: c.title }), c.story_world ? h('p', { text: c.story_world }) : null),
+      // Starling title panel: gold kicker, big title (story_world is a production note, not shown to the class)
+      h('div', { class: 'text' }, h('div', { class: 'kicker', text: meta }), h('h1', { text: c.title })),
       h('div', { class: 'home-eps' }, S.ch.episodes.map((e, i) =>
         h('button', { onclick: () => startEpisode(e.id) }, h('small', { text: ui.episode + ' ' + (i + 1) }), e.title)))));
     S.view = {};
@@ -241,21 +241,27 @@
   function showMap(currentId, then) {
     closeMap();
     const ui = S.ui, cs = S.ch.concepts || [];
-    const path = h('div', { class: 'path' });
-    cs.forEach((c, i) => {
-      if (i) path.appendChild(h('div', { class: 'link' }));
-      path.appendChild(h('div', { class: 'node' + (S.reached[c.id] || c.id === currentId ? ' reached' : '') + (c.id === currentId ? ' current' : '') },
-        h('div', { class: 'dot', style: c.icon ? { backgroundImage: 'url("' + c.icon + '")' } : null }), h('span', { text: c.title })));
-    });
-    const cur = concept(currentId);
+    const curIdx = cs.findIndex(c => c.id === currentId);
+    // Starling-style stepper: one card per concept - done (gold tick), now (gold glow), later (dim)
+    const steps = h('div', { class: 'steps' }, cs.map((c, i) => {
+      const state = c.id === currentId ? 'now' : (S.reached[c.id] || (curIdx >= 0 && i < curIdx)) ? 'done' : 'later';
+      return h('div', { class: 'step ' + state },
+        h('div', { class: 'step-pic', style: c.icon ? { backgroundImage: 'url("' + c.icon + '")' } : null },
+          h('span', { class: 'step-badge', text: state === 'done' ? '✓' : String(i + 1) })),
+        h('div', { class: 'step-title', text: c.title }));
+    }));
+    const close = h('button', { class: 'btn', text: S.ui.back_to_lesson || 'Back to lesson' });
     mapEl = h('div', { class: 'map' },
-      h('div', { class: 'eyebrow', text: ui.map + ' · ' + S.ch.chapter.title }),
-      cur ? h('h1', { style: { margin: 0, fontSize: 'calc(var(--u) * 3)' } }, ui.next_up + ': ' + cur.title) : null,
-      path);
+      h('div', { class: 'map-head' },
+        h('div', { class: 'kicker', text: ui.map }),
+        h('h2', { text: S.ch.chapter.title }),
+        cs.length ? h('p', { class: 'sub', text: (curIdx >= 0 ? (curIdx + 1) : cs.filter(c => S.reached[c.id]).length) + ' ' + ui.of + ' ' + cs.length }) : null),
+      steps,
+      h('div', { class: 'stack' }, close));
     stage.appendChild(mapEl);
     let timer = null;
     const done = () => { clearTimeout(timer); closeMap(); if (then) then(); };
-    mapEl.addEventListener('click', done);
+    close.addEventListener('click', e => { e.stopPropagation(); done(); });
     mapPending = done;
     if (then) timer = setTimeout(done, 3500);
   }
@@ -269,7 +275,10 @@
     screenEl.appendChild(h('div', { class: 'titlecard' },
       sc.image ? h('img', { class: 'full', src: sc.image, alt: '' }) : null,
       h('div', { class: 'text' }, h('h1', { text: sc.title }), sc.subtitle ? h('p', { text: sc.subtitle }) : null)));
-    setNext(true, true);
+    const go = () => playAudio(sc.audio, { captions: sc.captions, onend: () => setNext(true, true) });
+    go();
+    setReplay(sc.audio ? go : null);
+    if (!sc.audio) setNext(true, true);
   };
 
   RENDER.video = sc => {
@@ -284,11 +293,7 @@
       onCleanup(() => clearTimeout(t));
     }
     timed(v, sc.captions, sc.overlays, layer);
-    v.addEventListener('ended', () => {
-      setNext(true, true);
-      const t = setTimeout(() => { if (S.view === view) next(); }, 900);
-      onCleanup(() => clearTimeout(t));
-    });
+    v.addEventListener('ended', () => setNext(true, true));
     v.addEventListener('click', () => (v.paused ? v.play() : v.pause()));
     v.play().catch(() => setNext(true, true));
     setNext(true, false);
@@ -319,45 +324,43 @@
       h('div', { class: 'txt' }, h('span', { class: 'key', text: String(i + 1) }), h('span', { class: 'rich', html: rich(o.text) })));
   }
 
-  // vote body shared by vote screens and do-along "observe" votes
+  // vote body shared by vote screens and do-along "observe" votes:
+  // question read aloud -> teacher taps the class's choice -> right answer and explanation on the same screen
   function voteBody(vote, id, root) {
-    const ui = S.ui, secs = voteSeconds(vote);
-    const R = 44, C = 2 * Math.PI * R;
-    const svg = s('svg', { viewBox: '0 0 100 100' });
-    svg.appendChild(s('circle', { cx: 50, cy: 50, r: R, class: 'track' }));
-    svg.appendChild(s('circle', { cx: 50, cy: 50, r: R, class: 'arc', 'stroke-dasharray': C, 'stroke-dashoffset': 0 }));
-    const num = h('b', { text: String(secs) });
-    const timer = h('div', { class: 'timer' }, svg, num);
+    const ui = S.ui;
     const hint = h('div', { class: 'hint', text: ui.vote_hint });
+    const fb = h('div', { class: 'feedback', style: { visibility: 'hidden' } });
     const grid = choiceGrid(vote.options, vote.options.some(o => o.image) ? null : 'list');
     const els = vote.options.map((o, i) => choiceEl(o, i, pick));
     els.forEach(e => grid.appendChild(e));
-    function mark() {
-      const c = S.votes[id];
+    const right = vote.options.findIndex(o => o.correct);
+    function paint(c) {
       els.forEach((e, i) => {
-        e.classList.toggle('chosen', i === c);
         const old = e.querySelector('.tag'); if (old) old.remove();
-        if (i === c) e.appendChild(h('span', { class: 'tag', text: ui.class_chose }));
+        e.classList.toggle('right', i === right);
+        e.classList.toggle('wrong', i === c && i !== right);
+        e.classList.toggle('faded', i !== right && i !== c);
+        if (i === c) e.appendChild(h('span', { class: 'tag' + (i === right ? ' ok' : ''), text: ui.class_chose }));
       });
+      const o = vote.options[c];
+      fb.style.visibility = 'visible';
+      fb.className = 'feedback ' + (c === right ? 'good' : 'bad');
+      fb.innerHTML = rich(o.reveal_text || '');
+      hint.hidden = true;
     }
-    function pick(i) { S.votes[id] = i; saveVotes(); mark(); stopClock(); setNext(true, true); }
-    root.append(h('div', { class: 'qhead' }, h('h1', { class: 'rich', html: rich(vote.question) }), timer), grid, hint);
-    mark();
-    let t0 = null, iv = null;
-    function startClock() {
-      t0 = performance.now();
-      iv = setInterval(() => {
-        const left = Math.max(0, secs - (performance.now() - t0) / 1000);
-        num.textContent = String(Math.ceil(left));
-        svg.lastChild.setAttribute('stroke-dashoffset', String(C * (1 - left / secs)));
-        if (left <= 0) { stopClock(); if (S.votes[id] == null) hint.textContent = ui.times_up; }
-      }, 100);
+    function pick(i) {
+      S.votes[id] = i; saveVotes(); paint(i);
+      const o = vote.options[i];
+      playAudio(o.reveal_audio, { onend: () => setNext(true, true) });
+      setReplay(() => playAudio(o.reveal_audio));
+      if (!o.reveal_audio) setNext(true, true);
     }
-    function stopClock() { if (iv) clearInterval(iv); iv = null; }
-    onCleanup(stopClock);
-    const begin = () => { stopClock(); startClock(); };
-    if (vote.audio) playAudio(vote.audio, { onend: begin }); else begin();
-    setReplay(() => (vote.audio ? playAudio(vote.audio, { onend: begin }) : begin()));
+    root.append(h('h1', { class: 'rich', html: rich(vote.question) }), grid, fb, hint);
+    if (S.votes[id] != null) paint(S.votes[id]);
+    else {
+      playAudio(vote.audio);
+      setReplay(() => playAudio(vote.audio));
+    }
     return { key: k => { if (k >= 1 && k <= vote.options.length) { pick(k - 1); return true; } return false; } };
   }
 
@@ -468,7 +471,11 @@
         h('div', { class: 'col' }, list, fb)));
     } else root.append(q, list, fb);
     if (S.mcq[m.id] != null) paint(S.mcq[m.id].chosen);
-    else root.appendChild(h('div', { class: 'hint', text: ui.mcq_hint }));
+    else {
+      root.appendChild(h('div', { class: 'hint', text: ui.mcq_hint }));
+      playAudio(m.audio);
+      setReplay(() => playAudio(m.audio));
+    }
     return { key: k => { if (k >= 1 && k <= opts.length) { pick(k - 1); return true; } return false; } };
   }
 
@@ -741,25 +748,25 @@
       const [lo, hi] = windowFor(), step = levels[level], d = decimals(step);
       svg.innerHTML = '';
       const X = v => 60 + (v - lo) / (hi - lo) * 880;
-      svg.appendChild(s('line', { x1: 40, y1: 150, x2: 960, y2: 150, stroke: '#1f2a1c', 'stroke-width': 4 }));
+      svg.appendChild(s('line', { x1: 40, y1: 150, x2: 960, y2: 150, stroke: THEME.ink, 'stroke-width': 4 }));
       const n = Math.round((hi - lo) / step);
       for (let i = 0; i <= n; i++) {
         const v = lo + i * step, x = X(v);
         const major = n <= 10 || i % 5 === 0;
-        svg.appendChild(s('line', { x1: x, y1: 150 - (major ? 30 : 16), x2: x, y2: 150 + (major ? 30 : 16), stroke: '#1f2a1c', 'stroke-width': major ? 3 : 2 }));
-        if (major) svg.appendChild(s('text', { x, y: 215, 'text-anchor': 'middle', 'font-size': 30, fill: '#1f2a1c' }, v.toFixed(d)));
+        svg.appendChild(s('line', { x1: x, y1: 150 - (major ? 30 : 16), x2: x, y2: 150 + (major ? 30 : 16), stroke: THEME.ink, 'stroke-width': major ? 3 : 2 }));
+        if (major) svg.appendChild(s('text', { x, y: 215, 'text-anchor': 'middle', 'font-size': 30, fill: THEME.ink }, v.toFixed(d)));
       }
       if (level > 0 && levels[level - 1] / step > 1) {
         // the part of the coarser scale we are inside
-        svg.appendChild(s('text', { x: 500, y: 290, 'text-anchor': 'middle', 'font-size': 24, fill: '#5d6656' },
+        svg.appendChild(s('text', { x: 500, y: 290, 'text-anchor': 'middle', 'font-size': 24, fill: THEME.dim },
           '×' + Math.round(levels[0] / step) + ' · ' + lo.toFixed(decimals(levels[level - 1])) + ' – ' + hi.toFixed(decimals(levels[level - 1])) + ' ' + unit));
       }
       marks.forEach(m => {
         const v = +m.value;
         if (v < lo || v > hi) return;
         const x = X(v);
-        svg.appendChild(s('path', { d: `M${x} 112 l-14 -26 h28 z`, fill: '#e07a1f' }));
-        svg.appendChild(s('text', { x, y: 70, 'text-anchor': 'middle', 'font-size': 32, 'font-weight': 700, fill: '#e07a1f' }, m.label || String(v)));
+        svg.appendChild(s('path', { d: `M${x} 112 l-14 -26 h28 z`, fill: THEME.accent }));
+        svg.appendChild(s('text', { x, y: 70, 'text-anchor': 'middle', 'font-size': 32, 'font-weight': 700, fill: THEME.accent }, m.label || String(v)));
         if (m.still) svg.appendChild(s('image', { href: m.still, x: x - 40, y: -10, width: 80, height: 60, preserveAspectRatio: 'xMidYMid slice' }));
       });
       readout.textContent = (level === 0 ? '' : '1 ' + ui.step.toLowerCase() + ' = ') + step + ' ' + unit;
@@ -799,16 +806,16 @@
     }
     function draw() {
       svg.innerHTML = '';
-      svg.appendChild(s('path', { d: arc(min, max, 160), stroke: '#e3dccb', 'stroke-width': 36, fill: 'none' }));
+      svg.appendChild(s('path', { d: arc(min, max, 160), stroke: THEME.track, 'stroke-width': 36, fill: 'none' }));
       zones.forEach((z, i) => svg.appendChild(s('path', { d: arc(Math.max(min, +z.from), Math.min(max, +z.to), 160), stroke: z.colour || colours[i % colours.length], 'stroke-width': 36, fill: 'none' })));
       for (let i = 0; i <= 10; i++) {
         const v = min + (max - min) * i / 10, [x0, y0] = P(v, 138), [x1, y1] = P(v, 120), [tx, ty] = P(v, 100);
-        svg.appendChild(s('line', { x1: x0, y1: y0, x2: x1, y2: y1, stroke: '#1f2a1c', 'stroke-width': 2 }));
-        if (i % 2 === 0) svg.appendChild(s('text', { x: tx, y: ty + 5, 'text-anchor': 'middle', 'font-size': 13, fill: '#1f2a1c' }, String(+v.toFixed(2))));
+        svg.appendChild(s('line', { x1: x0, y1: y0, x2: x1, y2: y1, stroke: THEME.ink, 'stroke-width': 2 }));
+        if (i % 2 === 0) svg.appendChild(s('text', { x: tx, y: ty + 5, 'text-anchor': 'middle', 'font-size': 13, fill: THEME.ink }, String(+v.toFixed(2))));
       }
       const [nx, ny] = P(val, 150);
-      svg.appendChild(s('line', { x1: 200, y1: 210, x2: nx, y2: ny, stroke: '#c0392b', 'stroke-width': 6, 'stroke-linecap': 'round' }));
-      svg.appendChild(s('circle', { cx: 200, cy: 210, r: 12, fill: '#1f2a1c' }));
+      svg.appendChild(s('line', { x1: 200, y1: 210, x2: nx, y2: ny, stroke: THEME.bad, 'stroke-width': 6, 'stroke-linecap': 'round' }));
+      svg.appendChild(s('circle', { cx: 200, cy: 210, r: 12, fill: THEME.ink }));
       const z = zones.find(z => val >= +z.from && val <= +z.to);
       readout.textContent = (+(+val).toFixed(decimals(stepv))) + ' ' + unit;
       zl.innerHTML = z ? rich(z.label || '') : '';
@@ -918,6 +925,11 @@
     if (document.fullscreenElement) document.exitFullscreen();
     else document.documentElement.requestFullscreen().catch(() => {});
   }
+  const menu = $('#menu'), menuBtn = $('#btn-menu');
+  function closeMenu() { menu.hidden = true; menuBtn.classList.remove('on'); }
+  menuBtn.addEventListener('click', e => { e.stopPropagation(); menu.hidden = !menu.hidden; menuBtn.classList.toggle('on', !menu.hidden); });
+  menu.addEventListener('click', e => { if (e.target.tagName === 'BUTTON') setTimeout(closeMenu, 0); });
+  stage.addEventListener('click', e => { if (!menu.hidden && !menu.contains(e.target) && e.target !== menuBtn) closeMenu(); });
   $('#btn-next').addEventListener('click', () => { if (mapPending) { mapPending(); return; } next(); });
   $('#btn-back').addEventListener('click', back);
   $('#btn-home').addEventListener('click', home);
@@ -944,9 +956,9 @@
   // the bar hides after a few seconds without the mouse, so the projected picture is clean
   let idleT = null;
   function wake() {
-    bar.classList.remove('idle');
+    bar.classList.remove('idle'); menuBtn.classList.remove('idle');
     clearTimeout(idleT);
-    idleT = setTimeout(() => { if (!bar.matches(':hover')) bar.classList.add('idle'); }, 3500);
+    idleT = setTimeout(() => { if (!bar.matches(':hover') && menu.hidden) { bar.classList.add('idle'); menuBtn.classList.add('idle'); } }, 3500);
   }
   stage.addEventListener('pointermove', wake);
   stage.addEventListener('pointerdown', wake);

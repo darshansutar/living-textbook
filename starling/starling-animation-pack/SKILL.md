@@ -1,0 +1,46 @@
+---
+name: starling-animation-pack
+description: Create source-bound animation prompts, submit approved labelled narration storyboards and dialogue scenes to EN2, review repairs and stitch accepted node videos.
+---
+
+# Starling Animation Pack
+
+**Owner:** Claude, for animation prompts, EN2 uploads and submission, collection and FFmpeg assembly. The user performs complete video review and lip-sync review. See [roles and handoff](../starling-production-master/SKILL.md#roles-and-handoff).
+
+Apply [buffered timing and visual review](../starling-animation-pack/references/timing-and-visual-review.md) for storyboard/prompt timing, per-output visual checks, bounded repair and the user-owned manual lip-sync check.
+
+Follow the [scene-matched reference selection](../starling-animation-pack/references/reference-bundle.md), including its failed-output repair exception.
+
+Check completed [intake](../pipeline/INTAKE.md). Read [visual routing](references/visual-routing.md), [scene preservation](references/scene-preservation.md) and [submission](references/en2-submission.md). Use [the handoff contract](../starling-prompt-pack/references/handoff-contract.md) for durable versions and IDs. Honor the requested endpoint; prompt-only work does not submit jobs.
+
+Follow [narration storyboard production](../starling-animation-pack/references/narration-pairs.md) for transcript-first timing, the fixed 1-3 shot board layout, exact caption fields, ordered assets, continuity, transport verification and the pilot gate.
+
+## Prepare from accepted inputs
+
+Dialogue camera is a hard lock: every spoken line uses a pixel-locked static tripod for its entire duration, with zero pan, tilt, zoom, push/pull, dolly, track, orbit, crane, handheld/stabilization drift, automatic recentering/reframing or focal-length change. Only facial/lip motion, blinking, breathing and restrained source-supported gestures may move. Any camera movement or reframing is a blocking failure even when identity and lip-sync are correct.
+
+Inspect the approved visuals and explicitly name the matching animation style in each prompt: 2D animation for flat drawn artwork, 2.5D animation for layered illustrated artwork with depth, or 3D animation for volumetric rendered artwork. Choose one based on the actual images; preserve their outlines, shading, materials and depth rather than converting their style. Put this in detailed_description. Style wording does not guarantee artifact-free motion.
+
+For narration with no supported subject movement, animate only a subtle slow zoom-in (about 3-5 percent) or a small planned pan within existing scene content. Define the move independently within its storyboard shot. Keep people, machinery, cargo and door/gate angles unchanged; never invent activity to fill time. Preserve time of day, sky, exposure, light sources and shadows throughout. Time transitions require explicit script support. Check the complete render for these constraints before acceptance.
+
+Inspect the accepted transcript, measured audio cues, every storyboard picture, all caption fields, relevant assets and accepted audio before writing motion. Analyze what each picture actually implies, then describe its visible cast, positions, posture/gaze, objects and support/orientation, background, single defining action, camera and exact timing. Every narration clip requires an approved the fixed-format board built by `pipeline/storyboard.py` (1024 wide, one 1024 x 464 picture per shot above an identical ivory caption strip; 1, 2 or 3 shots chosen from the narration length, see [auto-edit rules](../starling-auto-edit/references/rules.md) B1) that passes `storyboard.py verify`. Save a per-shot visible inventory and ordered reference map; compare the prompt with the actual images and labels to record shot_inventory_match. Describe one edge-to-edge colour scene at a time, use affirmative target instructions, and keep accepted narration outside EN2.
+
+Preserve original references and upload them at full resolution; never upload a downscaled, re-compressed or "upload-safe" copy. Run `python pipeline/storyboard.py check-image` on every file before upload. Record file IDs or fetchable URLs, local hashes and returned upload names; decode-check every file, verify provider-returned bytes or hash when available, and visually compare the returned upload before paid submission. Stop on corruption, cropping, gray output, incompleteness or any visual mismatch. New production uses approved scene/storyboard references rather than extracted video frames.
+
+Save exact prompt/payload, source hashes, refs and audio mappings, picture-area boxes, printed generated timing, per-shot required duration and 1–2 second buffer, shot_count, generated cut_times, assembly cut times, duration/used duration, source_spans and review evidence. Inspect returned uploaded bytes as well as local originals before render acceptance. Use EN2 reference mode for narration and dialogue, both Ultra quality=true.
+
+## Submit collect verify repair
+
+Compare every narration shot to its corresponding storyboard panel as the full composition authority, including the final shot. Appearance sheets provide identity/material only and must never become rendered scenes. Reject sheet, turnaround, neutral-background group or prop-plate leakage, missing environments, wrong shot order and final-panel substitution.
+
+Render and fully review one representative narration pilot before releasing a paid batch. After the pilot passes, submit the remaining preflight-approved clips once in an ordered pass respecting provider capacity. Record intents before tool calls and actual job IDs immediately afterward. Reconcile uncertain outcomes and existing jobs before retrying. Collect completed outputs and account for pending/failed jobs. Immediately add each downloaded output to the user's review list through Verification, with its storyboard, prompt, expected action and timing; the user performs the complete picture and sound review and Claude records the verdict. Technical decode and sampled sheets do not certify quality.
+
+Apply the general spatial checks throughout motion, plus action fidelity, shot order/cut timing, silent narration visuals and complete dialogue speech. The user checks lip-sync separately; pending manual sync does not trigger visual regeneration. If the initial animation fails the user's visual review, redesign that scene once to convey the same script beat with simpler, different staging or composition. Preserve source meaning, branch outcome, approved style, character identity and accepted audio timing. Generate and inspect a fresh labelled narration storyboard or a clean dialogue scene, rebuild the prompt from those actual images, and submit one replacement animation. Re-review it completely. If it also fails, stop and report needs_fix; unavailable review stays unverified. Keep the original clip ID and attempt history so new scene versions cannot reset the limit. Preserve all original outputs and paid IDs. See [scene preservation](references/scene-preservation.md). FFmpeg does not replace failed animation with stills or zoom effects.
+
+## Stitch and deliver
+
+Read [postproduction](../pipeline/POSTPRODUCTION.md). Reconcile the complete current manifest and assembly timeline, including dialogue, with explicit runtime_clip_id mappings. Only verified EN2 outputs can be selected. Trim/normalize and stitch by canonical node order; preserve original speech speed, words, pauses and measured joins. For narration, filler, establishing and ending intervals, discard rendered sound and use the accepted external narration units from their beginnings. For dialogue and conversation intervals, keep the audio embedded in the selected video and trim picture and sound together; this is the lip-synced dialogue source and must not be replaced by the standalone dialogue file. Measure the selected video's usable picture/audio duration and retain the complete final utterance. When that duration exceeds the earlier standalone-audio interval, extend the node timeline and move any following clip instead of cutting the dialogue. Reject a dialogue selection whose embedded audio is absent or ends before its picture. Additional source offsets or sound mixing need an explicit supported plan.
+
+Keep mutually exclusive outcomes separate. Review each final node's full picture/sound, all words, dialogue sync, cuts and joins. Record acceptance in runtime and postproduction, then package reviewed nodes with script/choices, plan and provenance. Report every blocked/unverified item and actual monitoring status. A completed provider job is not an approved video.
+
+Before stitching narration, filler, establishing or ending clips, remove the complete generated audio track, including background voices, and discard subtitle/text streams. Use only the accepted external narration for those intervals. Inspect the full picture for unwanted captions, labels and overlays. Burned-in text is part of the pixels: correct/regenerate the affected scene and re-review it before assembly; dropping a subtitle track does not erase it. Preserve source-required real-world signage. Dialogue retains its verified embedded speech and lip-sync.

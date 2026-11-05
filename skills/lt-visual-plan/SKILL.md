@@ -1,53 +1,46 @@
 ---
 name: lt-visual-plan
-description: Build the Living Textbook timing table (plan.json) - every video screen of the episode split into EN2 clips, each a 1x2 or 1x3 storyboard with measured required intervals, buffered generated ranges, camera, action, exact visible inventory and player overlays - for story, explanation, silent wonder and activity shots across Science, Social Science and Maths.
+description: Build the Living Textbook timing table (plan.json) following the Starling prompt-pack, director and cinematography skills - every video screen split into EN2 clips, each a fixed-format 1-3 shot narration storyboard with measured required intervals, buffered generated ranges, camera, one defining action, exact visible inventory and player overlays.
 ---
 
 # Living Textbook - Visual Plan
 
-Input: `script.json` (approved episode), `audio/narration.json` (accepted), `episodes.json` (story world, cast), intake style. Output: `plan.json` (see `templates/plan.example.json`). This one table drives board captions, animation prompts, render length and the edit.
+Follow these Starling skills:
+- `starling/starling-prompt-pack`;
+- `starling/starling-director`;
+- `starling/starling-cinematography` (with `references/spatial-fidelity.md`);
+- `starling/starling-animation-pack/references/narration-pairs.md`.
 
-## Which screens need video
+The Living Textbook differences are in `starling/README.md`.
 
-Only `video` screens (roles opener, hook, wonder, explain, solve, investigate, consequence, cliffhanger, payoff) become EN2 clips. `still`, `vote`, `reveal`, `mcq`, `fact`, `recap`, `question_cards`, `activity` and `title` screens use stills (lt-stills).
+- **Input:** `script.json`, `audio/narration.json` (accepted and measured), and `episodes.json` (story world and cast).
+- **Output:** `plan.json`, the one timing table behind the board captions, image requests, animation prompts, render lengths and the edit.
 
-A video screen becomes **one or more clips** played back to back as one screen file (lt-assembly). Record `screen` on every clip, and `narration` (the narration.json key, e.g. `e1_c2_s5_n1`) with its `audio_interval` on every narrated clip; silent wonder clips have no `narration`. A consequence clip for a vote option is the video screen `<vote-id>.opt<k>`.
+## Clips
 
-## Clip and shot rules (Starling storyboard method)
+- Only `video` screens become EN2 clips. `title`, `vote`, `mcq` and `still` screens use stills (lt-stills).
+- A video screen is one or more clips played back to back as one screen file. Every clip records `screen`, `narration` (the narration.json key) and `audio_interval`.
+- A clip carries one narration file of at most about 12 s. To give two short consecutive lines of the same screen one clip, join them first: `python pipeline/join_narration.py --project projects/<slug> --group a,b`.
+- **The shot count follows the narration** (Starling rule B1): under 4 s gives one shot, 4-8 s two, 8-15 s three. Every shot covers at least 2 s of narration, and splits fall on line joins or measured pauses.
+- `render_seconds` is 4-15 s, within the range for the board's shot count.
 
-- Every clip is a labelled black-and-white **1x2 or 1x3** storyboard; choose 2 or 3 shots by meaning: each shot carries a distinct beat.
-- Narrated clips: each shot gets the narration interval it covers (`required`, measured cues) plus a **1-2 s buffer**; whole-second `generated`, `action`, `hold` ranges; `cut_times` = generated starts of shots 2..n. Plan about 11 s of narration per clip or less.
-- **Silent wonder clips** have no narration: choose the length (10-15 s) and give each shot a required interval long enough to look (>= 4 s).
-- `render_seconds` = end of the last generated range, 4-15 s.
-- `camera`: one move with direction, extent and speed. `action_text`: start state, visible motion, settled state.
-- `visible`: exact inventory per shot.
+Each shot records:
 
-## Shot types
+| Field | Content |
+|---|---|
+| `required` | its narration interval, on the narration clock |
+| `generated` | whole seconds, including a 1-2 s buffer |
+| `action`, `hold` | the action and settle ranges |
+| `camera` | one move or static; quiet shots get a 3-5 % push-in |
+| `action_text` | one defining action, short enough for one caption line |
+| description | the full shot description |
+| `characters`, `props` | who and what is visible |
+| `people` | cast, hands or none |
 
-| Type | Use | Subjects |
-|---|---|---|
-| Establishing | the story-world place (nursery, harbour, school ground) | all |
-| Character action | the main child doing, noticing, reacting (no speaking, mouth closed or neutral) | all |
-| Experiment / activity close-up | NCERT set-up doing its thing; layout from the book's figure | Science, Social (instruments) |
-| Macro / cutaway / cross-section | small or hidden structures (stomata, xylem, inside soil) | Science |
-| Process close-up | particles or quantities changing (CO2 + water -> glucose) | Science |
-| Instrument / measurement | gauge, ruler, tape, stopwatch, barometer close-up; **reading drawn by overlay** | Social, Maths |
-| Map / landscape | region, coast, monsoon winds - plain, label-free | Social |
-| Diagram build | a clean label-free diagram whose parts appear in order (place-value columns, plant transport paths) | Maths, Science |
-| Wide return | back to the set after an insert | all |
+## Staging rules (Director, Cinematography)
 
-Keep recurring designs identical across shots (CO2 = dark sphere between two red spheres; water = blue drop; glucose = white hexagon; the same ruler and tape design).
-
-## Overlays (exact text and numbers)
-
-Generated pictures contain **no text, digits or labels**. Where the narration needs them on screen (3.45 m, 996 mb, CO2 + water -> glucose + oxygen, labels on a diagram), add `overlays[]` to the shot: `text`, `at` and `until` (seconds on the same clock as the shot's `required` interval: the narration file's time for narrated clips, clip time for silent clips - build_chapter.py converts them to screen time), `anchor` (top / bottom / left / right / centre or x,y %), `style` (number, label, equation). Plan an empty, calm area in the shot where the overlay goes and describe it in the shot (e.g. "the tape's reading window is blank and centred").
-
-## Cast and continuity
-
-- Characters only from `episodes.json`, drawn from their approved character sheets. They never speak: describe gestures, gaze, reactions; mouths closed or neutral.
-- One approved scene master per location fixes camera side, layout (left/right of every object) and light direction; every later shot keeps it. Record layouts in `plan.json.locations`.
-- Regional accuracy: clothing, houses, crops, tools, vehicles and weather of the chosen region.
-
-## Hand-off check
-
-Every video screen is covered; narrated required intervals tile each line with no gaps; generated ranges are whole seconds; 2-3 shots per clip; renders 4-15 s; inventories contain only planned subjects; every on-screen number or label is an overlay, never a picture detail.
+- **Board order:** establish, then develop, then resolve. Each shot has one distinct defining action that is possible from the pictured pose.
+- **Classify each action** as stable acting, simple movement or complex interaction, and use the simplest staging that tells the beat. Show a complex interaction (handoffs, lifting and carrying, objects changing owner) by its preparation or its result unless it is essential.
+- **No character talks.** Everyone has a silent action. Close shots of people are side, back or over-the-shoulder views, or show only hands and objects. Classroom demonstrations show the teacher alone.
+- **One clean scene master per location** fixes the camera side, layout and light. Objects keep their size and state across shots.
+- **No text, digits or labels in pictures.** On-screen numbers and labels are `overlays[]` on the shot (text, at/until on the narration clock, anchor, style). Plan a calm, empty area where each overlay sits.

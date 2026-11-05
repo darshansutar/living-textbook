@@ -5,6 +5,10 @@ description: Make every still image the Living Textbook player shows - chapter c
 
 # Living Textbook - Stills
 
+## Starling skills (adopted 2026-11-05)
+
+Review every still with `starling/starling-panel-corrector`: identity, anatomy, hands, props, scale, contact and the exact visible inventory the screen needs. A vote or quiz picture shows exactly what its option or question says and nothing that gives the answer away. Pictures are 16:9 so the player shows them whole.
+
 The player shows many screens that are not video. Their pictures are made here; the player overlays all text, so **no still contains text, letters, digits or labels**.
 
 ## What to make (from script.json, one episode at a time)

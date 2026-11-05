@@ -1,27 +1,31 @@
 ---
 name: living-textbook-master
-description: Coordinate a Living Textbook chapter production end to end - an NCERT chapter PDF becomes a classroom-projected, narrated, episode-based interactive lesson (Story / Challenge / Wonder flows) rooted in rural Indian examples, built with Codex images, ElevenLabs narration, EN2 Ultra animation and one generic HTML player.
+description: Coordinate a Living Textbook chapter production end to end - an NCERT chapter PDF becomes a classroom-projected, narrated, episode-based interactive lesson rooted in rural Indian examples, built with Codex images, ElevenLabs narration, EN2 Ultra animation and one generic HTML player.
 ---
 
 # Living Textbook - Production Master
 
+## Starling skills (adopted 2026-11-05)
+
+**Starling skills.** The production stages follow the Starling skills copied in `starling/` (see `starling/README.md` for the mapping and the Living Textbook differences): production-master, prompt-pack, director, cinematography, image-pack-generator, panel-corrector, animation-pack and the board compositor `starling/pipeline/storyboard.py`.
+
 Living Textbook turns **one NCERT chapter (any subject, Classes 5-10)** into an interactive lesson that a **teacher projects to the whole class**. The class votes by show of hands; the teacher taps the majority answer. Everything is **narration-led** (one narrator voice; characters appear but never speak), **rooted in rural Indian life** (Karnataka, Maharashtra, Gujarat first) and **faithful to the NCERT text**: the same concepts, activities and end questions, in the same order.
 
-The design is explained for people in `docs/Living_Textbook_Flow_Report.pdf`. This skill is the operating contract.
+This skill is the operating contract.
 
 ## The lesson model (fixed)
 
 ```
-CHAPTER = OPENER (once) -> EPISODE 1 ... EPISODE n -> FINALE
-EPISODE = RECAP -> 1-2 CONCEPT LOOPS -> CLIFFHANGER        (one class period, 10-15 min of screen time)
-CONCEPT LOOP = one of three flows
-   Story     : story video -> vote -> explain -> reveal -> MCQ
-   Challenge : challenge video -> vote (try) -> stuck -> learn -> solve -> new-challenge MCQ
-   Wonder    : silent wonder -> question cards -> investigate (activity) -> vote -> explain -> apply MCQ
-   Mini loop : hook still -> explain -> MCQ          (small concepts)
-   Fact card : "Did you know?" between loops        (NCERT fact boxes)
-FINALE  = story payoff -> practice activities (do-along / mission) -> chapter MCQ round -> score
+CHAPTER = EPISODE 1 ... EPISODE n                     (book order; one class period each, 8-15 min of screen time)
+EPISODE = TITLE (narrated welcome) -> 1-2 TOPIC LOOPS -> RECAP + NEXT TIME (narrated still)
+TOPIC LOOP (the simple loop, the same every time):
+   1. story video   - narrated story moment that raises the topic's question
+   2. vote          - question read aloud; the teacher taps the class's choice; right answer + reveal line on the same screen
+   3. answer video  - the NCERT concept, its activity or figure shown as evidence, tied back to the story
+   4. check         - one MCQ in a new situation, question read aloud, feedback per option
 ```
+
+Every screen is narrated. The class sees only Back and Next; teacher tools (captions, map, full screen, notes, home) sit in one Menu. NCERT activities are shown inside the videos (demonstrations by the teacher, slow experiments as time-lapse).
 
 Exact screen sequences: `skills/lt-script/flows.md`. Screen types and the content file: `skills/lt-package/chapter-schema.md`.
 
@@ -34,11 +38,10 @@ Exact screen sequences: `skills/lt-script/flows.md`. Screen types and the conten
 | 3 | Episode plan | lt-episode-plan | `episodes.json`: episodes, flow per concept, story world and cast, activity modes |
 | ✓ | **Checkpoint** | lt-episode-plan | the user approves `episodes.json` (recorded) - nothing is produced before this |
 | 4 | Script | lt-script | `script.json`: every screen of every episode, every narration line, vote options, MCQs |
-| 5 | Activities | lt-activities | activity screens specified in `script.json` (do-along steps, simulator config, missions) |
 | 6 | Narration audio | lt-audio | ask the voice; `audio/*.mp3` + `audio/narration.json` measured and listened to |
 | 7 | Visual plan | lt-visual-plan | `plan.json` timing table for every video screen |
-| 8 | Assets + storyboards | lt-images | character sheets, scene masters, prop sheets, labelled boards, inspected |
-| 9 | Stills | lt-stills | every still the player shows: covers, vote cards, MCQ images, fact cards, activity pictures |
+| 8 | Assets + storyboards | lt-images | character sheets, clean scene masters, prop sheets, one picture per shot, fixed-format boards (storyboard.py), inspected |
+| 9 | Stills | lt-stills | every still the player shows: cover, title, vote option pictures, check scenes, recap |
 | 10 | Animation | lt-animation | EN2 prompts, hash-checked uploads, Ultra renders, job IDs |
 | 11 | Review | lt-review | cuts measured, every clip inspected, re-time before one repair |
 | 12 | Edit | lt-assembly | one narrated video file per video screen |

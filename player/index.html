@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0c0a08">
 <title>Living Textbook</title>
 <link rel="stylesheet" href="player.css">
 </head>
@@ -14,16 +15,20 @@
     <div id="captions" hidden></div>
     <div id="progress"></div>
     <div id="teacher-panel" hidden></div>
+    <!-- the class sees only Back and Next; teacher tools live in one small Menu -->
+    <button id="btn-menu" class="menu-chip" title="Teacher menu">Menu</button>
+    <div id="menu" hidden>
+      <button id="btn-home" title="Chapter home (H)">Chapter home</button>
+      <button id="btn-replay" title="Replay narration (R)">Replay narration</button>
+      <button id="btn-cc" title="Captions (C)">Captions</button>
+      <button id="btn-map" title="Chapter map (M)">Chapter map</button>
+      <button id="btn-teacher" title="Teacher notes (T)">Teacher notes</button>
+      <button id="btn-full" title="Full screen (F)">Full screen</button>
+    </div>
     <div id="bar">
-      <button id="btn-home" title="Chapter home (H)">&#8962;</button>
-      <button id="btn-back" title="Back (Left arrow)">&#9664; Back</button>
-      <button id="btn-replay" title="Replay narration (R)">&#8635;</button>
+      <button id="btn-back" title="Back (Left arrow)">&lsaquo; Back</button>
       <span class="spacer"></span>
-      <button id="btn-map" title="Chapter map (M)">Map</button>
-      <button id="btn-cc" title="Captions (C)">CC</button>
-      <button id="btn-teacher" title="Teacher view (T)">Teacher</button>
-      <button id="btn-full" title="Full screen (F)">&#x26F6;</button>
-      <button id="btn-next" class="primary" title="Next (Right arrow / Space)">Next &#9654;</button>
+      <button id="btn-next" class="primary" title="Next (Right arrow / Space)">Next &rsaquo;</button>
     </div>
   </div>
 </div>

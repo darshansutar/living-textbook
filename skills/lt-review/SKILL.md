@@ -5,6 +5,10 @@ description: Review every Living Textbook EN2 render - detect real cut times, re
 
 # Living Textbook - Review and Repair
 
+## Starling skills (adopted 2026-11-05)
+
+Review with `starling/starling-director`, `starling/starling-cinematography` (`spatial-fidelity.md`) and `starling/starling-animation-pack/references/timing-and-visual-review.md`. A contact sheet can find a defect but cannot pass a clip; inspect the motion, especially hands, held objects and anything a camera move reveals. Allow one scene redesign per clip, then stop for the user.
+
 ## 1. Technical pass
 
 ```

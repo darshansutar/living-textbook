@@ -1,9 +1,9 @@
 # Living Textbook workspace
 
-For production requests read `skills/living-textbook-master/SKILL.md`, then the owning stage skill in `skills/`. `docs/WORKFLOW.md` summarises the flow; `docs/Living_Textbook_Flow_Report.pdf` explains the design for people.
+For production requests read `skills/living-textbook-master/SKILL.md`, then the owning stage skill in `skills/`. Visual planning, images, panel review and animation follow the Starling skills copied in `starling/` (mapping and Living Textbook differences: `starling/README.md`). `docs/WORKFLOW.md` summarises the flow.
 
 - Input is an NCERT chapter PDF (any subject, Classes 5-10). Run intake (chapter, class/subject, region, style) before anything else; ask the narrator voice at the audio stage.
-- Analyse the whole chapter, plan episodes and flows (Story / Challenge / Wonder), and **stop for the user's approval of `episodes.json`** before scripting or generating anything.
+- Analyse the whole chapter, plan episodes as simple topic loops (story video, vote, answer video, check; every screen narrated), and **stop for the user's approval of `episodes.json`** before scripting or generating anything.
 - NCERT first: every concept, activity and end question is covered in book order; facts never exceed or contradict the chapter.
 - Rooted in rural India: hooks, names, places, crops, food and objects from the chosen region.
 - The episode plan decides the cast. Characters are original, regionally accurate and **never speak**; a style reference supplies look only.
