@@ -75,5 +75,5 @@ A translated package overrides `settings.ui.loops` with all three lists: `{"stor
 A `vote` with `predict: true` comes right before a lab. The class's pick is marked in gold ("Class chose"), no option is marked right or wrong, and every option's reveal line is the same neutral bridge into the lab ("Let us test it..."). The lab and the answer video resolve it.
 
 Nothing on screen may give away the answer before the lab or the answer video:
-- the topic card and rail show the topic's vote **question** until the topic's `lab` or `explain` screen, then the topic title (titles state the answer);
+- the topic card and rail show the topic's vote **question** until the topic's answer video (`explain`); a lab keeps the question, because it still asks the class to predict, then the topic title (titles state the answer);
 - the bridge line names no part of the answer (not "let us test a leaf").

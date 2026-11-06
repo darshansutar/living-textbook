@@ -98,7 +98,7 @@ All of these are required (user feedback, 2026-11-06):
 ## The embed contract (inside a lesson)
 
 - The player opens `labs/<id>/index.html?embed=1`.
-- In embed mode the lab skips its own title and starts at step 1. Its step bar and guide card sit below the lesson's rail (`top: calc(5.2vw + .8rem)`), and the status pill sits above the lesson's Back button.
+- In embed mode the lab opens on its intro (title, one-line aim, Start button, bench without labels) and posts `{ lt: 'lab-intro' }`. The lesson's Next is enabled and sends `{ lt: 'lab-start' }`; the lab's own Start does the same. Once it starts, the lab posts `{ lt: 'lab-started' }` and the lesson's Next locks. It never starts by itself (user feedback, 2026-11-06). Its step bar and guide card sit below the lesson's rail (`top: calc(5.2vw + .8rem)`), and the status pill sits above the lesson's Back button.
 - When the class finishes, the lab sends `window.parent.postMessage({ lt: 'lab-done', lab: '<id>' }, '*')`. The player then unlocks and pulses Next.
 - At the end, the lab's own button reads **Continue** in embed mode and posts `{ lt: 'lab-next' }`; the player moves the lesson on. It never restarts the lab inside a lesson (user feedback, 2026-11-06). On its own the button reads "Do it again".
 - The lab also works on its own (no `embed`), for teachers and for testing.

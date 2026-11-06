@@ -44,6 +44,8 @@ Each lab replaces the longest demonstration scenes of an Answer video, so a topi
    - a hand cursor on hover;
    - a pointing hand after 6 idle seconds, after a wrong tap or on Show me.
 4. **Every step's text is also narrated,** with no silent screens.
+5. **Inside a lesson the lab waits on its intro** until the teacher presses Next or Start.
+6. **A prediction never states the rule it tests,** and nothing on screen (topic heading, bridge line) gives the answer before the reveal.
 
 ## Effort and cost (first lab)
 

@@ -234,9 +234,10 @@
     S.ep.screens.forEach(s => { if (s.concept && ids.indexOf(s.concept) < 0) ids.push(s.concept); });
     const c = (S.ch.concepts || []).find(x => x.id === sc.concept);
     if (!c) return null;
-    // the topic title states the answer, so until the answer (lab or explain) the card shows the topic's question
+    // the topic title states the answer, so until the answer video the card shows the topic's question
+    // (a lab still asks the class to predict, so it keeps the question too)
     const scr = S.ep.screens, here = scr.indexOf(sc);
-    const reveal = scr.findIndex(s => s.concept === sc.concept && (s.type === 'lab' || s.role === 'explain'));
+    const reveal = scr.findIndex(s => s.concept === sc.concept && s.role === 'explain');
     const vote = scr.find(s => s.concept === sc.concept && s.type === 'vote' && s.question);
     const title = (vote && reveal >= 0 && here < reveal) ? vote.question.replace(/[*_]/g, '') : c.title;
     return { n: ids.indexOf(sc.concept) + 1, title };
@@ -436,14 +437,22 @@
     screenEl.appendChild(f);
     setNext(false, false);
     setReplay(null);
+    // the lab opens on its intro; the lesson's Next (or the lab's Start button) starts it,
+    // then Next stays locked until the lab reports it is finished
+    let phase = 'loading';
     const onMsg = e => {
       if (e.source !== f.contentWindow || !e.data) return;
-      if (e.data.lt === 'lab-done') setNext(true, true);
+      if (e.data.lt === 'lab-intro') { phase = 'intro'; setNext(true, true); }
+      if (e.data.lt === 'lab-started') { phase = 'running'; setNext(false, false); }
+      if (e.data.lt === 'lab-done') { phase = 'done'; setNext(true, true); }
       if (e.data.lt === 'lab-next') next();   // the lab's own Continue button moves the lesson on
     };
     window.addEventListener('message', onMsg);
     onCleanup(() => window.removeEventListener('message', onMsg));
-    return {};
+    return { next: () => {
+      if (phase === 'intro') { f.contentWindow.postMessage({ lt: 'lab-start' }, '*'); return true; }
+      return phase !== 'done';   // never skip a lab that is still running
+    } };
   };
 
   function choiceGrid(options, cls) {

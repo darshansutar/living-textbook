@@ -577,7 +577,16 @@
 
   // ---------------------------------------------------------------- start
   resize(); view('all', true); setStatus('#3f9a3a', 'Leaf: green'); tick();
-  $('#start').onclick = () => { document.body.dataset.screen = 'lab'; $('#title').classList.remove('on'); showStep(0); };
-  if (EMBED) $('#start').onclick();
+  let started = false;
+  $('#start').onclick = () => {
+    if (started) return; started = true;
+    document.body.dataset.screen = 'lab'; $('#title').classList.remove('on'); showStep(0);
+    if (EMBED && window.parent !== window) window.parent.postMessage({ lt: 'lab-started', lab: 'iodine-test' }, '*');
+  };
+  // inside a lesson the lab also opens on its intro; the lesson's Next (lab-start) or Start begins it
+  if (EMBED && window.parent !== window) {
+    window.addEventListener('message', e => { if (e.source === window.parent && e.data && e.data.lt === 'lab-start') $('#start').onclick(); });
+    window.parent.postMessage({ lt: 'lab-intro', lab: 'iodine-test' }, '*');
+  }
   window.LAB = { S, STEPS, FX, tapped, showStep, objects, setTarget };   // for testing
 })();

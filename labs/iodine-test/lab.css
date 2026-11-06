@@ -103,5 +103,10 @@ body[data-screen="title"] #hud, body[data-screen="title"] #card, body[data-scree
 /* embedded in a lesson: clear the lesson's step rail (top) and its Back / Next buttons (bottom) */
 body.embed #hud, body.embed #card { top: calc(5.2vw + .8rem); }
 body.embed #status { bottom: calc(6vw + .6rem); }
+body.embed .title-block { bottom: calc(6vw + 2rem); }
+body.embed .title-block h1 { font-size: 3.4rem; }
 /* Hear again */
 #hear { margin-left: .5rem; vertical-align: middle; color: var(--primary); opacity: .85; } #hear:hover { opacity: 1; } body:not(.voiced) #hear { display: none; }
+
+/* the intro shows the bench without its labels, so the title stays readable */
+body:not([data-screen=lab]) .chip { opacity: 0; }
