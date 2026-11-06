@@ -20,7 +20,7 @@ A chapter with several episodes also has a chapter home: the chapter title and o
 |---|---|---|---|---|---|
 | 1 | `e1.c1.story` | `video` role `hook` | **Story** - a character meets something they cannot explain or decide. Ends on the question. | **Challenge** - a real job the main child must do *now* (pick the heavier bag, share the money, read the rain gauge). Ends on "How should she decide?" | **Wonder** - a surprising real sight, **narrated** (never silent), held long enough to look. Ends on "Why...?" |
 | 2 | `e1.c1.vote` | `vote` | **Vote** - predict the answer | **Try** - the class tries it with what they already know. The reveal lines name the disagreement ("Many of you said 0.45 - but look at the tenths place..."); this replaces the old "Stuck" screen. | **Guess** - the class guesses why it happened or what the test will show (the observation vote) |
-| 3 | `e1.c1.explain` | `video` role `explain` | **Answer** - the NCERT concept in the book's terms, with its figure or evidence, tied back to the story | **Learn** - the concept arrives as the missing tool, then **the same video returns to the challenge and solves it** (this replaces the old separate "Solve" video) | **Find out** - the NCERT activity shown as the investigation (teacher demo or time-lapse), then the explanation of the surprise |
+| 3 | `e1.c1.explain` | `video` role `explain` | **Answer** - the NCERT concept in the book's terms, with its figure or evidence, tied back to the story | **Learn** - the concept arrives as the missing tool, then **the same video returns to the challenge and solves it** (this replaces the old separate "Solve" video) | **Find out** - the NCERT activity as a **lab** the class does on the projector, then a short Answer video with the concept only (a time-lapse video only when a lab cannot show it) |
 | 4 | `e1.c1.check` | `mcq` | **Check** - same idea, new situation | **New challenge** - the same tool on a new problem; numbers and working come from the player (option text, overlays), never from the picture | **Check** - the same idea near the child's home |
 
 **Labs.** When the topic has an NCERT activity, or a Maths tool to learn, add a `lab` screen (`e1.c1.lab`) between the vote and the explain video (`skills/lt-lab`). The class does the activity on the projector. The explain video then covers the concept only, and its demonstration scenes are dropped. In the Challenge flow the lab is the Learn step itself and ends by solving the challenge, so Maths topics need no explain video and no storyboard animation; their hook can be a narrated still. The rail names the lab step after the flow (Find out / Learn).
@@ -59,7 +59,9 @@ A fact box becomes one line of an answer video, or it moves to a later episode. 
 
 ## Content rules
 
-- NCERT activities appear inside step 1 or step 3 videos: teacher demonstrations show the teacher alone in a medium shot, and slow experiments run as time-lapse.
+- **NCERT activities become labs** (`skills/lt-lab`), placed after the vote. Videos never stage them. A video shows an activity only when a lab cannot, such as a slow change in nature, and then as a time-lapse (a teacher demonstration shows the teacher alone in a medium shot).
+- **No set-up scenes.** Cut any scene that exists only to reach a test or a fact, such as first aid on a knee or a kitchen accident before the iodine test (user feedback, 2026-11-06). A Wonder hook is one surprising sight and the question, about 15 s. Verified footage from earlier clips may be reused for it.
+- **Keep the chapter's heritage facts.** Fact boxes such as Vrikshayurveda (Science Ch10, p.140) go at the end of the topic's Answer video. Do not move them to "a later episode".
 - Vote pictures show the set-up, never the result. Option pictures are 16:9 and match the option text exactly (the player shows them whole). In Maths, a vote can be text-only options (numbers drawn by the player) with the scene in the step 1 video.
 - 2-4 options, each 6 words or fewer, with one right option. Every other option is a misconception from `analysis.json`, never a joke. The player labels options A-D, so the narration may say "Hands up for A".
 - **Reveal line per option:**
@@ -67,5 +69,12 @@ A fact box becomes one line of an answer video, or it moves to a later episode. 
   - Wrong option: name the belief kindly, then give the evidence ("Many people think water is enough. But..."). Never say "Wrong!".
   - The right option's reveal line may bridge into step 3 ("Let us see why.").
 - **Feedback line per check option**, in the same style.
+- **Prediction votes (`predict: true`)** come before a lab. The class picks and the pick is marked, but there is no right or wrong. Every option's reveal line is the same neutral bridge ("Let us test it. Iodine finds starch, a kind of food.").
+- **Nothing gives the answer before the reveal:**
+  - the bridge line names no part of the answer (not "...test a leaf");
+  - a lab's predict step never states the rule it tests (not "where there is starch, iodine turns blue-black");
+  - the right option is not always A;
+  - the topic heading shows the question until the Answer video (the player does this).
+  (User feedback, 2026-11-06.)
 - No text, letters or digits in pictures or videos; the player draws them.
 - The chapter map is never shown automatically; the teacher opens it from the Menu.
