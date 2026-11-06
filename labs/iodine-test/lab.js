@@ -498,9 +498,11 @@
     card.say.textContent = 'The leaf turned blue-black with iodine. So the leaf has starch. Plants make their food in the leaves and store it as starch.';
     say('end');
     card.hint.hidden = true; card.choices.hidden = true; feedback('', '');
-    card.next.hidden = false; card.next.firstChild.textContent = 'Do it again ';
-    if (EMBED && window.parent !== window) window.parent.postMessage({ lt: 'lab-done', lab: 'iodine-test' }, '*');
-    card.next.onclick = () => location.reload();
+    const inLesson = EMBED && window.parent !== window;
+    card.next.hidden = false; card.next.firstChild.textContent = inLesson ? 'Continue ' : 'Do it again ';
+    if (inLesson) window.parent.postMessage({ lt: 'lab-done', lab: 'iodine-test' }, '*');
+    // inside a lesson the button moves the lesson on; on its own the lab starts over
+    card.next.onclick = inLesson ? () => window.parent.postMessage({ lt: 'lab-next', lab: 'iodine-test' }, '*') : () => location.reload();
     view('plate');
   }
 

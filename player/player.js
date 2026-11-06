@@ -233,7 +233,13 @@
     const ids = [];
     S.ep.screens.forEach(s => { if (s.concept && ids.indexOf(s.concept) < 0) ids.push(s.concept); });
     const c = (S.ch.concepts || []).find(x => x.id === sc.concept);
-    return c ? { n: ids.indexOf(sc.concept) + 1, title: c.title } : null;
+    if (!c) return null;
+    // the topic title states the answer, so until the answer (lab or explain) the card shows the topic's question
+    const scr = S.ep.screens, here = scr.indexOf(sc);
+    const reveal = scr.findIndex(s => s.concept === sc.concept && (s.type === 'lab' || s.role === 'explain'));
+    const vote = scr.find(s => s.concept === sc.concept && s.type === 'vote' && s.question);
+    const title = (vote && reveal >= 0 && here < reveal) ? vote.question.replace(/[*_]/g, '') : c.title;
+    return { n: ids.indexOf(sc.concept) + 1, title };
   }
   // a screen's flow: its own, else that of its topic's other screens, else the episode's first topic
   function flowOf(sc) {
@@ -430,7 +436,11 @@
     screenEl.appendChild(f);
     setNext(false, false);
     setReplay(null);
-    const onMsg = e => { if (e.source === f.contentWindow && e.data && e.data.lt === 'lab-done') setNext(true, true); };
+    const onMsg = e => {
+      if (e.source !== f.contentWindow || !e.data) return;
+      if (e.data.lt === 'lab-done') setNext(true, true);
+      if (e.data.lt === 'lab-next') next();   // the lab's own Continue button moves the lesson on
+    };
     window.addEventListener('message', onMsg);
     onCleanup(() => window.removeEventListener('message', onMsg));
     return {};

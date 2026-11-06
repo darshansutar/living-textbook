@@ -100,6 +100,7 @@ All of these are required (user feedback, 2026-11-06):
 - The player opens `labs/<id>/index.html?embed=1`.
 - In embed mode the lab skips its own title and starts at step 1. Its step bar and guide card sit below the lesson's rail (`top: calc(5.2vw + .8rem)`), and the status pill sits above the lesson's Back button.
 - When the class finishes, the lab sends `window.parent.postMessage({ lt: 'lab-done', lab: '<id>' }, '*')`. The player then unlocks and pulses Next.
+- At the end, the lab's own button reads **Continue** in embed mode and posts `{ lt: 'lab-next' }`; the player moves the lesson on. It never restarts the lab inside a lesson (user feedback, 2026-11-06). On its own the button reads "Do it again".
 - The lab also works on its own (no `embed`), for teachers and for testing.
 
 ## Test it (before showing the user)
