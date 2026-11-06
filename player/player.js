@@ -224,6 +224,7 @@
     if (sc.type === 'vote' || sc.type === 'question_cards') return 1;
     if (sc.type === 'reveal') return 2;
     if (sc.type === 'mcq') return 3;
+    if (sc.type === 'lab') return 2;
     return -1;
   }
   // topics are numbered within the episode (the chapter's concept list also holds fact boxes and later topics)
@@ -417,6 +418,20 @@
     };
     go();
     setReplay(go);
+  };
+
+  // an interactive lab (skills/lt-lab): the lab page runs full screen in a frame and has its own step card;
+  // the lesson's Next unlocks (and pulses) when the lab reports that the class finished it
+  RENDER.lab = sc => {
+    const src = sc.src + (sc.src.indexOf('?') < 0 ? '?' : '&') + 'embed=1';
+    const f = h('iframe', { class: 'full lab-frame', src, title: sc.title || 'Lab', allow: 'autoplay' });
+    screenEl.appendChild(f);
+    setNext(false, false);
+    setReplay(null);
+    const onMsg = e => { if (e.source === f.contentWindow && e.data && e.data.lt === 'lab-done') setNext(true, true); };
+    window.addEventListener('message', onMsg);
+    onCleanup(() => window.removeEventListener('message', onMsg));
+    return {};
   };
 
   function choiceGrid(options, cls) {

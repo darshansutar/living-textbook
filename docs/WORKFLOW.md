@@ -34,7 +34,8 @@ The teacher projects; the class votes by hand; the teacher taps the class's choi
 | 9 | Animation | lt-animation + Starling animation-pack | EN2 Ultra: pilot first, then the batch; job IDs |
 | 10 | Review | lt-review + Starling director / cinematography | cuts, verdicts, re-time, one scene redesign per clip |
 | 11 | Edit | lt-assembly | `output/screens/<screen-id>.mp4` (build_edit.py, assemble_edit.py) |
-| 12 | Package | lt-package | `package/` (player + `chapter.json` + media), validated ZIP |
+| 12 | Package | lt-package | `package/` (player + `chapter.json` + media + `labs/`), validated ZIP |
+| - | Labs | lt-lab | NCERT activities and Maths tools as interactive three.js labs (`docs/LAB_WORKFLOW.md`) |
 
 After the checkpoint, stages 4-12 run **one episode at a time**.
 

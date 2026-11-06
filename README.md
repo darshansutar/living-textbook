@@ -13,10 +13,11 @@ Pipeline: [docs/WORKFLOW.md](docs/WORKFLOW.md) · Agent rules: [AGENTS.md](AGENT
 
 | Path | What it is |
 |---|---|
-| `skills/` | 14 skills: master, intake, chapter analysis, episode plan, script (+ `flows.md`), audio, visual plan, images, stills, animation, review, assembly, package (+ `chapter-schema.md`), player design |
+| `skills/` | 15 skills: master, intake, chapter analysis, episode plan, script (+ `flows.md`), audio, visual plan, images, stills, animation, review, assembly, package (+ `chapter-schema.md`), player design, lab |
 | `starling/` | The Starling production skills used as written (prompt-pack, director, cinematography, image-pack-generator, panel-corrector, animation-pack) and the board compositor `storyboard.py`; see `starling/README.md` |
 | `pipeline/` | Scripts for the mechanical steps (below) |
 | `player/` | The one generic offline HTML player (`index.html`, `player.js`, `player.css`, `fonts/`) - copied unchanged into every package |
+| `labs/` | Interactive labs (three.js + GSAP, objects built in code), one folder per NCERT activity; `labs/iodine-test` is the reference. See `docs/LAB_WORKFLOW.md` and `skills/lt-lab` |
 | `templates/` | Example `intake`, `analysis`, `episodes`, `script`, `plan`, `chapter` JSON and Codex prompt templates |
 | `docs/` | Workflow summary |
 

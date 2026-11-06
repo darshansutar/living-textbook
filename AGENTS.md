@@ -9,7 +9,7 @@ For production requests read `skills/living-textbook-master/SKILL.md`, then the 
 - The episode plan decides the cast. Characters are original, regionally accurate and **never speak**; a style reference supplies look only.
 - No text, letters or digits in any generated picture or video; the player draws numbers, labels, equations and option text.
 - Every vote and MCQ distractor is a real student misconception from `analysis.json`.
-- Images: Codex native image generation via `pipeline/codex_run.py`. Narration: ElevenLabs `eleven_v3` via Codex, downloaded by `pipeline/harvest_audio.py`. Animation: EN2 reference-to-video, Ultra only. Edit: FFmpeg. Do not substitute providers and do not build animation in code.
+- Images: Codex native image generation via `pipeline/codex_run.py`. Narration: ElevenLabs `eleven_v3` via Codex, downloaded by `pipeline/harvest_audio.py`. Animation: EN2 reference-to-video, Ultra only. Edit: FFmpeg. Labs (interactive NCERT activities and Maths manipulatives): three.js + GSAP, objects built in code (`skills/lt-lab`, `docs/LAB_WORKFLOW.md`). Do not substitute providers; story and answer visuals are never built in code.
 - One timing table (`plan.json`) drives board captions, prompts, render length and edit spans.
 - Inspect everything you generate before anything depends on it; never claim listening or review you did not do.
 - Record every paid job ID, submit each clip once, never resubmit a slow job, keep rejected media and IDs.

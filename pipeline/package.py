@@ -31,7 +31,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 MODES = {"do_along", "simulator", "mission"}
 TEMPLATES = {"compare_setups", "zoom_scale", "dial", "tap_diagram"}
-TYPES = {"title", "video", "still", "vote", "reveal", "question_cards", "mcq", "activity", "fact", "recap", "score"}
+TYPES = {"title", "video", "still", "vote", "reveal", "question_cards", "mcq", "activity", "fact", "recap", "score", "lab"}
 MEDIA_KEYS = {"src", "video", "image", "audio", "still", "icon", "result_still", "result_video", "consequence_src",
               "reveal_audio", "feedback_audio"}
 ARCHIVE = ["intake.json", "analysis.json", "episodes.json", "script.json", "plan.json", "edit.json", "review.json",

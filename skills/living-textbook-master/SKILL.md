@@ -29,6 +29,8 @@ TOPIC LOOP (four screens, the same every time; the topic's flow sets what each d
 
 Flow per topic: Challenge for skills and procedures (most Maths), Wonder for visible phenomena (much of Science), Story for ideas in people's lives (much of Social Science, the default).
 
+When the topic has an NCERT activity (or, in Maths, a tool to learn), a **lab** follows the vote: the class does the activity on the projector (`skills/lt-lab`). The Answer video then explains the concept only. In Maths the lab is the Learn step and ends by solving the challenge, so Maths needs no storyboard animation.
+
 Every screen is narrated, and videos flow into the next screen by themselves. The class sees only Back and Next; teacher tools (captions, map, full screen, notes, home) sit in one Menu. NCERT activities are shown inside the videos (demonstrations by the teacher, slow experiments as time-lapse). The recap still may be a silent animation.
 
 Exact screen sequences and pacing: `skills/lt-script/flows.md`. Screen types and the content file: `skills/lt-package/chapter-schema.md`. How the player looks and behaves (Starling monsoon design): `skills/lt-player-design/SKILL.md`.
@@ -51,6 +53,7 @@ Exact screen sequences and pacing: `skills/lt-script/flows.md`. Screen types and
 | 12 | Edit | lt-assembly | one narrated video file per video screen |
 | 13 | Package | lt-package | `chapter.json` + media in the standard player, validated, ZIP |
 | - | Player design | lt-player-design | only when the player itself changes: all chapters rebuilt and re-tested |
+| 9b | Labs | lt-lab | each NCERT activity (and each Maths tool) as an interactive three.js lab in `labs/<id>/`, run end to end, approved by the user (`docs/LAB_WORKFLOW.md`) |
 
 Work **one episode at a time** after the checkpoint: script, audio, visuals, renders and package for Episode 1 first, then the next. Episode 1's title sets up the story world; the last episode's recap is the story payoff.
 
@@ -64,9 +67,10 @@ Work **one episode at a time** after the checkpoint: script, audio, visuals, ren
 | Animation | EN2 reference-to-video, **Ultra only** | `en2_upload.mjs`, `video_generate`, `en2_collect.mjs` |
 | Edit | Local FFmpeg | `review_cuts.py`, `build_edit.py`, `assemble_edit.py` (one file per video screen) |
 | Package | Local | `build_chapter.py` (writes `chapter.json`), `package.py` (validates, ZIPs) |
+| Labs | three.js r158 + GSAP 3.12.5, objects built in code (CC0 models only when needed) | `labs/<id>/`, lt-lab |
 | Player | One generic offline HTML player (never edited per chapter), Starling monsoon design | `player/` + `chapter.json`; lt-player-design |
 
-Do not substitute providers. Never build animation in code.
+Do not substitute providers. Story and answer visuals are never built in code; labs are the one place where code animates (three.js + GSAP, `skills/lt-lab`).
 
 ## Hard rules
 

@@ -35,7 +35,7 @@ The flow changes what the screens do and what the player calls the steps; the sc
 
 ## 4. Activities
 
-Every NCERT activity is shown inside a video of its loop: a teacher demonstration (teacher alone, medium shot) for anything unsafe or teacher-only, a time-lapse for slow experiments, or the story child doing it when it is safe. The teacher may also run a safe activity live in class; that is noted in the episode plan, not built as a screen.
+Every NCERT activity becomes a **lab** (`skills/lt-lab`): the class does it on the projector, between the vote and the explain video. Name the lab in the loop (`loops[].lab`: the activity, its id, who guides it). The hook video no longer stages the activity: no set-up scenes (first aid, kitchen accidents) that only exist to reach a test. Use a video only for what a lab cannot show (a real place, a long time-lapse in nature). In Maths, the tool the topic teaches is the lab. The teacher may also run a safe activity live in class; note it in the plan.
 
 ## 5. Checkpoint (mandatory)
 

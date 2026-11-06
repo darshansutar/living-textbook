@@ -24,6 +24,7 @@ For every episode, list its screens in order. Each screen gets: `id` (`e1.c2.s3`
 | `video` | `concept`, role (`hook` or `explain`), narration line IDs, what must be shown (beats); a hook ends on the vote's question |
 | `vote` | `concept`, question text, `prompt_line` (the question read aloud), 3-4 options (`text`, `idea`, `correct`, `image`), reveal line ID per option |
 | `mcq` | `concept`, question text, `question_line` (read aloud), scenario (what the one picture shows), options, answer, feedback line ID per option |
+| `lab` | `concept`, `lab` id, the NCERT activity, `steps` (each: kind tap / choose / predict / watch, the guide line, the object or the options, the feedback line, the status text) - designed with `skills/lt-lab`; every line is a narration line |
 | `still` | role `cliffhanger` for the recap, narration line IDs, what the picture shows (recap + next time); say whether it should be animated |
 
 Screen ids for the loop: `e1.title`, then per topic `e1.c1.story`, `e1.c1.vote`, `e1.c1.explain`, `e1.c1.check`, and finally `e1.recap`. The ids are the same in every flow. What each screen does follows the topic's `flow` from `episodes.json` (`flows.md`: Story / Challenge / Wonder); add `flow` to a screen only to override the plan.

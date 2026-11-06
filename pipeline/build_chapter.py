@@ -456,6 +456,16 @@ class Builder:
             if sc.get("mcq"):
                 m = dict(sc["mcq"], id=sc["mcq"].get("id", f"{sid}.q"))
                 out["mcq"] = dict(self.build_mcq(m), id=m["id"])
+        elif t == "lab":
+            # an interactive lab (skills/lt-lab): the lab folder labs/<id>/ is copied into the package
+            lab_id = sc["lab"]
+            src_dir = REPO / "labs" / lab_id
+            if (src_dir / "index.html").exists():
+                shutil.copytree(src_dir, self.pkg / "labs" / lab_id, dirs_exist_ok=True)
+            else:
+                self._need(f"labs/{lab_id}/index.html (repo)")
+            out["src"] = f"labs/{lab_id}/index.html"
+            out["title"] = sc.get("title", "")
         elif t == "score":
             out.update(text=sc.get("text", ""), audio=self.audio(narr, name=sid))
             if sc.get("scope"):

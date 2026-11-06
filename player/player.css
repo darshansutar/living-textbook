@@ -513,3 +513,5 @@ body[data-screen="film"] #topic { color: var(--ink-2); }
 .sheet:not(.split):has(> .choices) > h1 { margin-top: -1rem; }
 #steps li { width: auto; min-width: 8.2rem; }
 #steps .name { white-space: nowrap; }
+/* lab screens: the lab page fills the stage */
+.lab-frame { border: 0; background: #14100d; }

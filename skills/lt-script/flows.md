@@ -23,6 +23,8 @@ A chapter with several episodes also has a chapter home: the chapter title and o
 | 3 | `e1.c1.explain` | `video` role `explain` | **Answer** - the NCERT concept in the book's terms, with its figure or evidence, tied back to the story | **Learn** - the concept arrives as the missing tool, then **the same video returns to the challenge and solves it** (this replaces the old separate "Solve" video) | **Find out** - the NCERT activity shown as the investigation (teacher demo or time-lapse), then the explanation of the surprise |
 | 4 | `e1.c1.check` | `mcq` | **Check** - same idea, new situation | **New challenge** - the same tool on a new problem; numbers and working come from the player (option text, overlays), never from the picture | **Check** - the same idea near the child's home |
 
+**Labs.** When the topic has an NCERT activity, or a Maths tool to learn, add a `lab` screen (`e1.c1.lab`) between the vote and the explain video (`skills/lt-lab`). The class does the activity on the projector. The explain video then covers the concept only, and its demonstration scenes are dropped. In the Challenge flow the lab is the Learn step itself and ends by solving the challenge, so Maths topics need no explain video and no storyboard animation; their hook can be a narrated still. The rail names the lab step after the flow (Find out / Learn).
+
 Give each topic its `flow` in `episodes.json` (`loops[].flow`). Put it in `script.json` screens only to override that. The player names the steps after it (Story/Vote/Answer/Check, Challenge/Try/Learn/New challenge, Wonder/Guess/Find out/Check).
 
 **Choosing a flow.** Pick the flow that gives the concept its strongest opening:
