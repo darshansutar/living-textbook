@@ -369,8 +369,9 @@
       say: 'Take the pale leaf out and wash it in water. Then lay it flat on the plate.',
       ok: 'The washed leaf is on the plate, ready for the test.', fx: 'washAndPlate', key: 's6', status: ['#e9e2b6', 'Leaf: pale, washed'] },
     { title: 'Predict', view: 'plate', predict: true, key: 's7',
-      say: 'Iodine is brown. Where there is starch, it turns blue-black. What will the leaf look like? Ask the class and tap the answer most of them chose.',
-      options: [{ text: 'The leaf turns blue-black', right: true }, { text: 'The leaf stays pale' }, { text: 'The leaf turns brown, like iodine' }] },
+      // a prediction never states the rule it tests: the reveal (s8.right / s8.wrong) teaches "blue-black means starch"
+      say: 'Iodine is brown. What will the leaf look like? Ask the class and tap the answer most of them chose.',
+      options: [{ text: 'The leaf stays pale' }, { text: 'The leaf turns blue-black', right: true }, { text: 'The leaf turns brown, like iodine' }] },
     { title: 'Add iodine', view: 'iodine', tap: 'iodine', hint: 'Tap the iodine bottle',
       say: 'Now we find out. Put a few drops of iodine on the leaf.',
       fx: 'iodineDrops', key: 's8', status: ['#3b4a8a', 'Leaf: blue-black  ·  Starch present'] },

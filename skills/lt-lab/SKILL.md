@@ -33,7 +33,7 @@ Write a steps table in the script (`script.json` screen `type: "lab"`, field `st
 |---|---|---|
 | **tap** | taps one object on the bench | One object, named in the hint ("Tap the spirit lamp"). The change it causes is visible within 1 s. |
 | **choose** | taps the class's answer to a safety or method question | One right option; the wrong ones are real mistakes, corrected kindly. Next stays locked until the right one is picked. |
-| **predict** | taps the answer most of the class chose | There is no right or wrong yet. The reveal step names the class's choice ("Many of you said..."). |
+| **predict** | taps the answer most of the class chose | There is no right or wrong yet. The question never states the rule being tested (not "where there is starch, iodine turns blue-black"); the reveal teaches it. The right option is not always A. The reveal step names the class's choice ("Many of you said..."). |
 | **watch** | nothing, while a slow change plays or a time slider moves | Use it for slow activities (two weeks in a pot) and keep it under 8 s. |
 
 - **Length:** 5-9 steps, 3-6 minutes in class. Follow the NCERT activity's own order and materials. Facts and safety notes come from the chapter.
