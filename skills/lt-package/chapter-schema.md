@@ -30,7 +30,7 @@ The player engine (`player/`) is generic. Everything chapter-specific is in `cha
 |---|---|---|
 | `title` | `title`, `subtitle`, `image` | Title card; Next to continue |
 | `video` | `role`, `src`, `captions[]` ({start,end,text}), `overlays[]` ({text, at, until, anchor, style}) | Plays the screen video; captions and overlays drawn on top; continues at the end |
-| `lab` | `src` (labs/<id>/index.html), `title` | An interactive lab (skills/lt-lab) full screen in a frame, opened with `?embed=1`; Next unlocks when the lab posts `{lt: 'lab-done'}` |
+| `lab` | `src` (labs/<id>/index.html), `title`, `lines` (narration prefix, e.g. `e1_c2_lab_`) | An interactive lab (skills/lt-lab) full screen in a frame, opened with `?embed=1&lines=<prefix>&audio=../../media/audio/`; the lab plays `<prefix><key>.mp3`; Next unlocks when the lab posts `{lt: 'lab-done'}` |
 | `still` | `image`, `audio`, `captions[]`, `overlays[]`, `video?` | Shows the picture while the narration plays; an optional silent `video` (output/screens/<id>.mp4, starting on the picture) plays once over it and holds its last frame |
 | `vote` | `question`, `audio` (optional prompt), `options[]` ({text, image, correct, reveal_audio, reveal_text, consequence_src?}), `observation` (true for "what did you see?"), `seconds` | Shows options with a countdown; teacher taps the class's majority; stores the choice for `reveal` |
 | `reveal` | `vote` (id of the vote screen) | Highlights the correct option; plays the chosen option's `consequence_src` (if any) then its `reveal_audio` |
@@ -69,3 +69,7 @@ Every screen of a topic loop may carry `flow`: `story` | `challenge` | `wonder`.
 | `wonder` | Wonder | Guess | Find out | Check |
 
 A translated package overrides `settings.ui.loops` with all three lists: `{"story": [["Story", "Watch what happens"], ...], "challenge": [...], "wonder": [...]}`, where each item is a step name plus a short description.
+
+## Prediction votes
+
+A `vote` with `predict: true` comes right before a lab. The class's pick is marked in gold ("Class chose"), no option is marked right or wrong, and every option's reveal line is the same neutral bridge into the lab ("Let us test it..."). The lab and the answer video resolve it.

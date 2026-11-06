@@ -326,6 +326,8 @@ class Builder:
             out["audio"] = self.audio(prompt)
         if sc.get("observation"):
             out["observation"] = True
+        if sc.get("predict"):
+            out["predict"] = True
         if sc.get("seconds"):
             out["seconds"] = sc["seconds"]
         opts = []
@@ -466,6 +468,12 @@ class Builder:
                 self._need(f"labs/{lab_id}/index.html (repo)")
             out["src"] = f"labs/{lab_id}/index.html"
             out["title"] = sc.get("title", "")
+            # the lab's narration lines (<screen id>.<key>) go to media/audio; the lab finds them by prefix
+            lines = self.narration_of(sc)
+            for l in lines:
+                self.audio(l)
+            if lines:
+                out["lines"] = stem(sid) + "_"
         elif t == "score":
             out.update(text=sc.get("text", ""), audio=self.audio(narr, name=sid))
             if sc.get("scope"):

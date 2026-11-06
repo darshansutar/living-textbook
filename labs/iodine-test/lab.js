@@ -11,6 +11,18 @@
   // rail and buttons, and the lesson is told when the class finishes
   const EMBED = /[?&]embed=1/.test(location.search);
   if (EMBED) document.body.classList.add('embed');
+  // narration: inside a lesson the player passes the line prefix and the audio folder (?lines=e1_c2_lab_&audio=../../media/audio/)
+  const Q = new URLSearchParams(location.search);
+  const LINES = Q.get('lines'), AUDIO = Q.get('audio') || 'audio/';
+  let voice = null, lastKey = null;
+  if (LINES) document.body.classList.add('voiced');
+  function say(key) {
+    lastKey = key;
+    if (!LINES || !key) return;
+    if (voice) { voice.pause(); }
+    voice = new Audio(AUDIO + LINES + key + '.mp3');
+    voice.play().catch(() => { /* blocked until the teacher taps; Hear again replays */ });
+  }
 
   // ---------------------------------------------------------------- renderer, scene, camera
   const canvas = $('#scene');
@@ -337,31 +349,31 @@
   const STEPS = [
     { title: 'Light the lamp', view: 'burner', tap: 'lamp', hint: 'Tap the spirit lamp',
       say: 'We will test a leaf for starch. First we need boiling water. Light the spirit lamp under the beaker.',
-      ok: 'The flame heats the water. Watch the bubbles: the water is boiling.', fx: 'lampOn', status: ['#7fb6d6', 'Water: boiling'] },
+      ok: 'The flame heats the water. Watch the bubbles: the water is boiling.', fx: 'lampOn', key: 's1', status: ['#7fb6d6', 'Water: boiling'] },
     { title: 'Boil the leaf', view: 'leafPick', tap: 'leaf', hint: 'Tap the leaf on the plate',
       say: 'This leaf comes from a plant kept in sunlight. Put it in the boiling water for a few minutes. Boiling softens the leaf.',
-      ok: 'The leaf is soft now.', fx: 'leafIntoWater', status: ['#4f8a3a', 'Leaf: soft and green'] },
-    { title: 'Be safe with alcohol', view: 'rack', choose: true,
+      ok: 'The leaf is soft now.', fx: 'leafIntoWater', key: 's2', status: ['#4f8a3a', 'Leaf: soft and green'] },
+    { title: 'Be safe with alcohol', view: 'rack', choose: true, key: 's3',
       say: 'Next we remove the green colour with alcohol. Alcohol catches fire easily. How should we heat it?',
       options: [
-        { text: 'Stand the test tube of alcohol in the hot water', right: true, say: 'Yes. The hot water heats the alcohol safely. Alcohol never goes near a flame.' },
-        { text: 'Heat the alcohol directly on the flame', say: 'No! Alcohol catches fire easily. Never bring it near a flame. Heat it in hot water instead.' },
+        { text: 'Stand the test tube of alcohol in the hot water', right: true, key: 'optA', say: 'Yes. The hot water heats the alcohol safely. Alcohol never goes near a flame.' },
+        { text: 'Heat the alcohol directly on the flame', key: 'optB', say: 'No! Alcohol catches fire easily. Never bring it near a flame. Heat it in hot water instead.' },
       ] },
     { title: 'Remove the green colour', view: 'rack', tap: 'tube', hint: 'Tap the test tube of alcohol',
       say: 'Put the leaf in the test tube of alcohol, and stand the tube in the hot water.',
-      ok: 'Look: the green colour moves out of the leaf into the alcohol. The leaf turns pale.', fx: 'tubeAndLeafIntoBath', status: ['#5fbf4a', 'Leaf: pale  ·  Alcohol: green'] },
+      ok: 'Look: the green colour moves out of the leaf into the alcohol. The leaf turns pale.', fx: 'tubeAndLeafIntoBath', key: 's4', status: ['#5fbf4a', 'Leaf: pale  ·  Alcohol: green'] },
     { title: 'Put out the flame', view: 'lamp', tap: 'lamp', hint: 'Tap the spirit lamp',
       say: 'We do not need heat any more. Put out the flame first. Always switch off the flame when you finish heating.',
-      ok: 'The flame is out. The water stops boiling.', fx: 'lampOff', status: ['#9e9287', 'Flame: off'] },
+      ok: 'The flame is out. The water stops boiling.', fx: 'lampOff', key: 's5', status: ['#9e9287', 'Flame: off'] },
     { title: 'Wash the leaf', view: 'wash', tap: 'bowl', hint: 'Tap the bowl of water',
       say: 'Take the pale leaf out and wash it in water. Then lay it flat on the plate.',
-      ok: 'The washed leaf is on the plate, ready for the test.', fx: 'washAndPlate', status: ['#e9e2b6', 'Leaf: pale, washed'] },
-    { title: 'Predict', view: 'plate', predict: true,
+      ok: 'The washed leaf is on the plate, ready for the test.', fx: 'washAndPlate', key: 's6', status: ['#e9e2b6', 'Leaf: pale, washed'] },
+    { title: 'Predict', view: 'plate', predict: true, key: 's7',
       say: 'Iodine is brown. Where there is starch, it turns blue-black. What will the leaf look like? Ask the class and tap the answer most of them chose.',
       options: [{ text: 'The leaf turns blue-black', right: true }, { text: 'The leaf stays pale' }, { text: 'The leaf turns brown, like iodine' }] },
     { title: 'Add iodine', view: 'iodine', tap: 'iodine', hint: 'Tap the iodine bottle',
       say: 'Now we find out. Put a few drops of iodine on the leaf.',
-      fx: 'iodineDrops', status: ['#3b4a8a', 'Leaf: blue-black  ·  Starch present'] },
+      fx: 'iodineDrops', key: 's8', status: ['#3b4a8a', 'Leaf: blue-black  ·  Starch present'] },
   ];
 
   // ---------------------------------------------------------------- UI
@@ -430,6 +442,7 @@
     });
     setTarget(st.tap || null);
     view(st.view);
+    say(st.key + '_say');
     if (st.tap) armIdle();
   }
   function pick(k) {
@@ -437,20 +450,23 @@
     if (st.predict) {   // the class's prediction: no right or wrong yet, the iodine will show it
       S.predicted = k;
       btns.forEach((b, j) => { b.classList.toggle('picked', j === k); b.classList.toggle('dim', j !== k); });
-      feedback('Class prediction noted. Let us test it.', '');
+      feedback('Class prediction noted. Let us test it.', ''); say(st.key + '_pick');
       card.next.hidden = false; return;
     }
     const o = st.options[k];
     btns.forEach((b, j) => { b.classList.remove('right', 'miss', 'dim'); if (st.options[j].right) b.classList.add('right'); else if (j === k) b.classList.add('miss'); else b.classList.add('dim'); });
-    feedback(o.say, o.right ? 'good' : 'bad');
+    feedback(o.say, o.right ? 'good' : 'bad'); say(st.key + '_' + o.key);
     if (o.right) card.next.hidden = false;
   }
   function done(st) {
     let text = st.ok || '';
     if (st.fx === 'iodineDrops') {
       const p = STEPS[6].options[S.predicted ?? 0];
-      text = (p && p.right ? 'The class predicted it! ' : `Many of you said "${(p || {}).text}". `) +
-             'The leaf turned blue-black. Blue-black means starch. The leaf made food and stored it as starch.';
+      text = (p && p.right ? 'The class predicted it! ' : 'Many of you thought something else. But ') +
+             (p && p.right ? 'The leaf turned blue-black.' : 'the leaf turned blue-black.') + ' Blue-black means starch. The leaf made food and stored it as starch.';
+      say(st.key + (p && p.right ? '_right' : '_wrong'));
+    } else {
+      say(st.key + '_ok');
     }
     feedback(text, 'good');
     if (st.status) setStatus(st.status[0], st.status[1]);
@@ -461,7 +477,7 @@
     const st = STEPS[S.step];
     if (!st || !st.tap || S.busy) return;
     if (key !== st.tap) {
-      feedback(`Not that one. ${st.hint}: it is glowing gold.`, 'bad');
+      feedback('Not that one. Look for the object glowing gold.', 'bad'); say('miss');
       flashWrong(key); pointer.hidden = false;
       return;
     }
@@ -474,11 +490,13 @@
     if (S.step < STEPS.length - 1) showStep(S.step + 1);
     else finish();
   };
+  $('#hear').onclick = () => { if (lastKey) say(lastKey); };
   $('#showme').onclick = () => { if (S.target) { pointer.hidden = false; view(STEPS[S.step].view, false, .8); } };
   function finish() {
     S.step = STEPS.length; progress();
     card.title.textContent = 'What we found';
     card.say.textContent = 'The leaf turned blue-black with iodine. So the leaf has starch. Plants make their food in the leaves and store it as starch.';
+    say('end');
     card.hint.hidden = true; card.choices.hidden = true; feedback('', '');
     card.next.hidden = false; card.next.firstChild.textContent = 'Do it again ';
     if (EMBED && window.parent !== window) window.parent.postMessage({ lt: 'lab-done', lab: 'iodine-test' }, '*');

@@ -423,7 +423,9 @@
   // an interactive lab (skills/lt-lab): the lab page runs full screen in a frame and has its own step card;
   // the lesson's Next unlocks (and pulses) when the lab reports that the class finished it
   RENDER.lab = sc => {
-    const src = sc.src + (sc.src.indexOf('?') < 0 ? '?' : '&') + 'embed=1';
+    // the lab plays its narration from the lesson's media/audio (lines named <prefix><key>.mp3)
+    const src = sc.src + (sc.src.indexOf('?') < 0 ? '?' : '&') + 'embed=1' +
+      (sc.lines ? '&lines=' + encodeURIComponent(sc.lines) + '&audio=' + encodeURIComponent('../../media/audio/') : '');
     const f = h('iframe', { class: 'full lab-frame', src, title: sc.title || 'Lab', allow: 'autoplay' });
     screenEl.appendChild(f);
     setNext(false, false);
@@ -458,6 +460,19 @@
     els.forEach(e => grid.appendChild(e));
     const right = vote.options.findIndex(o => o.correct);
     function paint(c) {
+      if (vote.predict) {   // a prediction before a lab: mark the class's pick, show no right or wrong yet
+        els.forEach((e, i) => {
+          const old = e.querySelector('.tag'); if (old) old.remove();
+          e.classList.toggle('chosen', i === c);
+          e.classList.toggle('faded', i !== c);
+          if (i === c) e.appendChild(h('span', { class: 'tag pick', text: ui.class_chose }));
+        });
+        fb.style.visibility = 'visible';
+        fb.className = 'feedback';
+        fb.innerHTML = rich(vote.options[c].reveal_text || '');
+        hint.hidden = true;
+        return;
+      }
       els.forEach((e, i) => {
         const old = e.querySelector('.tag'); if (old) old.remove();
         e.classList.toggle('right', i === right);

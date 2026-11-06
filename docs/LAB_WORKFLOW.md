@@ -58,7 +58,7 @@ Each lab replaces the longest demonstration scenes of an Answer video, so a topi
 ## Next engineering steps
 
 - [ ] Move the shared parts into `labs/_kit/` when the second lab starts: vendor, fonts, css, step runner, targets, camera, the embed contract.
-- [ ] Play each step's narration mp3 in the lab, with a replay button. The prototype shows the text only.
+- [x] Each step's narration plays in the lab, with a Hear again button (done 2026-11-06, Science E1).
 - [ ] Tidy the gold outline on glass objects: inner shells show through, as on the spirit lamp.
 - [ ] Try it on a projector-class laptop and at 4:3.
 - [ ] Add a time-slider step kind for slow activities (the three pots over two weeks).

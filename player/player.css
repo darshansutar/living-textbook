@@ -515,3 +515,5 @@ body[data-screen="film"] #topic { color: var(--ink-2); }
 #steps .name { white-space: nowrap; }
 /* lab screens: the lab page fills the stage */
 .lab-frame { border: 0; background: #14100d; }
+/* a prediction vote: the class's pick in gold, no right or wrong yet */
+.choice .tag.pick { background: var(--primary); color: var(--primary-ink); }

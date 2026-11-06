@@ -21,7 +21,9 @@ The lab is the third step of the topic loop, after the class has committed to a 
 | Story (Social Science) | the story moment | Vote | **Find out**: measure or read the instrument | short Answer video | Check |
 | Challenge (Maths) | the job to do (a narrated still is enough) | Try | **Learn**: the tool as a manipulative, then solve the job in the lab | none; the lab ends on the solved job | New challenge |
 
-In `chapter.json` a lab is a screen `{ "id": "e1.c2.lab", "type": "lab", "lab": "iodine-test", "concept": "c2", "flow": "wonder" }`. `build_chapter.py` copies `labs/<id>/` into the package. The player shows it full screen and unlocks Next when the lab reports it is finished.
+The vote before a lab is a **prediction** (`predict: true`): the class commits to an answer, nothing is revealed, and a neutral line leads into the lab.
+
+In `script.json` a lab is a screen `{ "id": "e1.c2.lab", "type": "lab", "lab": "iodine-test", "concept": "c2", "narration": ["e1.c2.lab.s1.say", ...] }`. `build_chapter.py` copies `labs/<id>/` into the package. The player shows it full screen and unlocks Next when the lab reports it is finished.
 
 ## Design the lab (before any code)
 
@@ -35,7 +37,7 @@ Write a steps table in the script (`script.json` screen `type: "lab"`, field `st
 | **watch** | nothing, while a slow change plays or a time slider moves | Use it for slow activities (two weeks in a pot) and keep it under 8 s. |
 
 - **Length:** 5-9 steps, 3-6 minutes in class. Follow the NCERT activity's own order and materials. Facts and safety notes come from the chapter.
-- **Narration:** every step's guide line and every feedback line is a narration line in `script.json` (`e1.c2.lab.s1`, `e1.c2.lab.s1.ok`, `e1.c2.lab.s3.optB`, ...), generated with the chapter's narrator voice (lt-audio). On-screen text and spoken text are the same words.
+- **Narration:** every step's guide line and every feedback line is a narration line in `script.json`, generated with the chapter's narrator voice (lt-audio). Keys per step: `sN.say` (guide line, spoken when the step opens), `sN.ok` (result), `sN.optA`/`optB` (choice feedback), `sN.pick` (after the class prediction), `sN.right`/`sN.wrong` (the reveal, depending on the prediction), plus `end` (summary) and `miss` (wrong tap). The on-screen text and the spoken words are identical. `build_chapter.py` copies the lines to `media/audio/` and passes the prefix (`lines`). The lab plays `<prefix><key>.mp3` and has a Hear again button.
 - **Guide:** a character from the episode's cast who would really run this activity, e.g. Shanta Teacher for a school demonstration. The guide never speaks in the story videos; in the lab the guide's lines are narration.
 - **No text in the 3D scene.** Labels, numbers and readouts are HTML on top of the scene, so they stay exact and translatable.
 
