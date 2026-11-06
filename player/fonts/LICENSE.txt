@@ -1,0 +1,2 @@
+Rajdhani (Indian Type Foundry) and Noto Sans (Google) are licensed under the SIL Open Font License, Version 1.1.
+https://openfontlicense.org  -  Latin subsets downloaded from Google Fonts on 2026-11-06 so the player works offline.

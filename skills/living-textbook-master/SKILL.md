@@ -18,16 +18,20 @@ This skill is the operating contract.
 ```
 CHAPTER = EPISODE 1 ... EPISODE n                     (book order; one class period each, 8-15 min of screen time)
 EPISODE = TITLE (narrated welcome) -> 1-2 TOPIC LOOPS -> RECAP + NEXT TIME (narrated still)
-TOPIC LOOP (the simple loop, the same every time):
-   1. story video   - narrated story moment that raises the topic's question
+TOPIC LOOP (four screens, the same every time; the topic's flow sets what each does and is called):
+   1. hook video    - Story: a character's moment | Challenge: a job to do now | Wonder: a narrated surprise; ends on the question
    2. vote          - question read aloud; the teacher taps the class's choice; right answer + reveal line on the same screen
-   3. answer video  - the NCERT concept, its activity or figure shown as evidence, tied back to the story
-   4. check         - one MCQ in a new situation, question read aloud, feedback per option
+                      (Vote | Try | Guess)
+   3. explain video - the NCERT concept with its activity or figure as evidence, tied back to the hook
+                      (Answer | Learn + solve the challenge | Find out)
+   4. check         - one MCQ in a new situation, question read aloud, feedback per option (Check | New challenge | Check)
 ```
 
-Every screen is narrated. The class sees only Back and Next; teacher tools (captions, map, full screen, notes, home) sit in one Menu. NCERT activities are shown inside the videos (demonstrations by the teacher, slow experiments as time-lapse).
+Flow per topic: Challenge for skills and procedures (most Maths), Wonder for visible phenomena (much of Science), Story for ideas in people's lives (much of Social Science, the default).
 
-Exact screen sequences: `skills/lt-script/flows.md`. Screen types and the content file: `skills/lt-package/chapter-schema.md`.
+Every screen is narrated, and videos flow into the next screen by themselves. The class sees only Back and Next; teacher tools (captions, map, full screen, notes, home) sit in one Menu. NCERT activities are shown inside the videos (demonstrations by the teacher, slow experiments as time-lapse). The recap still may be a silent animation.
+
+Exact screen sequences and pacing: `skills/lt-script/flows.md`. Screen types and the content file: `skills/lt-package/chapter-schema.md`. How the player looks and behaves (Starling monsoon design): `skills/lt-player-design/SKILL.md`.
 
 ## Stages and owners
 
@@ -46,8 +50,9 @@ Exact screen sequences: `skills/lt-script/flows.md`. Screen types and the conten
 | 11 | Review | lt-review | cuts measured, every clip inspected, re-time before one repair |
 | 12 | Edit | lt-assembly | one narrated video file per video screen |
 | 13 | Package | lt-package | `chapter.json` + media in the standard player, validated, ZIP |
+| - | Player design | lt-player-design | only when the player itself changes: all chapters rebuilt and re-tested |
 
-Work **one episode at a time** after the checkpoint: script, audio, visuals, renders and package for Episode 1 first, then the next. The opener and finale belong to the first and last episode.
+Work **one episode at a time** after the checkpoint: script, audio, visuals, renders and package for Episode 1 first, then the next. Episode 1's title sets up the story world; the last episode's recap is the story payoff.
 
 ## Providers (fixed)
 
@@ -59,7 +64,7 @@ Work **one episode at a time** after the checkpoint: script, audio, visuals, ren
 | Animation | EN2 reference-to-video, **Ultra only** | `en2_upload.mjs`, `video_generate`, `en2_collect.mjs` |
 | Edit | Local FFmpeg | `review_cuts.py`, `build_edit.py`, `assemble_edit.py` (one file per video screen) |
 | Package | Local | `build_chapter.py` (writes `chapter.json`), `package.py` (validates, ZIPs) |
-| Player | One generic offline HTML player (never edited per chapter) | `player/` + `chapter.json` |
+| Player | One generic offline HTML player (never edited per chapter), Starling monsoon design | `player/` + `chapter.json`; lt-player-design |
 
 Do not substitute providers. Never build animation in code.
 

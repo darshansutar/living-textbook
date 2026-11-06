@@ -41,3 +41,15 @@ EN2 often moves cuts by a few tenths of a second and sometimes by seconds. Befor
 For a real picture defect: keep the original and its job ID (`renders/rejected/`), fix the cause at its stage (panel, asset or prompt), inspect the fresh board, write a simpler, clearer prompt for the same beat, and submit one Ultra replacement under the same logical clip ID. Review it completely. If it fails again, stop and show the user both versions.
 
 Minor issues that do not change the meaning (a faint detail, a molecule stopping at a pore) are noted, not repaired.
+
+## Fixes that saved repairs (Sci7 Ch10 E1 v3, 2026-11-06)
+
+- **Board caption leaks.** EN2 sometimes paints the board's caption strip ("SHOT 1 | 0.00-5.00 s | ...") or part of the next panel into a shot.
+  - The scene itself is usually right, so copy the raw clip to `renders/<round>_raw/` and crop-zoom only the affected shot to remove the strip (about 8 % zoom for a one-line strip, up to 20 % for a panel edge). Keep 16:9 and re-encode at CRF 16. Note it in `review.json`.
+  - Scan every clip for a full-width cream band; a 6-frame contact sheet catches it.
+- **Merged shots.** When two planned shots render as one continuous shot, pin `cuts_used` in `review.json` to a point inside the continuous action, so the spans run without a jump cut.
+- **Short last shot.** When the last shot cannot cover its narration, first move that shot's narration boundary in `plan.json`:
+  - into the pause between sentences (`narration.json` pauses), or
+  - onto the previous shot when it has spare footage.
+  Record an `edit_note` on the clip. Only when that is impossible is it a repair.
+- **Soft transitions** reported by `review_cuts.py` are real shot changes more often than not. Put them in `cuts_used` when the shot count otherwise does not match.

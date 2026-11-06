@@ -52,13 +52,20 @@
     what_did_you_see: 'What did you see?', expected: 'What should happen', run: 'Run', run_again: 'Reset',
     zoom_in: 'Zoom in', zoom_out: 'Zoom out', show_all: 'Show all', mission: 'Village mission', days: 'days',
     report_back: 'Next class we will ask', map: 'Chapter map', next_up: 'Next up', home: 'Chapter home',
-    next_episode: 'Next episode', episode_done: 'Episode complete', loading_error: 'Could not load chapter.js. Keep index.html, player.js, chapter.js and media/ together in one folder.'
+    next_episode: 'Next episode', topic: 'Topic', recap_step: 'Recap',
+    // the four steps of a topic loop, named after the topic's flow (chapter.json screen `flow`)
+    loops: {
+      story: [['Story', 'Watch what happens'], ['Vote', 'The class predicts'], ['Answer', 'Find out why'], ['Check', 'Try a new case']],
+      challenge: [['Challenge', 'A job to do now'], ['Try', 'Try with what you know'], ['Learn', 'Learn the tool, solve it'], ['New challenge', 'Use it again']],
+      wonder: [['Wonder', 'Something surprising'], ['Guess', 'The class guesses why'], ['Find out', 'See the investigation'], ['Check', 'Try a new case']]
+    }, episode_done: 'Episode complete', loading_error: 'Could not load chapter.js. Keep index.html, player.js, chapter.js and media/ together in one folder.'
   };
 
   // ---------------- state ----------------
   const S = {
     ch: null, ui: UI_DEFAULT, ep: null, idx: -1, view: null,
-    votes: store.get('votes', {}), cards: {}, mcq: store.get('mcq', {}),
+    // the class's picks live only for this run: a refresh or a fresh start of an episode begins clean
+    votes: {}, cards: {}, mcq: {},
     reached: store.get('reached', {}), mapShown: {},
     captions: true, teacher: false, cleanup: [], tick: null
   };
@@ -67,6 +74,7 @@
   function fit() {
     const w = Math.min(window.innerWidth, window.innerHeight * 16 / 9);
     document.documentElement.style.setProperty('--u', (w / 100) + 'px');
+    document.documentElement.style.fontSize = (w / 100 * 1.17) + 'px';
   }
   window.addEventListener('resize', fit);
   fit();
@@ -154,7 +162,8 @@
   }
   const concept = id => (S.ch.concepts || []).find(c => c.id === id);
   const voteSeconds = sc => sc.seconds || (S.ch.settings && S.ch.settings.vote_seconds) || 10;
-  function saveVotes() { store.set('votes', S.votes); store.set('mcq', S.mcq); }
+  function saveVotes() { /* picks are kept in memory only (S.votes, S.mcq) */ }
+  try { localStorage.removeItem('lt:votes'); localStorage.removeItem('lt:mcq'); } catch (e) { /* storage blocked */ }
 
   // ---------------- navigation ----------------
   function setNext(enabled, pulse) {
@@ -165,6 +174,9 @@
   function startEpisode(id, screenId) {
     S.ep = episode(id);
     if (!S.ep) return home();
+    if (!screenId) {  // starting an episode from its beginning clears that episode's picks
+      S.ep.screens.forEach(s => { delete S.votes[s.id]; delete S.votes[s.id + '.observe']; delete S.mcq[s.id]; if (s.concept) delete S.cards[s.concept]; });
+    }
     const i = screenId ? Math.max(0, S.ep.screens.findIndex(s => s.id === screenId)) : 0;
     show(i, 1);
   }
@@ -197,31 +209,88 @@
     setNext(true, false);
     setReplay(null);
     if (sc.concept && concept(sc.concept)) { S.reached[sc.concept] = true; store.set('reached', S.reached); }
+    setBackdrop(null);
+    setProgress(null);
+    document.body.dataset.screen = sc.type === 'title' ? 'title' : (sc.type === 'video' || sc.type === 'still') ? 'film' : 'sheet';
     const r = RENDER[sc.type] || renderUnknown;
     S.view = r(sc, screenEl) || {};
-    drawProgress();
+    drawRail(sc);
     drawTeacher(sc);
   }
-  function drawProgress() {
+  // ---------------- step rail: the four steps of the topic loop (story, vote, answer, check) ----------------
+  function loopStep(sc) {
+    if (!sc) return -1;
+    if (sc.type === 'video') return sc.role === 'explain' ? 2 : 0;
+    if (sc.type === 'vote' || sc.type === 'question_cards') return 1;
+    if (sc.type === 'reveal') return 2;
+    if (sc.type === 'mcq') return 3;
+    return -1;
+  }
+  // topics are numbered within the episode (the chapter's concept list also holds fact boxes and later topics)
+  function topicOf(sc) {
+    if (!S.ep || !sc || !sc.concept) return null;
+    const ids = [];
+    S.ep.screens.forEach(s => { if (s.concept && ids.indexOf(s.concept) < 0) ids.push(s.concept); });
+    const c = (S.ch.concepts || []).find(x => x.id === sc.concept);
+    return c ? { n: ids.indexOf(sc.concept) + 1, title: c.title } : null;
+  }
+  // a screen's flow: its own, else that of its topic's other screens, else the episode's first topic
+  function flowOf(sc) {
+    if (sc && sc.flow) return sc.flow;
+    const scr = (S.ep && S.ep.screens) || [];
+    const same = sc && sc.concept && scr.find(s => s.concept === sc.concept && s.flow);
+    const first = scr.find(s => s.flow);
+    return (same || first || {}).flow || 'story';
+  }
+  function loopNames(sc) {
+    const ui = S.ui, fl = flowOf(sc);
+    return (ui.loops && (ui.loops[fl] || ui.loops.story)) || ui.loop;
+  }
+  function drawRail(sc) {
+    const ol = $('#steps'), topic = $('#topic'), ui = S.ui;
+    ol.innerHTML = ''; topic.textContent = '';
+    if (!S.ep || !sc) return;
+    const cur = loopStep(sc), end = sc.role === 'cliffhanger' || sc.type === 'recap' || sc.type === 'score';
+    loopNames(sc).forEach(([name], i) => {
+      const state = end || i < cur ? 'done' : i === cur ? 'now' : '';
+      ol.appendChild(h('li', { class: state },
+        h('span', { class: 'num', text: String(i + 1) }), h('span', { class: 'name', text: name }),
+        h('span', { class: 'bar' }, h('i', { style: { transform: 'scaleX(' + (state === 'done' ? 1 : 0) + ')' } }))));
+    });
+    const tp = topicOf(sc);
+    if (tp) topic.textContent = ui.topic + ' ' + tp.n + ' · ' + tp.title;
+    else if (end) topic.textContent = ui.recap_step;
+  }
+  // fill of the current step's bar and of the thin line under a video (0..1; null hides the line)
+  function setProgress(f) {
     const p = $('#progress');
-    p.innerHTML = '';
-    if (!S.ep) return;
-    S.ep.screens.forEach((s, i) => p.appendChild(h('span', { class: i < S.idx ? 'done' : i === S.idx ? 'now' : '' })));
+    p.classList.toggle('on', f != null);
+    p.firstElementChild.style.transform = 'scaleX(' + (f || 0) + ')';
+    const now = $('#steps li.now .bar i');
+    if (now && f != null) now.style.transform = 'scaleX(' + f + ')';
+  }
+  function setBackdrop(src) {
+    const b = $('#backdrop');
+    b.style.backgroundImage = src ? 'url("' + src + '")' : '';
+    b.classList.toggle('on', !!src);
   }
 
   // ---------------- home, end, map ----------------
   function home() {
     closeMap(); clearScreen(); stopAudio();
     S.ep = null; S.idx = -1;
-    $('#progress').innerHTML = '';
     const c = S.ch.chapter, ui = S.ui;
     const meta = [c.class ? ui.classWord + ' ' + c.class : '', c.subject, c.number ? ui.chapter + ' ' + c.number : ''].filter(Boolean).join(' · ');
+    document.body.dataset.screen = 'title';
+    setBackdrop(null); setProgress(null); drawRail(null);
     screenEl.appendChild(h('div', { class: 'titlecard' },
       c.cover ? h('img', { class: 'full', src: c.cover, alt: '' }) : null,
-      // Starling title panel: gold kicker, big title (story_world is a production note, not shown to the class)
-      h('div', { class: 'text' }, h('div', { class: 'kicker', text: meta }), h('h1', { text: c.title })),
-      h('div', { class: 'home-eps' }, S.ch.episodes.map((e, i) =>
-        h('button', { onclick: () => startEpisode(e.id) }, h('small', { text: ui.episode + ' ' + (i + 1) }), e.title)))));
+      h('div', { class: 'scrim' }),
+      // Starling title block: gold kicker, big Rajdhani title (story_world is a production note, not shown to the class)
+      h('div', { class: 'title-block' }, h('p', { class: 'kicker', text: meta }), h('h1', { text: c.title }),
+        h('div', { class: 'home-eps' }, S.ch.episodes.map((e, i) =>
+          h('button', { class: 'btn' + (i ? ' ghost' : ' big'), onclick: () => startEpisode(e.id) },
+            h('small', { text: ui.episode + ' ' + (i + 1) }), h('span', { text: e.title })))))));
     S.view = {};
     setNext(S.ch.episodes.length > 0, false);
     setReplay(null);
@@ -271,10 +340,22 @@
   // ---------------- screen renderers ----------------
   const RENDER = {};
 
+  // the loop line along the bottom of a title: 1 Story, 2 Vote, 3 Answer, 4 Check
+  function stepsLine() {
+    return h('ol', { class: 'steps-line' }, loopNames(null).map(([name, sub], i) =>
+      h('li', null, h('span', { class: 'num', text: String(i + 1) }), h('b', { text: name }), h('span', { text: sub }))));
+  }
   RENDER.title = sc => {
+    const c = S.ch.chapter, ui = S.ui;
+    // the chapter home already shows the chapter; the episode title leads with the episode itself
+    const n = S.ep ? S.ch.episodes.indexOf(S.ep) + 1 : 0;
+    const where = [c.class ? ui.classWord + ' ' + c.class + ' ' + (c.subject || '') : c.subject, c.number ? ui.chapter + ' ' + c.number : '', c.title].filter(Boolean).join(' · ');
     screenEl.appendChild(h('div', { class: 'titlecard' },
       sc.image ? h('img', { class: 'full', src: sc.image, alt: '' }) : null,
-      h('div', { class: 'text' }, h('h1', { text: sc.title }), sc.subtitle ? h('p', { text: sc.subtitle }) : null)));
+      h('div', { class: 'scrim' }),
+      h('div', { class: 'title-block' }, h('p', { class: 'kicker', text: n ? ui.episode + ' ' + n : where }),
+        h('h1', { text: (S.ep && S.ep.title) || sc.title }), h('p', { class: 'sub', text: n ? where : (sc.subtitle || '') })),
+      stepsLine()));
     const go = () => playAudio(sc.audio, { captions: sc.captions, onend: () => setNext(true, true) });
     go();
     setReplay(sc.audio ? go : null);
@@ -293,7 +374,27 @@
       onCleanup(() => clearTimeout(t));
     }
     timed(v, sc.captions, sc.overlays, layer);
-    v.addEventListener('ended', () => setNext(true, true));
+    v.addEventListener('timeupdate', () => { if (v.duration) setProgress(v.currentTime / v.duration); });
+    setProgress(0);
+    // a story opens on a big topic card (gold number, topic title), as the monsoon film chapters do
+    const tp = topicOf(sc);
+    if (sc.role !== 'explain' && tp) {
+      const card = h('div', { class: 'topic-card' }, h('span', { class: 'num', text: String(tp.n) }),
+        h('div', null, h('span', { class: 'sub', text: S.ui.topic + ' ' + tp.n }), h('b', { text: tp.title })));
+      screenEl.append(h('div', { class: 'film-shade' }), card);
+      requestAnimationFrame(() => requestAnimationFrame(() => screenEl.classList.add('chaptering')));
+      const t = setTimeout(() => screenEl.classList.remove('chaptering'), 4200);
+      onCleanup(() => { clearTimeout(t); screenEl.classList.remove('chaptering'); });
+    }
+    // a finished video flows straight into the next step (story -> vote, explanation -> check);
+    // settings.auto_advance = false turns this off for a chapter
+    let adv = null;
+    v.addEventListener('ended', () => {
+      setNext(true, true);
+      if (S.ch.settings && S.ch.settings.auto_advance === false) return;
+      adv = setTimeout(() => { adv = null; next(); }, 900);
+    });
+    onCleanup(() => { if (adv) clearTimeout(adv); });
     v.addEventListener('click', () => (v.paused ? v.play() : v.pause()));
     v.play().catch(() => setNext(true, true));
     setNext(true, false);
@@ -304,9 +405,13 @@
 
   RENDER.still = sc => {
     screenEl.append(h('img', { class: 'full', src: sc.image, alt: '' }));
+    // optional silent animation of the picture: plays once under the narration and holds its last frame
+    const anim = sc.video ? trackMedia(h('video', { class: 'full', src: sc.video, poster: sc.image, playsinline: true, preload: 'auto' })) : null;
+    if (anim) { anim.muted = true; screenEl.appendChild(anim); }
     const layer = h('div', { class: 'overlays' });
     screenEl.appendChild(layer);
     const go = () => {
+      if (anim) { anim.currentTime = 0; anim.play().catch(() => { /* the poster still shows */ }); }
       const a = playAudio(sc.audio, { captions: sc.captions, onend: () => setNext(true, true) });
       if (a && sc.overlays && sc.overlays.length) timed(a, sc.captions, sc.overlays, layer);
     };
@@ -318,10 +423,13 @@
     const n = options.length;
     return h('div', { class: 'choices ' + (cls || ('n' + Math.min(4, Math.max(2, n)))) });
   }
+  const LETTERS = 'ABCDEFGHI';
+  const TICK = '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   function choiceEl(o, i, onPick) {
-    return h('button', { class: 'choice' + (o.correct ? ' is-correct' : ''), onclick: () => onPick(i) },
-      o.image ? h('div', { class: 'img', style: { backgroundImage: 'url("' + o.image + '")' } }) : null,
-      h('div', { class: 'txt' }, h('span', { class: 'key', text: String(i + 1) }), h('span', { class: 'rich', html: rich(o.text) })));
+    return h('button', { class: 'choice' + (o.image ? ' pic-card' : '') + (o.correct ? ' is-correct' : ''), onclick: () => onPick(i) },
+      o.image ? h('div', { class: 'img', style: { backgroundImage: 'url("' + o.image + '")' } },
+        h('span', { class: 'letter', text: LETTERS[i] }), h('span', { class: 'tick', html: TICK })) : null,
+      h('div', { class: 'txt' }, o.image ? null : h('span', { class: 'key', text: LETTERS[i] }), h('span', { class: 'rich', html: rich(o.text) })));
   }
 
   // vote body shared by vote screens and do-along "observe" votes:
@@ -355,7 +463,9 @@
       setReplay(() => playAudio(o.reveal_audio));
       if (!o.reveal_audio) setNext(true, true);
     }
-    root.append(h('h1', { class: 'rich', html: rich(vote.question) }), grid, fb, hint);
+    const pic = vote.options.find(o => o.image);
+    if (pic) setBackdrop(pic.image);
+    root.append(h('h1', { class: 'rich', html: rich(vote.question) }), hint, grid, fb);
     if (S.votes[id] != null) paint(S.votes[id]);
     else {
       playAudio(vote.audio);
@@ -465,14 +575,15 @@
       if (!opts[i].feedback_audio) setNext(true, true);
     }
     const q = h('h1', { class: 'rich', html: rich(m.question) });
+    const hint = h('div', { class: 'hint', text: ui.mcq_hint });
     if (m.image) {
-      root.append(q, h('div', { class: 'row' },
-        h('div', { class: 'picbox', style: { flex: 1.1 } }, h('img', { class: 'pic', src: m.image, alt: '' })),
-        h('div', { class: 'col' }, list, fb)));
-    } else root.append(q, list, fb);
-    if (S.mcq[m.id] != null) paint(S.mcq[m.id].chosen);
+      setBackdrop(m.image);
+      root.classList.add('split');
+      root.append(h('figure', { class: 'plate' }, h('img', { src: m.image, alt: '' })),
+        h('div', { class: 'check-body' }, q, hint, list, fb));
+    } else root.append(q, hint, list, fb);
+    if (S.mcq[m.id] != null) { hint.hidden = true; paint(S.mcq[m.id].chosen); }
     else {
-      root.appendChild(h('div', { class: 'hint', text: ui.mcq_hint }));
       playAudio(m.audio);
       setReplay(() => playAudio(m.audio));
     }
@@ -981,7 +1092,9 @@
       const e = ep ? episode(ep) : ch.episodes.find(x => x.screens.some(s => s.id === scr));
       if (e) { startEpisode(e.id, scr); wake(); return; }
     }
-    home();
+    // a chapter with one episode opens straight on it (home stays in the Menu)
+    if (ch.episodes.length === 1) startEpisode(ch.episodes[0].id);
+    else home();
     wake();
   }
   if (window.CHAPTER) boot(window.CHAPTER);

@@ -42,3 +42,18 @@ The Living Textbook differences are in `starling/README.md`. Read the live EN2 g
    - Record every job ID, and never resubmit a slow job.
    - Tell the user `studio_queue`'s estimate in plain words.
 5. **Collect:** `node pipeline/en2_collect.mjs renders/jobs.json` saves `renders/<clip>.mp4`. It overwrites existing files, so copy earlier versions to `renders/<round>/` first. Hand each clip to lt-review.
+
+## Recap animation (since Sci7 Ch10 E1, 2026-11-06)
+
+The recap `still` may be animated so the episode does not end on a frozen picture. Starling production uses reference mode only, and `image` (first frame) cannot be combined with `refs`. So:
+
+- **References:**
+  1. The visible character sheet(s), for identity only.
+  2. The approved recap still as the full-frame composition authority (`<Picture n> is the approved full-frame scene`).
+  Upload a JPEG q95 copy of the still from `renders/upload_cache/stills__<id>.jpg`.
+- **One shot, no cuts.** Write small, slow actions timed to the recap narration: a breeze, turning or lifting the held object, a curious head tilt, a slow 4 % push-in, lips closed. Describe positions by frame side ("her raised hand on the right of the frame") rather than "left hand / right hand".
+- **Length:** the recap narration is often 20-25 s, but one render is at most 15 s. Either render 15 s and let the player hold the last frame, or continue it: take the last frame (`video_continue`), use it as the composition authority of a second clip, and join the two.
+- **Delivery:**
+  - Record the job in `renders/jobs_<ep>_recap.json` and review it like any clip.
+  - Write the silent result (no narration; trimmed or joined) to `output/screens/<recap-screen-id>.mp4`.
+  - `build_chapter.py` then adds it as the still's `video`, and the player plays it once under the narration.

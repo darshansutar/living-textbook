@@ -11,7 +11,7 @@ Reads, from projects/<slug>/:
     stills/*.png             every still (lt-stills naming)
 
 Writes projects/<slug>/package/:
-    index.html player.js player.css   copied unchanged from player/
+    index.html player.js player.css fonts/   copied unchanged from player/
     chapter.json                      schema living-textbook/chapter@1 (skills/lt-package/chapter-schema.md)
     chapter.js                        the same data as a script, so index.html works from file:// offline
     media/screens, media/audio, media/stills
@@ -33,7 +33,8 @@ import subprocess
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
-PLAYER_FILES = ("index.html", "player.js", "player.css")
+PLAYER_FILES = ("index.html", "player.js", "player.css", "fonts/Rajdhani-600.woff2", "fonts/Rajdhani-700.woff2",
+                "fonts/NotoSans-var.woff2", "fonts/LICENSE.txt")
 IMG_EXT = (".png", ".jpg", ".jpeg", ".webp")
 STILL_KEYS = {"image", "still", "result_still", "start", "result", "icon", "cover"}
 VIDEO_KEYS = {"src", "result_video", "consequence_src"}
@@ -415,6 +416,9 @@ class Builder:
             out["captions"], out["overlays"] = self.video_timing(sc)
         elif t == "still":
             out["image"] = self.still(sc.get("image") or sid)
+            anim = self.video(sid, optional=True)  # optional silent animation: output/screens/<id>.mp4
+            if anim:
+                out["video"] = anim
             out["audio"] = self.audio(narr, name=sid)
             out["captions"] = self.lines_captions(narr)
             out["overlays"] = sc.get("overlays_timed", [])
@@ -482,6 +486,7 @@ def main():
         src = REPO / "player" / f
         if not src.exists():
             raise SystemExit(f"player/{f} missing in the repo")
+        (b.pkg / f).parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(src, b.pkg / f)
 
     existing = load(b.pkg / "chapter.json", {})
@@ -504,6 +509,13 @@ def main():
         for e in eps:
             m = ep_meta.get(e["id"], {})
             screens = [b.build_screen(sc, e["id"]) for sc in e["screens"]]
+            # each topic loop has a flow (story | challenge | wonder): the script's `flow` on a screen wins,
+            # else the episode plan's loop for that concept; the player names the four steps after it
+            plan_flow = {lp.get("concept"): lp.get("flow") for lp in m.get("loops", []) if isinstance(lp, dict)}
+            for src, sc in zip(e["screens"], screens):
+                fl = src.get("flow") or plan_flow.get(sc.get("concept"))
+                if fl in ("story", "challenge", "wonder"):
+                    sc["flow"] = fl
             used = []
             for sc in screens:
                 c = sc.get("concept")

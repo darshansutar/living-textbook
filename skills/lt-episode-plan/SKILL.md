@@ -1,6 +1,6 @@
 ---
 name: lt-episode-plan
-description: Plan a Living Textbook chapter - group analysed concepts into class-period episodes, plan one simple topic loop (story video, vote, answer video, check) per big concept, design one rural-Indian story world and its non-speaking cast, place every NCERT activity inside a loop's video, and get the user's approval before any production.
+description: Plan a Living Textbook chapter - group analysed concepts into class-period episodes, plan one four-screen topic loop per big concept in its flow (Story, Challenge or Wonder), design one rural-Indian story world and its non-speaking cast, place every NCERT activity inside a loop's video, and get the user's approval before any production.
 ---
 
 # Living Textbook - Episode Plan and Checkpoint
@@ -18,14 +18,20 @@ One setting and one problem that runs through the whole chapter and can only be 
 
 ## 2. Flow per concept
 
-Every big concept becomes one **topic loop** (`skills/lt-script/flows.md`): story video -> vote -> answer video -> check. A small concept is folded into the nearest loop's answer video. NCERT fact boxes become one narrated line in an answer video or a recap.
+Every big concept becomes one **topic loop** of four screens (`skills/lt-script/flows.md`): hook video -> vote -> explain video -> check. Give each loop a `flow` in `episodes.json` (`loops[].flow`):
+
+- **`challenge`** for skills and procedures (most Maths). The hook is a job the child must do now; the explain video teaches the tool and then solves the job.
+- **`wonder`** for phenomena with a visible surprise (much of Science). The hook is a narrated surprising sight; the explain video shows the NCERT activity as the investigation.
+- **`story`** for ideas that live in people's lives and choices (much of Social Science, and the default). The hook is a character's moment that ends on the question.
+
+The flow changes what the screens do and what the player calls the steps; the screens stay the same. A small concept is folded into the nearest loop's explain video. NCERT fact boxes become one narrated line in an explain video or a recap.
 
 ## 3. Episodes
 
-- Keep book order. Group 1-2 big concepts (plus any small concepts and fact cards near them) per episode.
-- Target **10-15 min of screen time** per episode (full loop 3-5 min, mini loop 1-2 min, fact 20 s, recap 15 s, cliffhanger 10 s, live do-along time on top). One episode = one 40-minute class period, leaving time for the teacher.
-- Episode 1 starts with the **opener** (30-60 s: story world + chapter big question). Every later episode starts with a **recap** (15 s + one recall MCQ on the previous episode). Every episode except the last ends with a **cliffhanger** that points at the next concept.
-- The last episode ends with the **finale**: story payoff -> practice activities -> chapter MCQ round (8-10 questions from the end-of-chapter questions, rewritten into rural-Indian scenarios) -> score.
+- Keep book order. Group 1-2 big concepts (plus any small concepts folded into them) per episode.
+- Target **4-8 min of screen time** per episode (one loop is about 2-3 min; the title is 10 s; the recap is 20 s). Classroom voting and discussion fill the rest of a 40-minute period.
+- Every episode is: **episode title** (narrated welcome; in Episode 1 it also sets up the story world and the chapter's big question, and later episodes recall last time in a line) -> 1-2 loops -> **recap + next time** (a narrated still or animated still that ends on the open question for the next episode).
+- The last episode's recap is the story payoff. The end-of-chapter questions become the loops' checks (rewritten into rural-Indian scenarios); any not used are listed in teacher notes. There are no MCQ rounds or score screens.
 
 ## 4. Activities
 
@@ -33,4 +39,4 @@ Every NCERT activity is shown inside a video of its loop: a teacher demonstratio
 
 ## 5. Checkpoint (mandatory)
 
-Show the user a short plan, as a table per episode: concepts (with NCERT refs), flow, hook in one line, activities and modes, estimated screen time; plus the story world and cast in three lines. **Stop and wait for approval.** Record `approved_by`, the date and the user's words in `episodes.json.checkpoint`. Nothing in lt-script or later starts before this. Changes after approval invalidate only the affected episodes.
+Show the user a short plan, as a table per episode: concepts (with NCERT refs), flow (story / challenge / wonder), hook in one line, activities and how each is shown, estimated screen time; plus the story world and cast in three lines. **Stop and wait for approval.** Record `approved_by`, the date and the user's words in `episodes.json.checkpoint`. Nothing in lt-script or later starts before this. Changes after approval invalidate only the affected episodes.

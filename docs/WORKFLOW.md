@@ -1,6 +1,6 @@
 # Living Textbook workflow
 
-Updated 5 November 2026: simple topic loop, Starling production skills (`starling/`), Starling-style player.
+Updated 6 November 2026: simple topic loop (videos flow on by themselves, animated recap), Starling production skills (`starling/`), player in the Starling monsoon design (`skills/lt-player-design`).
 
 ## The lesson model
 
@@ -47,4 +47,4 @@ After the checkpoint, stages 4-12 run **one episode at a time**.
 5. Distractors are real misconceptions.
 6. Audio first; one timing table; narration never stretched.
 7. Inspect everything; EN2 Ultra; each clip once; job IDs kept; re-time before one repair.
-8. One player for all chapters.
+8. One player for all chapters; its look and behaviour are defined in `skills/lt-player-design`.

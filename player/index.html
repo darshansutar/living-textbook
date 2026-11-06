@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0c0a08">
+<meta name="theme-color" content="#0f0d0b">
 <title>Living Textbook</title>
 <link rel="stylesheet" href="player.css">
 </head>
@@ -11,9 +11,12 @@
 <!-- Generic Living Textbook player. Never edited per chapter: all content is in chapter.json / chapter.js. -->
 <div id="app">
   <div id="stage" aria-live="polite">
+    <div id="backdrop" aria-hidden="true"></div>
     <div id="screen"></div>
     <div id="captions" hidden></div>
-    <div id="progress"></div>
+    <!-- step rail (Starling monsoon style): the four steps of the topic loop and the topic name -->
+    <header id="rail"><ol id="steps"></ol><p id="topic"></p></header>
+    <div id="progress" aria-hidden="true"><i></i></div>
     <div id="teacher-panel" hidden></div>
     <!-- the class sees only Back and Next; teacher tools live in one small Menu -->
     <button id="btn-menu" class="menu-chip" title="Teacher menu">Menu</button>
@@ -26,9 +29,9 @@
       <button id="btn-full" title="Full screen (F)">Full screen</button>
     </div>
     <div id="bar">
-      <button id="btn-back" title="Back (Left arrow)">&lsaquo; Back</button>
+      <button id="btn-back" title="Back (Left arrow)"><svg viewBox="0 0 24 24"><path d="M19 12H6M11 6.5L5.5 12l5.5 5.5"/></svg><span>Back</span></button>
       <span class="spacer"></span>
-      <button id="btn-next" class="primary" title="Next (Right arrow / Space)">Next &rsaquo;</button>
+      <button id="btn-next" class="primary" title="Next (Right arrow / Space)"><span>Next</span><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6.5l5.5 5.5-5.5 5.5"/></svg></button>
     </div>
   </div>
 </div>

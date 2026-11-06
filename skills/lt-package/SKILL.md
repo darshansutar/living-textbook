@@ -5,7 +5,7 @@ description: Package a Living Textbook episode or chapter for classrooms - write
 
 # Living Textbook - Package and Player
 
-One generic player plays every chapter of every subject. **The player code is never edited for a chapter.** Contract: `chapter-schema.md` (same folder). Example: `templates/chapter.example.json`.
+One generic player plays every chapter of every subject. **The player code is never edited for a chapter.** Contract: `chapter-schema.md` (same folder). Look and behaviour: `skills/lt-player-design/SKILL.md`. Example: `templates/chapter.example.json`.
 
 ## 1. Build the package
 
@@ -18,6 +18,7 @@ Writes:
 ```
 projects/<slug>/package/
   index.html  player.js  player.css      copied unchanged from player/ in this repo
+  fonts/                                 Rajdhani + Noto Sans (offline), copied unchanged
   chapter.json                           built from script.json (schema below)
   chapter.js                             the same data as a script, so index.html opens from file:// offline
   media/screens/<screen-id>.mp4          from output/screens/
@@ -32,7 +33,7 @@ Episodes already in `package/chapter.json` are kept; the episodes in the given s
 It maps `script.json` screen by screen into the schema:
 
 - `video` screens -> `src` = the screen file; `captions` per sentence from the narration lines' measured times within the screen (edit.json segments; sentence breaks from measured pauses); `overlays` from plan.json shots (narration-clock times converted to screen time), else from the script's `during_line` overlays.
-- `still`, `fact`, `recap` -> picture + narration audio + caption text.
+- `still`, `fact`, `recap` -> picture + narration audio + caption text. A still also gets `video` when `output/screens/<screen-id>.mp4` exists (the recap's silent animation).
 - `vote` -> options with text, picture, `correct`, `reveal_audio`/`reveal_text`; a `reveal` screen follows it referencing the vote id.
 - `mcq` -> question, scenario picture, options with feedback audio/text, `answer` index.
 - `activity` -> legacy screen type (not used by the simple loop); fields copied as given.
@@ -52,4 +53,4 @@ Checks the schema basics, unique screen ids, known screen types, activity modes 
 
 ## 4. Teacher test (mandatory before delivery)
 
-Open `index.html` from the unzipped folder, offline, in Chrome or Edge on a projector-sized window, and play the episode as a teacher would: every screen and every narration line, every vote with a different class choice (the right answer and its line appear on the same screen), every check right and wrong, only Back and Next visible to the class, the Menu (chapter home, replay, captions, chapter map, teacher notes, full screen), keyboard controls (Right/Space next, Left back, 1-9 choose, R replay, C captions, M map, T teacher notes, F full screen, H home). `index.html?screen=<id>&teacher=1` opens any screen directly for re-checks. Note any failure against its screen id in `review.json.package_test`. Content problems go back to their stage; a player bug is fixed in `player/` for **all** chapters and re-tested on every packaged chapter.
+Open `index.html` from the unzipped folder, offline, in Chrome or Edge on a projector-sized window, and play the episode as a teacher would: every screen and every narration line, each video flowing into the next screen by itself, every vote with a different class choice (the right answer and its line appear on the same screen), every check right and wrong, a refresh clearing all picks, the recap animation playing once and holding, only Back and Next visible to the class, the Menu (chapter home, replay, captions, chapter map, teacher notes, full screen), keyboard controls (Right/Space next, Left back, 1-9 choose, R replay, C captions, M map, T teacher notes, F full screen, H home). `index.html?screen=<id>&teacher=1` opens any screen directly for re-checks. Note any failure against its screen id in `review.json.package_test`. Content problems go back to their stage; a player bug is fixed in `player/` for **all** chapters and re-tested on every packaged chapter.

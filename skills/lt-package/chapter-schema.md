@@ -20,7 +20,7 @@ The player engine (`player/`) is generic. Everything chapter-specific is in `cha
 }
 ```
 
-`settings`: `vote_seconds`, `captions` (default on), optional `ui` (player button and hint strings, for a translated package).
+`settings`: `vote_seconds`, `captions` (default on), `auto_advance` (default on: a video screen moves to the next screen about a second after it ends), `ui.loops` (step names per flow, see below), optional `ui` (player button and hint strings, for a translated package).
 
 `concepts` drive the chapter map (the player fills it in as each concept's first screen is reached). Every screen has `id`, `type`, optional `concept` and optional `teacher_note` (shown only in teacher view).
 
@@ -30,7 +30,7 @@ The player engine (`player/`) is generic. Everything chapter-specific is in `cha
 |---|---|---|
 | `title` | `title`, `subtitle`, `image` | Title card; Next to continue |
 | `video` | `role`, `src`, `captions[]` ({start,end,text}), `overlays[]` ({text, at, until, anchor, style}) | Plays the screen video; captions and overlays drawn on top; continues at the end |
-| `still` | `image`, `audio`, `captions[]`, `overlays[]` | Shows the picture while the narration plays |
+| `still` | `image`, `audio`, `captions[]`, `overlays[]`, `video?` | Shows the picture while the narration plays; an optional silent `video` (output/screens/<id>.mp4, starting on the picture) plays once over it and holds its last frame |
 | `vote` | `question`, `audio` (optional prompt), `options[]` ({text, image, correct, reveal_audio, reveal_text, consequence_src?}), `observation` (true for "what did you see?"), `seconds` | Shows options with a countdown; teacher taps the class's majority; stores the choice for `reveal` |
 | `reveal` | `vote` (id of the vote screen) | Highlights the correct option; plays the chosen option's `consequence_src` (if any) then its `reveal_audio` |
 | `question_cards` | `prompt`, `audio`, `cards[]` ({text, image}) | Class picks a card; the choice is shown again in the next explain screen header |
@@ -52,7 +52,19 @@ The player engine (`player/`) is generic. Everything chapter-specific is in `cha
 
 ## Rules
 
-- Media keys are `src`, `image`, `audio`, `still`, `icon`, `result_still`, `result_video`, `consequence_src`, `reveal_audio`, `feedback_audio`; `package.py` checks every path exists.
+- Media keys are `src`, `video`, `image`, `audio`, `still`, `icon`, `result_still`, `result_video`, `consequence_src`, `reveal_audio`, `feedback_audio`; `package.py` checks every path exists.
 - Screen ids are unique across the chapter (`e1.c2.s3`).
 - A vote has exactly one `correct` option unless `observation` is true (then mark the expected one `correct`).
 - New needs are met with existing types. If something truly cannot be expressed, stop and discuss a schema version change with the user - never patch the player for one chapter.
+
+## Topic flow
+
+Every screen of a topic loop may carry `flow`: `story` | `challenge` | `wonder`. `build_chapter.py` copies it from the script screen, or else from the `episodes.json` loop for that concept. The player names the four steps in the rail and on the episode title's loop line after it (default `story`):
+
+| flow | step 1 (video, hook) | step 2 (vote) | step 3 (video, explain) | step 4 (mcq) |
+|---|---|---|---|---|
+| `story` | Story | Vote | Answer | Check |
+| `challenge` | Challenge | Try | Learn | New challenge |
+| `wonder` | Wonder | Guess | Find out | Check |
+
+A translated package overrides `settings.ui.loops` with all three lists: `{"story": [["Story", "Watch what happens"], ...], "challenge": [...], "wonder": [...]}`, where each item is a step name plus a short description.

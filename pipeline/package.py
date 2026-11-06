@@ -1,7 +1,7 @@
 """Validate and pack a Living Textbook lesson.
 
 The shippable lesson is the folder projects/<slug>/package/:
-    index.html, player.js, player.css     the standard player (copied unchanged from player/)
+    index.html, player.js, player.css     the standard player (copied unchanged from player/), plus fonts/
     chapter.json                           the chapter content (schema: skills/lt-package/chapter-schema.md)
     chapter.js                             chapter.json as a script (rewritten here) so file:// works offline
     media/                                 screen videos, narration audio, stills
@@ -32,7 +32,7 @@ REPO = Path(__file__).resolve().parent.parent
 MODES = {"do_along", "simulator", "mission"}
 TEMPLATES = {"compare_setups", "zoom_scale", "dial", "tap_diagram"}
 TYPES = {"title", "video", "still", "vote", "reveal", "question_cards", "mcq", "activity", "fact", "recap", "score"}
-MEDIA_KEYS = {"src", "image", "audio", "still", "icon", "result_still", "result_video", "consequence_src",
+MEDIA_KEYS = {"src", "video", "image", "audio", "still", "icon", "result_still", "result_video", "consequence_src",
               "reveal_audio", "feedback_audio"}
 ARCHIVE = ["intake.json", "analysis.json", "episodes.json", "script.json", "plan.json", "edit.json", "review.json",
            "audio/narration.json", "prompts", "storyboards", "renders/jobs*.json", "renders/cuts.json", "source/outline.json"]
@@ -90,7 +90,7 @@ def validate(pkg):
     walk_media(ch, media)
     missing = sorted(m for m in media if not (pkg / m).exists())
     errors += [f"missing media: {m}" for m in missing]
-    for f in ("index.html", "player.js", "player.css"):
+    for f in ("index.html", "player.js", "player.css", "fonts/Rajdhani-600.woff2", "fonts/Rajdhani-700.woff2", "fonts/NotoSans-var.woff2"):
         if not (pkg / f).exists():
             errors.append(f"player file missing: {f}")
         elif (REPO / "player" / f).exists() and (pkg / f).read_bytes() != (REPO / "player" / f).read_bytes():
