@@ -15,6 +15,9 @@ Every segment carries the clip's `screen` (plan.json), so assemble_edit.py can w
 video screen. Silent clips (wonder screens: no `narration` in plan.json) get spans from their
 planned `required` lengths and no audio.
 
+A plan.json shot with "skip": true is left out of the edit (its line was cut from the script); the other
+shots still take their spans from the observed cuts.
+
     python pipeline/build_edit.py --project projects/plants [--cover static/cover.png --cover-seconds 3]
 """
 import argparse
@@ -29,6 +32,8 @@ def spans_for(clip, observed, duration, tol=0.04):
         raise SystemExit(f"{clip['id']}: {len(clip['shots'])} shots planned but {len(starts)} found in the render; review needed")
     spans, carry = [], 0.0
     for shot, s, e in zip(clip["shots"], starts, ends):
+        if shot.get("skip"):  # shot cut from the edit (e.g. its narration line was removed from the script)
+            continue
         r0, r1 = shot["required"]
         need = (r1 - r0) + carry
         take = min(need, e - s)
