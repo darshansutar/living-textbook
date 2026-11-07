@@ -22,7 +22,7 @@ The player shows many screens that are not video. Their pictures are made here; 
 | `stills/<screen>.png` | still screens (stuck, recap, cliffhanger, mini-loop hook, reveal backdrop) | the moment in the story world |
 | `stills/<screen>_scene.png` | MCQ scenario | the new situation the question asks about |
 | `stills/<screen>_opt<k>.png` | MCQ options (only where pictures help) | as vote options |
-| `stills/<screen>_fact.png` | fact cards | the scientist, place, object or text tradition, respectfully drawn (no photo-likeness claims) |
+| `stills/<screen>_fact.png` | fact cards (not used since 2026-11-07: fact boxes go to teacher notes) | the scientist, place, object or text tradition, respectfully drawn (no photo-likeness claims) |
 | `stills/<activity>_step<k>.png`, `_result.png` | do-along | each step's hands-and-materials view; the expected result |
 | `stills/<activity>_<setup>_<state>.png` | simulators | one picture per set-up per outcome state; blank dials and scales |
 | `stills/<activity>_mission.png` | missions | the task in the story world |

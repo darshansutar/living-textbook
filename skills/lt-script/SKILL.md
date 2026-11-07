@@ -11,6 +11,7 @@ Input: approved `episodes.json`, `analysis.json`, the chapter text. Output: `scr
 
 - Spoken to a whole Class 5-10 room by a warm teacher-narrator. Short sentences (<= 18 words), present tense, plain words; every new term said once, then defined the book's way.
 - Indian English that translates cleanly: no idioms, puns or rhymes that only work in English; numbers said the way they are written on screen ("three point four five").
+- **Straight line: establish the story, then teach** (`flows.md`, Straight-line script). Step 1 only sets up who, where and the situation, then asks the question plainly. No side characters, teaser or rhetorical questions, contrast beats, filler or fact cards.
 - The story is told about the characters ("Ravi lifts the stone..."), never in their voice. No dialogue, no quotes from characters.
 - Facts, definitions, equations and units exactly as the chapter states them. Indian names for local things where natural (gud, shandy, kolhu), explained on first use.
 
@@ -35,7 +36,7 @@ Checklist per episode, before writing narration: one title; per topic exactly st
 
 ## 2. Narration lines
 
-One list `narration[]`, one line per audio file: `id` (screen id + suffix, e.g. `e1.c2.s1.n1`), exact text, screen, and `purpose` (story, explain, reveal-A, feedback-2, recap...). Split long explanations into several lines at sentence boundaries; a video clip covers 5-13 s of narration (lt-visual-plan joins clips into one screen video). A story's last line is the question the vote asks; nothing trails after it, because the player moves on by itself when the video ends.
+One list `narration[]`, one line per audio file: `id` (screen id + suffix, e.g. `e1.c2.s1.n1`), exact text, screen, and `purpose` (story, explain, reveal-A, feedback-2, recap...). Split long explanations into several lines at sentence boundaries; a video clip covers 5-13 s of narration (lt-visual-plan joins clips into one screen video). A story has 2-5 lines (15-25 s): who, where, the situation, then the question the vote asks; nothing trails after it, because the player moves on by itself when the video ends.
 
 ## 3. Questions
 
@@ -45,4 +46,4 @@ One list `narration[]`, one line per audio file: `id` (screen id + suffix, e.g. 
 
 ## 4. Fidelity check
 
-Before hand-off, compare against `analysis.json`: every concept has its screens; every key fact appears in an explain narration; every activity is placed; every end question is used or listed in teacher notes; no fact contradicts or exceeds the chapter. Record the result in `script.json.source_check`. Then show the user the script of the episode being produced (narration + questions) and get a yes before lt-audio.
+Before hand-off, compare against `analysis.json`: every concept has its screens; every key fact appears in an explain narration; every activity is placed; every end question is used or listed in teacher notes; every fact box is in the teacher notes; step 1 of every topic passes the straight-line check (`flows.md`); no fact contradicts or exceeds the chapter. Record the result in `script.json.source_check`. Then show the user the script of the episode being produced (narration + questions) and get a yes before lt-audio.

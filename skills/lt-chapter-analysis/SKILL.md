@@ -32,7 +32,7 @@ One concept = one idea a student must understand, usually one (sub)section. Merg
 - `size`:
   - **big** - core idea with its own evidence or method (photosynthesis needs CO2; comparing decimals; air pressure) -> full loop, 3-5 min
   - **small** - supporting idea, a definition or unit (what weather is; mm-cm conversion) -> mini loop, 1-2 min
-  - **fact** - a box with no new skill (Know a Scientist, IKS note, IMD motto) -> fact card, ~20 s
+  - **fact** - a box with no new skill (Know a Scientist, IKS note, IMD motto) -> teacher note (not narrated; no fact cards since 2026-11-07)
 - `activities`, `prompts`, `figures`, `end_questions`: IDs of the items below that belong to it
 - `misconceptions`: 2-4 beliefs students commonly hold about this idea, each with why it is tempting (e.g. "3.45 > 3.5 because 45 > 5"; "plants take food from soil"; "below 1000 mb is normal"). Use the book's own wrong ideas first (children's speech bubbles), then well-known ones for the topic. These become every vote and MCQ distractor.
 - `prior_knowledge`: what the book says students know from earlier grades

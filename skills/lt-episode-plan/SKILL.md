@@ -20,11 +20,11 @@ One setting and one problem that runs through the whole chapter and can only be 
 
 Every big concept becomes one **topic loop** of four screens (`skills/lt-script/flows.md`): hook video -> vote -> explain video -> check. Give each loop a `flow` in `episodes.json` (`loops[].flow`):
 
-- **`challenge`** for skills and procedures (most Maths). The hook is a job the child must do now; the explain video teaches the tool and then solves the job.
-- **`wonder`** for phenomena with a visible surprise (much of Science). The hook is a narrated surprising sight; the explain video shows the NCERT activity as the investigation.
-- **`story`** for ideas that live in people's lives and choices (much of Social Science, and the default). The hook is a character's moment that ends on the question.
+- **`challenge`** for skills and procedures (most Maths). The hook establishes a job the child must do now; the explain video teaches the tool and then solves the job.
+- **`wonder`** for phenomena with a visible surprise (much of Science). The hook establishes the character and the real thing they see, stated plainly; the explain video shows the NCERT activity as the investigation.
+- **`story`** for ideas that live in people's lives and choices (much of Social Science, and the default). The hook establishes the character, the place and the situation, and ends on the question.
 
-The flow changes what the screens do and what the player calls the steps; the screens stay the same. A small concept is folded into the nearest loop's explain video. NCERT fact boxes become one narrated line in an explain video or a recap.
+The flow changes what the screens do and what the player calls the steps; the screens stay the same. A small concept is folded into the nearest loop's explain video. NCERT fact boxes go into teacher notes (not narrated). Every hook is establishment only, in every subject: no side characters, teaser questions or contrast beats (`skills/lt-script/flows.md`, Straight-line script).
 
 ## 3. Episodes
 
@@ -39,4 +39,4 @@ Every NCERT activity becomes a **lab** (`skills/lt-lab`): the class does it on t
 
 ## 5. Checkpoint (mandatory)
 
-Show the user a short plan, as a table per episode: concepts (with NCERT refs), flow (story / challenge / wonder), hook in one line, activities and how each is shown, estimated screen time; plus the story world and cast in three lines. **Stop and wait for approval.** Record `approved_by`, the date and the user's words in `episodes.json.checkpoint`. Nothing in lt-script or later starts before this. Changes after approval invalidate only the affected episodes.
+Show the user a short plan, as a table per episode: concepts (with NCERT refs), flow (story / challenge / wonder), story set-up in one line (who, where, situation), activities and how each is shown, estimated screen time; plus the story world and cast in three lines. **Stop and wait for approval.** Record `approved_by`, the date and the user's words in `episodes.json.checkpoint`. Nothing in lt-script or later starts before this. Changes after approval invalidate only the affected episodes.

@@ -19,13 +19,16 @@ This skill is the operating contract.
 CHAPTER = EPISODE 1 ... EPISODE n                     (book order; one class period each, 8-15 min of screen time)
 EPISODE = TITLE (narrated welcome) -> 1-2 TOPIC LOOPS -> RECAP + NEXT TIME (narrated still)
 TOPIC LOOP (four screens, the same every time; the topic's flow sets what each does and is called):
-   1. hook video    - Story: a character's moment | Challenge: a job to do now | Wonder: a narrated surprise; ends on the question
+   1. hook video    - establishes the story only (who, where, the situation; 15-25 s) and asks the question plainly
+                      (Story | Challenge: the job to do now | Wonder: the real thing the character sees)
    2. vote          - question read aloud; the teacher taps the class's choice; right answer + reveal line on the same screen
                       (Vote | Try | Guess)
    3. explain video - the NCERT concept with its activity or figure as evidence, tied back to the hook
                       (Answer | Learn + solve the challenge | Find out)
    4. check         - one MCQ in a new situation, question read aloud, feedback per option (Check | New challenge | Check)
 ```
+
+**Straight-line script (all subjects, 2026-11-07):** establish the story at the start, then teach. No curiosity devices: no side characters or animals, teaser or rhetorical questions, contrast beats or fact cards (`skills/lt-script/flows.md`).
 
 Flow per topic: Challenge for skills and procedures (most Maths), Wonder for visible phenomena (much of Science), Story for ideas in people's lives (much of Social Science, the default).
 

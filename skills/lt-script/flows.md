@@ -4,6 +4,22 @@
 
 The three flows from the episode plan (**Story**, **Challenge**, **Wonder**) stay. They now change *what each of the four screens does and is called*, not which screens exist. Screen types: `skills/lt-package/chapter-schema.md`. How the screens look: `skills/lt-player-design/SKILL.md`.
 
+## Straight-line script (since 2026-11-07, every subject)
+
+The script runs in one straight line: it **establishes the story at the start, then turns to teaching** and stays there. The user: "it should be straight forward with establishing story at start and as it goes it turns to teaching; don't want curiosity like goats, questions and all".
+
+- **Step 1 establishes only:** the main character, the place, what they are doing, and the real situation the topic is about. 1-2 clips, about 15-25 s. Its last line asks the vote's question plainly, as a teacher would.
+- **From the vote on, everything teaches:** vote, lab, Answer video and check all work on the concept. The story comes back only to apply the concept ("Now think of the basket...").
+- **No curiosity devices, anywhere in the script:**
+  - side characters or animals that only set up a contrast (the goat in Sci7 Ch10 E1);
+  - rhetorical or teaser questions ("Have you ever seen a plant eat?", "But why...?", "What could it be?");
+  - contrast or mystery beats, filler lines (seedlings for sale), intros that are not the topic (growth stages);
+  - "Did you know?" fact cards and trivia asides.
+- **The flow names stay** (Story / Challenge / Wonder name the player's steps), but every flow opens the same way: a plain set-up of the situation. A Wonder hook is the character seeing the real thing in their world, stated plainly, not a surprise or a teaser.
+- **Check before hand-off:** read step 1 aloud. Every line must say who, where, what is happening or the question. Cut any line that does not.
+
+Sci7 Ch10 E1 was re-cut to this on 2026-11-07 (plan: claude.ai/artifact/RzSppp9hii9q6rh3R8L2bG): stories of 22 s and 5 s, no new renders.
+
 ## Episode
 
 | # | Screen | Type | Content | Time |
@@ -18,7 +34,7 @@ A chapter with several episodes also has a chapter home: the chapter title and o
 
 | # | id | Type | Story flow | Challenge flow | Wonder flow |
 |---|---|---|---|---|---|
-| 1 | `e1.c1.story` | `video` role `hook` | **Story** - a character meets something they cannot explain or decide. Ends on the question. | **Challenge** - a real job the main child must do *now* (pick the heavier bag, share the money, read the rain gauge). Ends on "How should she decide?" | **Wonder** - a surprising real sight, **narrated** (never silent), held long enough to look. Ends on "Why...?" |
+| 1 | `e1.c1.story` | `video` role `hook` | **Story** - establish who, where, and the situation the character is in. Ends on the question, asked plainly. | **Challenge** - establish the real job the main child must do *now* (pick the heavier bag, share the money, read the rain gauge). Ends on "How should she decide?" | **Wonder** - establish the character and the real thing they see in their world, **narrated** (never silent), stated plainly. Ends on the question. |
 | 2 | `e1.c1.vote` | `vote` | **Vote** - predict the answer | **Try** - the class tries it with what they already know. The reveal lines name the disagreement ("Many of you said 0.45 - but look at the tenths place..."); this replaces the old "Stuck" screen. | **Guess** - the class guesses why it happened or what the test will show (the observation vote) |
 | 3 | `e1.c1.explain` | `video` role `explain` | **Answer** - the NCERT concept in the book's terms, with its figure or evidence, tied back to the story | **Learn** - the concept arrives as the missing tool, then **the same video returns to the challenge and solves it** (this replaces the old separate "Solve" video) | **Find out** - the NCERT activity as a **lab** the class does on the projector, then a short Answer video with the concept only (a time-lapse video only when a lab cannot show it) |
 | 4 | `e1.c1.check` | `mcq` | **Check** - same idea, new situation | **New challenge** - the same tool on a new problem; numbers and working come from the player (option text, overlays), never from the picture | **Check** - the same idea near the child's home |
@@ -41,7 +57,7 @@ A chapter may mix flows.
 - Silent wonder clips.
 - Mini loops, fact cards and score screens.
 
-A fact box becomes one line of an answer video, or it moves to a later episode. A small concept is folded into a neighbouring topic's answer video.
+A fact box goes into the teacher notes. A small concept is folded into a neighbouring topic's answer video.
 
 ## Pacing rules (what made E1 v3 feel finished)
 
@@ -49,7 +65,7 @@ A fact box becomes one line of an answer video, or it moves to a later episode. 
 - **Every screen speaks.** Title, step 1, the question, each reveal, step 3, the check question, each feedback and the recap all have narration lines.
 - **One clip covers 5-13 s of narration** (two short sentences at most). Several clips are joined into one screen video. Leave 1-2 s of footage beyond the narration in the last shot of each clip; EN2 often cuts early and the edit needs the slack.
 - **Times.**
-  - Step 1 runs 20-50 s.
+  - Step 1 runs 15-25 s (establishment only).
   - Step 2 runs 20-30 s.
   - Step 3 runs 45-90 s, and for Challenge it includes the 10-20 s solve.
   - Step 4 runs 20-30 s.
@@ -60,8 +76,8 @@ A fact box becomes one line of an answer video, or it moves to a later episode. 
 ## Content rules
 
 - **NCERT activities become labs** (`skills/lt-lab`), placed after the vote. Videos never stage them. A video shows an activity only when a lab cannot, such as a slow change in nature, and then as a time-lapse (a teacher demonstration shows the teacher alone in a medium shot).
-- **No set-up scenes.** Cut any scene that exists only to reach a test or a fact, such as first aid on a knee or a kitchen accident before the iodine test (user feedback, 2026-11-06). A Wonder hook is one surprising sight and the question, about 15 s. Verified footage from earlier clips may be reused for it.
-- **Keep the chapter's heritage facts.** Fact boxes such as Vrikshayurveda (Science Ch10, p.140) go at the end of the topic's Answer video. Do not move them to "a later episode".
+- **No set-up scenes.** Cut any scene that exists only to reach a test or a fact, such as first aid on a knee or a kitchen accident before the iodine test (user feedback, 2026-11-06). A hook in any flow is the establishing set-up and the question, about 15-25 s (see Straight-line script). Verified footage from earlier clips may be reused for it.
+- **Fact boxes are not narrated.** Heritage and fact boxes (Vrikshayurveda, Science Ch10, p.140; Know a Scientist; IMD motto) go into the teacher notes of the nearest screen, not into a video or a fact card (user decision 2026-11-07; this replaces the 2026-11-06 rule that put them at the end of the Answer video).
 - Vote pictures show the set-up, never the result. Option pictures are 16:9 and match the option text exactly (the player shows them whole). In Maths, a vote can be text-only options (numbers drawn by the player) with the scene in the step 1 video.
 - 2-4 options, each 6 words or fewer, with one right option. Every other option is a misconception from `analysis.json`, never a joke. The player labels options A-D, so the narration may say "Hands up for A".
 - **Reveal line per option:**

@@ -17,8 +17,8 @@ The lab is the third step of the topic loop, after the class has committed to a 
 
 | Flow | 1 hook video | 2 vote | 3 **lab** | then | 4 check |
 |---|---|---|---|---|---|
-| Wonder (Science) | the surprise | Guess | **Find out**: do the NCERT activity | short Answer video (the concept, no demo) | Check |
-| Story (Social Science) | the story moment | Vote | **Find out**: measure or read the instrument | short Answer video | Check |
+| Wonder (Science) | the set-up: the character sees the real thing | Guess | **Find out**: do the NCERT activity | short Answer video (the concept, no demo) | Check |
+| Story (Social Science) | the story set-up | Vote | **Find out**: measure or read the instrument | short Answer video | Check |
 | Challenge (Maths) | the job to do (a narrated still is enough) | Try | **Learn**: the tool as a manipulative, then solve the job in the lab | none; the lab ends on the solved job | New challenge |
 
 The vote before a lab is a **prediction** (`predict: true`): the class commits to an answer, nothing is revealed, and a neutral line leads into the lab.
