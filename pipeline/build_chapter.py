@@ -298,11 +298,14 @@ class Builder:
                     overlays.append(o)
         if not overlays:
             for ov in sc.get("overlays", []):
-                o = {k: v for k, v in ov.items() if k != "during_line"}
-                l = ov.get("during_line")
+                o = {k: v for k, v in ov.items() if k not in ("during_line", "at_line", "offset", "duration")}
+                l = ov.get("during_line") or ov.get("at_line")  # lt-script writes at_line
                 if l and l in line_start:
-                    o.setdefault("at", round(line_start[l] + 0.2, 2))
-                    o.setdefault("until", round(line_start[l] + self.seconds(l), 2))
+                    # optional offset/duration (s) place the overlay inside the line, e.g. on one shot
+                    at = line_start[l] + ov.get("offset", 0.2)
+                    o.setdefault("at", round(at, 2))
+                    end = at + ov["duration"] if "duration" in ov else line_start[l] + self.seconds(l)
+                    o.setdefault("until", round(end, 2))
                 if "at" in o:
                     overlays.append(o)
                 else:
