@@ -8,7 +8,7 @@ The three flows from the episode plan (**Story**, **Challenge**, **Wonder**) sta
 
 The script runs in one straight line: it **establishes the story at the start, then turns to teaching** and stays there. The user: "it should be straight forward with establishing story at start and as it goes it turns to teaching; don't want curiosity like goats, questions and all".
 
-- **Step 1 establishes only:** the main character, the place, what they are doing, and the real situation the topic is about. 1-2 clips, about 15-25 s. Its last line asks the vote's question plainly, as a teacher would.
+- **Step 1 establishes only:** the main character, the place, what they are doing, and the real situation the topic is about, and how that situation leads to the question (see Smooth, continuous story below). 1-3 clips, about 15-35 s. Its last line asks the vote's question plainly, as a teacher would.
 - **From the vote on, everything teaches:** vote, lab, Answer video and check all work on the concept. The story comes back only to apply the concept ("Now think of the basket...").
 - **No curiosity devices, anywhere in the script:**
   - side characters or animals that only set up a contrast (the goat in Sci7 Ch10 E1);
@@ -16,9 +16,22 @@ The script runs in one straight line: it **establishes the story at the start, t
   - contrast or mystery beats, filler lines (seedlings for sale), intros that are not the topic (growth stages);
   - "Did you know?" fact cards and trivia asides.
 - **The flow names stay** (Story / Challenge / Wonder name the player's steps), but every flow opens the same way: a plain set-up of the situation. A Wonder hook is the character seeing the real thing in their world, stated plainly, not a surprise or a teaser.
-- **Check before hand-off:** read step 1 aloud. Every line must say who, where, what is happening or the question. Cut any line that does not.
+- **Check before hand-off:** read step 1 aloud. Every line must say who, where, what is happening, why it leads to the question, or the question. Cut any line that does not.
 
 Sci7 Ch10 E1 was re-cut to this on 2026-11-07 (plan: claude.ai/artifact/RzSppp9hii9q6rh3R8L2bG): stories of 22 s and 5 s, no new renders.
+
+## Smooth, continuous story (since 2026-11-10, every subject, overrides any reading of the straight-line rule that cuts a link)
+
+The whole episode must play as **one continuous story with no sudden jumps**. The user: "all script should feel smooth and continuous, not like sudden cut which confuses the viewer". The trigger was team feedback on Sci7 Ch10 E1: "Bhoomika sees pale leaves -> then suddenly we are asking WHICH plant will grow the best?" The straight-line cut had removed every line between the problem and the test.
+
+- **Every line follows from the one before.** A viewer who hears only the previous line must understand why this line comes next. No new person, place, object or activity appears without a line that brings it in.
+- **The story earns the vote's question.** Step 1 runs as: situation -> what the character notices (the problem) -> the character wonders *why*, said plainly by the narrator and tied to what is on screen -> what they decide to do about it. Only then comes the question. If the vote is about an experiment (pots, a test, a measurement), the story shows the character **deciding on and setting up that experiment** first. The vote never introduces it cold.
+- **Name the link out loud.** The question uses the story's own words and objects ("these pale seedlings", "Ba's hands and Jinal's fingers"), not a new framing.
+- **Screen-to-screen bridges.** Each screen's first line picks up where the last screen ended: story -> vote (the question already set up), reveal -> answer ("Let us see why."), answer -> check (back to the character or the place), topic 1 -> topic 2 (one line that moves the same character on: "Now Bhoomika wonders about something else..."), last topic -> recap.
+- **Picture and line agree.** Every line's beat is something the clip shows. A line about a person who is not on screen, or a cut to a place the narration has not named, is a jump. Fix it with a place label or a bridging line.
+- **Still banned:** side characters, animals or scenes that are not part of the topic's own situation (the goat, the knee first aid), teasers, "Did you know?" cards. A *why* that comes straight out of the story's own problem is not a teaser: it is the link, and it is required.
+- **Continuity check before hand-off (record it in `source_check`):** read the episode's narration aloud from the title to the recap, in order, including each vote prompt and the right answer's reveal. Mark every place where a listener could ask "wait, where did that come from?" and add or rewrite a line there. Then check each story's clip beats against its lines.
+- A story runs 2-6 lines (about 15-35 s). Continuity wins over length.
 
 ## Episode
 
@@ -76,7 +89,7 @@ A fact box goes into the teacher notes. A small concept is folded into a neighbo
 ## Content rules
 
 - **NCERT activities become labs** (`skills/lt-lab`), placed after the vote. Videos never stage them. A video shows an activity only when a lab cannot, such as a slow change in nature, and then as a time-lapse (a teacher demonstration shows the teacher alone in a medium shot).
-- **No set-up scenes.** Cut any scene that exists only to reach a test or a fact, such as first aid on a knee or a kitchen accident before the iodine test (user feedback, 2026-11-06). A hook in any flow is the establishing set-up and the question, about 15-25 s (see Straight-line script). Verified footage from earlier clips may be reused for it.
+- **No unrelated set-up scenes.** Cut any scene from *outside* the topic's own situation that exists only to reach a test or a fact, such as first aid on a knee or a kitchen accident before the iodine test (user feedback, 2026-11-06). This is different from the link the continuity rule requires: the character wondering why about the story's own problem, and deciding on and setting up the test, must stay. A hook in any flow is the establishing set-up, the link and the question, about 15-35 s (see Straight-line script and Smooth, continuous story). Verified footage from earlier clips may be reused for it.
 - **Fact boxes are not narrated.** Heritage and fact boxes (Vrikshayurveda, Science Ch10, p.140; Know a Scientist; IMD motto) go into the teacher notes of the nearest screen, not into a video or a fact card (user decision 2026-11-07; this replaces the 2026-11-06 rule that put them at the end of the Answer video).
 - Vote pictures show the set-up, never the result. Option pictures are 16:9 and match the option text exactly (the player shows them whole). In Maths, a vote can be text-only options (numbers drawn by the player) with the scene in the step 1 video.
 - 2-4 options, each 6 words or fewer, with one right option. Every other option is a misconception from `analysis.json`, never a joke. The player labels options A-D, so the narration may say "Hands up for A".
