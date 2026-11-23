@@ -520,8 +520,21 @@ body[data-screen="film"] #topic { color: var(--ink-2); }
 
 /* language switch (chapter.json `languages`): a second glass pill just left of Menu */
 .lang-chip[hidden] { display: none; }
-.lang-chip { color: var(--primary); cursor: pointer; font-family: inherit; appearance: auto; }
-select.lang-chip option { color: #111; background: #fff; }
+.lang-chip { color: var(--primary); }
+.menu-chip.lang-dd { padding: 0; }
+.lang-dd .lang-cur { display: flex; align-items: center; gap: .5rem; min-height: inherit; height: 100%; padding: calc(var(--u) * .6) calc(var(--u) * 1.3);
+  border: 0; background: none; color: inherit; font: inherit; cursor: pointer; border-radius: 999px; }
+.lang-dd .chev { flex: none; opacity: .85; transition: transform .2s; }
+.lang-dd.open .chev { transform: rotate(180deg); }
+.lang-dd .lang-list { position: absolute; top: calc(100% + .45rem); right: 0; min-width: 100%; margin: 0; padding: .3rem; list-style: none;
+  background: rgba(24, 20, 16, .96); border-radius: 1rem; box-shadow: inset 0 0 0 1px var(--line-2), 0 10px 28px rgba(0, 0, 0, .45);
+  opacity: 0; transform: translateY(-4px); pointer-events: none; visibility: hidden; transition: opacity .15s, transform .15s, visibility .15s; }
+.lang-dd.open .lang-list { opacity: 1; transform: none; pointer-events: auto; visibility: visible; }
+.lang-dd .lang-list li { padding: .55rem 1rem .55rem 1.7rem; border-radius: .7rem; color: var(--ink); font-size: .9rem; font-weight: 600; white-space: nowrap; cursor: pointer; position: relative; }
+.lang-dd .lang-list li:hover, .lang-dd .lang-list li:focus-visible { background: rgba(255, 255, 255, .09); outline: none; }
+.lang-dd .lang-list li[aria-selected="true"] { color: var(--primary); }
+.lang-dd .lang-list li[aria-selected="true"]::before { content: ""; position: absolute; left: .7rem; top: 50%; width: .32rem; height: .6rem; margin-top: -.42rem;
+  border: solid currentColor; border-width: 0 2px 2px 0; transform: rotate(45deg); }
 
 /* Devanagari (hi, mr, ...) has marks above and below the letters: give the tight Rajdhani headings room */
 :lang(hi) .sheet h1, :lang(mr) .sheet h1, :lang(hi) .titlecard h1, :lang(mr) .titlecard h1, :lang(hi) .map-head h2, :lang(mr) .map-head h2 { line-height: 1.4; }

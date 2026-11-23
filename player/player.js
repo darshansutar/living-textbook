@@ -1131,18 +1131,37 @@
     // keep the rail's topic text clear of both pills
     $('#rail').style.paddingRight = (stage.clientWidth - b.offsetLeft + 12) + 'px';
   }
+  // a small custom drop-down (native <select> menus cannot be styled): current language + chevron, a glass list under it
+  function closeLang() { const b = $('#btn-lang'); if (b) { b.classList.remove('open'); const t = b.querySelector('.lang-cur'); if (t) t.setAttribute('aria-expanded', 'false'); } }
   function drawLangButton() {
     const b = $('#btn-lang'), ls = languages();
     if (!b) return;
     b.hidden = ls.length < 2;
     if (b.hidden) return;
-    // a drop-down of every language of the lesson; the current one is selected
+    const cur = ls.find(l => l.code === S.ch.language) || ls[0];
     b.textContent = '';
-    ls.forEach(l => { const o = document.createElement('option'); o.value = l.code; o.textContent = l.label; b.appendChild(o); });
-    b.value = S.ch.language || ls[0].code;
+    const t = h('button', { type: 'button', class: 'lang-cur', 'aria-haspopup': 'listbox', 'aria-expanded': 'false', title: 'Language (L)' });
+    t.appendChild(document.createTextNode(cur.label));
+    t.insertAdjacentHTML('beforeend', '<svg class="chev" viewBox="0 0 12 8" width="12" height="8" aria-hidden="true"><path d="M1.5 1.75 6 6.25l4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+    const ul = h('ul', { class: 'lang-list', role: 'listbox', 'aria-label': 'Language' });
+    ls.forEach(l => {
+      const li = h('li', { role: 'option', tabindex: '-1', 'aria-selected': l.code === cur.code ? 'true' : 'false' });
+      li.appendChild(document.createTextNode(l.label));
+      li.addEventListener('click', e => { e.stopPropagation(); closeLang(); switchLanguage(l.code); });
+      li.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); li.click(); } });
+      ul.appendChild(li);
+    });
+    t.addEventListener('click', e => {
+      e.stopPropagation();
+      const open = !b.classList.contains('open');
+      b.classList.toggle('open', open);
+      t.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    b.append(t, ul);
     placeLangButton();
   }
-  if ($('#btn-lang')) $('#btn-lang').addEventListener('change', e => switchLanguage(e.target.value));
+  document.addEventListener('click', closeLang);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLang(); });
   window.addEventListener('resize', placeLangButton);
   document.addEventListener('keydown', e => {
     if (e.target && (e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT')) return;
@@ -1165,7 +1184,7 @@
   function wake() {
     bar.classList.remove('idle'); menuBtn.classList.remove('idle'); if ($('#btn-lang')) $('#btn-lang').classList.remove('idle');
     clearTimeout(idleT);
-    idleT = setTimeout(() => { if (!bar.matches(':hover') && menu.hidden) { bar.classList.add('idle'); menuBtn.classList.add('idle'); if ($('#btn-lang')) $('#btn-lang').classList.add('idle'); } }, 3500);
+    idleT = setTimeout(() => { if (!bar.matches(':hover') && menu.hidden && !($('#btn-lang') && $('#btn-lang').classList.contains('open'))) { bar.classList.add('idle'); menuBtn.classList.add('idle'); if ($('#btn-lang')) $('#btn-lang').classList.add('idle'); } }, 3500);
   }
   stage.addEventListener('pointermove', wake);
   stage.addEventListener('pointerdown', wake);
