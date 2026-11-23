@@ -1,0 +1,7 @@
+/* Living Textbook: inside a lesson, keep the workbench's bar, card and sign clear of the lesson's step rail (top)
+   and its Back / Next buttons (bottom). */
+.lt-embed #hud { top: calc(5.2vw + .6rem); }
+.lt-embed #panel { top: calc(5.2vw + var(--hud-h)); max-height: calc(100% - 5.2vw - var(--hud-h) - 6vw - 1rem); }
+.lt-embed body[data-screen="work"] #focus, .lt-embed body[data-screen="end"] #focus { top: calc(5.2vw + var(--hud-h)); bottom: calc(6vw + .6rem); }
+.lt-embed #readout { bottom: calc(6vw + .8rem); }
+.lt-embed .title-block { bottom: calc(6vw + 2rem); }
