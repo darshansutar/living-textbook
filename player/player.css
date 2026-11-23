@@ -517,3 +517,14 @@ body[data-screen="film"] #topic { color: var(--ink-2); }
 .lab-frame { border: 0; background: #14100d; }
 /* a prediction vote: the class's pick in gold, no right or wrong yet */
 .choice .tag.pick { background: var(--primary); color: var(--primary-ink); }
+
+/* language switch (chapter.json `languages`): a second glass pill just left of Menu */
+.lang-chip[hidden] { display: none; }
+.lang-chip { color: var(--primary); cursor: pointer; font-family: inherit; appearance: auto; }
+select.lang-chip option { color: #111; background: #fff; }
+
+/* Devanagari (hi, mr, ...) has marks above and below the letters: give the tight Rajdhani headings room */
+:lang(hi) .sheet h1, :lang(mr) .sheet h1, :lang(hi) .titlecard h1, :lang(mr) .titlecard h1, :lang(hi) .map-head h2, :lang(mr) .map-head h2 { line-height: 1.4; }
+:lang(hi) .title-block h1, :lang(mr) .title-block h1, :lang(hi) .topic-card b, :lang(mr) .topic-card b { line-height: 1.25; }
+:lang(hi) .choice .txt, :lang(mr) .choice .txt, :lang(hi) .home-eps .btn span, :lang(mr) .home-eps .btn span { line-height: 1.35; }
+:lang(hi) .steps-line b, :lang(mr) .steps-line b, :lang(hi) #steps .name, :lang(mr) #steps .name { line-height: 1.3; }

@@ -53,6 +53,9 @@
     zoom_in: 'Zoom in', zoom_out: 'Zoom out', show_all: 'Show all', mission: 'Village mission', days: 'days',
     report_back: 'Next class we will ask', map: 'Chapter map', next_up: 'Next up', home: 'Chapter home',
     next_episode: 'Next episode', topic: 'Topic', recap_step: 'Recap',
+    // labels of the fixed buttons in index.html (a translated chapter sets them in settings.ui)
+    menu: 'Menu', menu_home: 'Chapter home', menu_replay: 'Replay narration', menu_captions: 'Captions',
+    menu_map: 'Chapter map', menu_teacher: 'Teacher notes', menu_full: 'Full screen',
     // the four steps of a topic loop, named after the topic's flow (chapter.json screen `flow`)
     loops: {
       story: [['Story', 'Watch what happens'], ['Vote', 'The class predicts'], ['Answer', 'Find out why'], ['Check', 'Try a new case']],
@@ -220,7 +223,7 @@
   // ---------------- step rail: the four steps of the topic loop (story, vote, answer, check) ----------------
   function loopStep(sc) {
     if (!sc) return -1;
-    if (sc.type === 'video') return sc.role === 'explain' ? 2 : 0;
+    if (sc.type === 'video') return sc.role === 'explain' ? 2 : sc.role === 'recap' ? -1 : 0;   // a closing video ends the loop, like a recap still
     if (sc.type === 'vote' || sc.type === 'question_cards') return 1;
     if (sc.type === 'reveal') return 2;
     if (sc.type === 'mcq') return 3;
@@ -258,7 +261,7 @@
     const ol = $('#steps'), topic = $('#topic'), ui = S.ui;
     ol.innerHTML = ''; topic.textContent = '';
     if (!S.ep || !sc) return;
-    const cur = loopStep(sc), end = sc.role === 'cliffhanger' || sc.type === 'recap' || sc.type === 'score';
+    const cur = loopStep(sc), end = sc.role === 'cliffhanger' || sc.role === 'recap' || sc.type === 'recap' || sc.type === 'score';
     loopNames(sc).forEach(([name], i) => {
       const state = end || i < cur ? 'done' : i === cur ? 'now' : '';
       ol.appendChild(h('li', { class: state },
@@ -431,12 +434,16 @@
   // the lesson's Next unlocks (and pulses) when the lab reports that the class finished it
   RENDER.lab = sc => {
     // the lab plays its narration from the lesson's media/audio (lines named <prefix><key>.mp3)
-    const src = sc.src + (sc.src.indexOf('?') < 0 ? '?' : '&') + 'embed=1' +
-      (sc.lines ? '&lines=' + encodeURIComponent(sc.lines) + '&audio=' + encodeURIComponent('../../media/audio/') : '');
+    // a translated chapter keeps its lines in its own folder (sc.audio_dir) and tells the lab its language
+    const src = sc.src + (sc.src.indexOf('?') < 0 ? '?' : '&') + 'embed=1' + '&lang=' + encodeURIComponent(S.ch.language || 'en') +
+      (sc.lines ? '&lines=' + encodeURIComponent(sc.lines) + '&audio=' + encodeURIComponent('../../' + (sc.audio_dir || 'media/audio/')) : '');
     const f = h('iframe', { class: 'full lab-frame', src, title: sc.title || 'Lab', allow: 'autoplay' });
     screenEl.appendChild(f);
-    setNext(false, false);
     setReplay(null);
+    // a hosted lab (sc.hosted, e.g. a Starling workbench) cannot report that it is finished:
+    // Next stays on, and the teacher taps it when the class has done the lab
+    if (sc.hosted) { setNext(true, false); return { next: () => false }; }
+    setNext(false, false);
     // the lab opens on its intro; the lesson's Next (or the lab's Start button) starts it,
     // then Next stays locked until the lab reports it is finished
     let phase = 'loading';
@@ -1062,7 +1069,7 @@
       const right = sc.type === 'vote' ? sc.options.filter(o => o.correct).map(o => o.text).join(', ') : (sc.options[sc.answer] || {}).text;
       p.appendChild(h('div', { class: 'note' }, h('b', { text: S.ui.right_answer + ': ' }), h('span', { class: 'rich', html: rich(right || '') })));
     }
-    p.appendChild(h('div', { class: 'keys', text: '→ / Space next · ← back · 1-9 choose · R replay · C captions · M map · T teacher · F full screen · H home' }));
+    p.appendChild(h('div', { class: 'keys', text: '→ / Space next · ← back · 1-9 choose · R replay · C captions · M map · T teacher · F full screen · H home' + (languages().length > 1 ? ' · L language' : '') }));
   }
 
   // ---------------- controls ----------------
@@ -1098,6 +1105,45 @@
   $('#btn-teacher').addEventListener('click', toggleTeacher);
   $('#btn-map').addEventListener('click', toggleMap);
   $('#btn-full').addEventListener('click', fullscreen);
+
+  // ---------------- language ----------------
+  // chapter.json `languages`: [{code, label, src}] lists the same lesson in other languages (src = that
+  // language's chapter.js). The language button reloads on the same screen; the choice is remembered.
+  function languages() { return (S.ch && S.ch.languages) || []; }
+  function switchLanguage(code) {
+    const ls = languages();
+    if (ls.length < 2) return;
+    let to = typeof code === 'string' ? ls.find(l => l.code === code) : null;
+    if (!to) { const i = ls.findIndex(l => l.code === S.ch.language); to = ls[(i + 1) % ls.length]; }  // L key: next language
+    if (to.code === S.ch.language) return;
+    store.set('lang', to.code);
+    const q = new URLSearchParams(location.search);
+    q.set('lang', to.code);
+    const sc = S.ep && S.ep.screens[S.idx];
+    if (sc) q.set('screen', sc.id); else q.delete('screen');
+    q.delete('ep');
+    location.search = q.toString();
+  }
+  function placeLangButton() {
+    const b = $('#btn-lang');
+    if (!b || b.hidden) return;
+    b.style.right = (stage.clientWidth - menuBtn.offsetLeft + 8) + 'px';
+    // keep the rail's topic text clear of both pills
+    $('#rail').style.paddingRight = (stage.clientWidth - b.offsetLeft + 12) + 'px';
+  }
+  function drawLangButton() {
+    const b = $('#btn-lang'), ls = languages();
+    if (!b) return;
+    b.hidden = ls.length < 2;
+    if (b.hidden) return;
+    // a drop-down of every language of the lesson; the current one is selected
+    b.textContent = '';
+    ls.forEach(l => { const o = document.createElement('option'); o.value = l.code; o.textContent = l.label; b.appendChild(o); });
+    b.value = S.ch.language || ls[0].code;
+    placeLangButton();
+  }
+  if ($('#btn-lang')) $('#btn-lang').addEventListener('change', e => switchLanguage(e.target.value));
+  window.addEventListener('resize', placeLangButton);
   document.addEventListener('keydown', e => {
     if (e.target && (e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT')) return;
     const k = e.key;
@@ -1111,14 +1157,15 @@
     else if (k === 't' || k === 'T') toggleTeacher();
     else if (k === 'f' || k === 'F') fullscreen();
     else if (k === 'h' || k === 'H') home();
+    else if (k === 'l' || k === 'L') switchLanguage();
     wake();
   });
   // the bar hides after a few seconds without the mouse, so the projected picture is clean
   let idleT = null;
   function wake() {
-    bar.classList.remove('idle'); menuBtn.classList.remove('idle');
+    bar.classList.remove('idle'); menuBtn.classList.remove('idle'); if ($('#btn-lang')) $('#btn-lang').classList.remove('idle');
     clearTimeout(idleT);
-    idleT = setTimeout(() => { if (!bar.matches(':hover') && menu.hidden) { bar.classList.add('idle'); menuBtn.classList.add('idle'); } }, 3500);
+    idleT = setTimeout(() => { if (!bar.matches(':hover') && menu.hidden) { bar.classList.add('idle'); menuBtn.classList.add('idle'); if ($('#btn-lang')) $('#btn-lang').classList.add('idle'); } }, 3500);
   }
   stage.addEventListener('pointermove', wake);
   stage.addEventListener('pointerdown', wake);
@@ -1126,8 +1173,25 @@
   // ---------------- boot ----------------
   function boot(ch) {
     if (!ch || !ch.episodes) { screenEl.appendChild(h('div', { class: 'error', text: UI_DEFAULT.loading_error })); return; }
+    // the remembered (or ?lang=) language: load that language's chapter.js first, then boot on it
+    const want = new URLSearchParams(location.search).get('lang') || store.get('lang', null);
+    const alt = want && want !== ch.language && !boot.tried && (ch.languages || []).find(l => l.code === want && l.src);
+    if (alt) {
+      boot.tried = true;
+      const tag = document.createElement('script');
+      tag.src = alt.src;
+      tag.onload = () => boot(window.CHAPTER && window.CHAPTER.language === want ? window.CHAPTER : ch);
+      tag.onerror = () => boot(ch);
+      document.head.appendChild(tag);
+      return;
+    }
     S.ch = ch;
     S.ui = Object.assign({}, UI_DEFAULT, (ch.settings && ch.settings.ui) || {});
+    // fixed button labels follow the chapter's language
+    [['#btn-menu', 'menu'], ['#btn-home', 'menu_home'], ['#btn-replay', 'menu_replay'], ['#btn-cc', 'menu_captions'],
+     ['#btn-map', 'menu_map'], ['#btn-teacher', 'menu_teacher'], ['#btn-full', 'menu_full'],
+     ['#btn-back span', 'back'], ['#btn-next span', 'next']].forEach(([sel, key]) => { const el = $(sel); if (el) el.textContent = S.ui[key]; });
+    drawLangButton();
     S.captions = store.get('captions', !(ch.settings && ch.settings.captions === false));
     $('#btn-cc').classList.toggle('on', S.captions);
     document.title = ch.chapter.title + ' · Living Textbook';
