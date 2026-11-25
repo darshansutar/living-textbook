@@ -2,7 +2,8 @@
    A small training bay on a plinth, drawn in code in the Starling "anatomy" look: charcoal base, colour only for meaning
    (amber = tap target, red = danger, green = made safe, blue-white = arc, orange = hot). No text in the drawing.
    Sets window.FIG_DATA (camera views and part anchors) and window.FIG_SVG (the picture). Parts: machine + switch, mains socket and plug,
-   wet patch, bench + plate + soapstone, cotton waste, hot electrode stubs, steel bin, store cabinet, extinguisher (store / near), visitor, fire. */
+   wet patch, bench + plate + soapstone, cotton waste, hot electrode stubs, steel bin, store cabinet, extinguisher (store / near), step 4's authorisation corner (visitor's helmet on a peg, an empty marked standing
+   spot, a lock plate with its key on the machine; NO people are drawn), fire. */
 (function () {
   "use strict";
   var NS = 'http://www.w3.org/2000/svg';
@@ -79,7 +80,7 @@
   var A = {   // anchors in the scene, for chips and the pointing hand
     switch: P(2.25, 2.62, 1.3), machine: P(1.8, 1.5, 2.85), wet: P(3.3, 4.0, .1), waste: P(6.1, 4.4, .8),
     ext: P(8.9, 3.3, 1.6), spot: P(8.9, 3.3, .1), bin: P(3.6, 6.1, 1.1), stubs: P(1.4, 3.8, .15),
-    soap: P(8.8, 2.35, 2.1), trainee: P(1.28, 3.5, 2.55), plug: P(3.88, .38, .72), dial: P(1.2, 2.4, 1.25),
+    soap: P(8.8, 2.35, 2.1), trainee: P(1.1, 3.4, 1.5), plug: P(3.88, .38, .72), dial: P(1.2, 2.4, 1.25),
     bench: P(7.4, 2.8, 1.9), plate: P(7.4, 1.6, 2.05), cab: P(9.3, 6.3, 1.5)
   };
 
@@ -266,16 +267,23 @@
     s += '<g class="obj ext-near" data-obj="ext" data-hit="ext" id="extNear" style="opacity:0;display:none">' + exN +
       '<polygon class="pad" points="' + pts([P(8.5, 3.7, 0), P(9.4, 3.7, 0), P(9.4, 3.7, 2.1), P(8.5, 3.7, 2.1)]) + '"/></g>';
 
-    // a passing trainee, drawn plainly (a helmet is the one light shape)
-    var tx = .9, ty = 3.3;
+    // step 4 without a person: a visitor's helmet hung on a peg, an empty marked standing spot in front of the machine, and the
+    // machine's lock plate with its key (the one the authorised person holds); the group keeps its id and hooks (data-obj trainee)
+    var tx = .9, ty = 3.3, hp = P(tx + .13, ty + .13, 1.2);
+    var mface = my + md;   // the machine's front face (fy is reused for cotton fibres further up)
+    var lockPts = [P(2.68, mface, .82), P(2.96, mface, .82), P(2.96, mface, 1.42), P(2.68, mface, 1.42)];
+    var kc = P(2.82, mface, 1.18);
     s += '<g class="obj" data-obj="trainee" data-hit="trainee" id="traineeGrp" style="opacity:0;display:none">' +
-      '<ellipse class="cshadow" cx="' + f(P(tx + .4, ty + .2, 0)[0]) + '" cy="' + f(P(tx + .4, ty + .2, 0)[1]) + '" rx="46" ry="16" filter="url(#soft3)"/>' +
-      box(tx + .02, ty, 0, .22, .22, .95, 'trousers') + box(tx + .5, ty, 0, .22, .22, .95, 'trousers') +
-      box(tx - .1, ty - .08, .95, .95, .4, 1.0, 'shirt') + box(tx - .3, ty, 1.05, .2, .2, .8, 'shirt') + box(tx + .85, ty, 1.05, .2, .2, .8, 'shirt');
-    var hd = P(tx + .38, ty + .2, 2.3);
-    s += '<ellipse class="skin" cx="' + f(hd[0]) + '" cy="' + f(hd[1]) + '" rx="13" ry="15"/>' +
-      '<path class="helmet" d="M' + f(hd[0] - 17) + ',' + f(hd[1] - 4) + 'q17,-26 34,0z"/><path class="helmet-b" d="M' + f(hd[0] - 21) + ',' + f(hd[1] - 3) + 'h42"/>' +
-      '<polygon class="pad" points="' + pts([P(tx - .3, ty + .5, 0), P(tx + 1.1, ty + .5, 0), P(tx + 1.1, ty + .5, 2.6), P(tx - .3, ty + .5, 2.6)]) + '"/></g>';
+      '<ellipse class="cshadow" cx="' + f(P(tx + .13, ty + .13, 0)[0]) + '" cy="' + f(P(tx + .13, ty + .13, 0)[1]) + '" rx="30" ry="11" filter="url(#soft3)"/>' +
+      box(tx + .05, ty + .05, 0, .16, .16, 1.0, 'steel-dk') + box(tx - .06, ty + .05, 1.0, .38, .16, .08, 'steel') +
+      '<ellipse class="cshadow" cx="' + f(hp[0]) + '" cy="' + f(hp[1] + 4) + '" rx="19" ry="6"/>' +
+      '<path class="helmet" d="M' + f(hp[0] - 17) + ',' + f(hp[1]) + 'q17,-30 34,0z"/><path class="helmet-b" d="M' + f(hp[0] - 21) + ',' + f(hp[1] + 1) + 'h42"/>' +
+      '<path class="helmet-shine" d="M' + f(hp[0] - 10) + ',' + f(hp[1] - 6) + 'q4,-10 12,-12"/>' +
+      '<g class="stand-spot">' + poly('spot-ring', ring(2.2, 3.75, .62, .02, 36)) + poly('spot-ring in', ring(2.2, 3.75, .36, .02, 30)) +
+      line([P(2.1, 3.65, .02), P(2.3, 3.85, .02)], 'spot-x') + line([P(2.3, 3.65, .02), P(2.1, 3.85, .02)], 'spot-x') + '</g>' +
+      poly('lockplate', lockPts) + '<ellipse class="keyhole" cx="' + f(kc[0]) + '" cy="' + f(kc[1]) + '" rx="3.4" ry="4.6"/>' +
+      '<path class="keytag" d="M' + f(kc[0] + 3) + ',' + f(kc[1] - 2) + 'l14,12 q6,5 2,9 q-5,3 -9,-2 l-9,-14z"/>' +
+      '<polygon class="pad" points="' + pts([P(tx - .3, ty + .5, 0), P(tx + 1.1, ty + .5, 0), P(tx + 1.1, ty + .5, 1.6), P(tx - .3, ty + .5, 1.6)]) + '"/></g>';
 
     // fire: soft layered flames, a glow and smoke (only when the extinguisher was left in the store)
     var fc = P(5.95, 2.1, 1.9);

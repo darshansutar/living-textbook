@@ -26,7 +26,7 @@ svg[data-focus] .pool { opacity: .3; }
 svg[data-focus] .obj:not([data-lit]) { filter: brightness(.5) saturate(.55); }
 .obj[data-lit] { filter: brightness(1.2); }
 .obj[data-lit] .solid .f { stroke: var(--e-lit); }
-[data-part="station"], [data-part="plate"], [data-part="trainee"], [data-part="canvas"] { transition: opacity .8s ease, transform .8s var(--ease); }
+[data-part="station"], [data-part="plate"], [data-part="spot"], [data-part="canvas"], [data-part="rest"] { transition: opacity .8s ease, transform .8s var(--ease); }
 
 /* ---- leather: gradient, grain, crease, stitch, sheen ---- */
 .lth { stroke: #1b1611; stroke-width: .6px; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
@@ -43,24 +43,18 @@ svg[data-focus] .obj:not([data-lit]) { filter: brightness(.5) saturate(.55); }
 .tongue { fill: #2a231c; stroke: #0f0c09; stroke-width: .3px; vector-effect: non-scaling-stroke; }
 .lace { fill: none; stroke: #8a8378; stroke-width: .9px; stroke-linecap: round; opacity: .8; }
 
-/* ---- Mallesh: a quiet charcoal silhouette ---- */
-.bodyg .trs { stroke: #44474e; stroke-width: .5px; vector-effect: non-scaling-stroke; }
-.bodyg .shoe { fill: #17181a; stroke: #3a3c41; stroke-width: .5px; vector-effect: non-scaling-stroke; }
-.bodyg .shirt { stroke: #5a5e65; stroke-width: .5px; vector-effect: non-scaling-stroke; }
-.bodyg .arm { fill: none; stroke-width: 8.2px; stroke-linecap: round; }
-.bodyg .hand, .bodyg .head, .bodyg .neck { stroke: #5d6067; stroke-width: .4px; vector-effect: non-scaling-stroke; }
-.bodyg .hair { fill: #121315; }
-.bodyg .ear { stroke: #4c4f55; stroke-width: .3px; vector-effect: non-scaling-stroke; }
-.bodyg .collar { fill: none; stroke: #20222a; stroke-width: 1.4px; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
-.bodyg .brow { fill: none; stroke: #17181a; stroke-width: .9px; stroke-linecap: round; vector-effect: non-scaling-stroke; }
-.bodyg .jaw { fill: none; stroke: #3d4046; stroke-width: .7px; vector-effect: non-scaling-stroke; opacity: .6; }
-.bodyg .rimlight { fill: none; stroke: #d9d4c8; stroke-opacity: .22; stroke-width: 1px; vector-effect: non-scaling-stroke; }
-.bodyg .eye { fill: #0f1011; }
-.eye { fill: #0f1011; }
+/* ---- the kit mat: a marked place for each piece of gear; a filled place lights soft green once ---- */
+.mat { fill: #1f2124; stroke: none; }
+.mat-edge { stroke: #4a4d54; }
+.sl-line { fill: none; stroke: #5b5f67; stroke-width: 1px; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; transition: stroke .5s, stroke-opacity .5s; }
+.sl-glow { opacity: 0; mix-blend-mode: screen; pointer-events: none; }
+.slot[data-filled] .sl-line { stroke: var(--safe); stroke-opacity: .75; stroke-dasharray: none; }
+.slot[data-filled] .sl-glow { animation: settleglow 1.6s ease-out .55s both; }
+@keyframes settleglow { 0% { opacity: 0; } 25% { opacity: 1; } 100% { opacity: 0; } }
 
-/* ---- gear lying on the bench / floor: flies off to Mallesh when it is put on ---- */
+/* ---- gear lying on the bench / floor: fades out when its copy flies to the kit mat ---- */
 .item { transition: opacity .55s ease, transform .85s cubic-bezier(.5,0,.3,1), filter .6s var(--ease); transform-box: fill-box; transform-origin: center; }
-.item[data-gone] { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(.55); pointer-events: none; }
+.item[data-gone] { opacity: 0; pointer-events: none; transition: opacity .2s ease; }
 .pad { fill: transparent; stroke: none; pointer-events: all; }
 #stage [data-glow] .pad { stroke: var(--primary); stroke-width: 1.4px; vector-effect: non-scaling-stroke; stroke-dasharray: 3 2; animation: padglow 1.6s ease-in-out infinite; }
 @keyframes padglow { 50% { stroke-opacity: .35; } }
@@ -71,11 +65,11 @@ svg[data-focus] .obj:not([data-lit]) { filter: brightness(.5) saturate(.55); }
 @keyframes shake { 25% { translate: -3px 0; } 75% { translate: 3px 0; } }
 /* a gear piece that is not part of this step can still be tapped (a wrong tap), so it stays reachable but quiet */
 
-/* ---- gear worn by Mallesh: drops in and settles, then breathes a little ---- */
-.gear { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(.7); transform-box: fill-box; transform-origin: center; transition: opacity .6s ease, transform .9s cubic-bezier(.3,1,.3,1); }
-.gear[data-on] { opacity: 1; transform: none; }
-.gear[data-on][data-worn="apron"], .gear[data-on][data-worn="cape"] { animation: drape 4.6s ease-in-out 1s infinite; transform-origin: 50% 0%; }
-@keyframes drape { 50% { transform: skewX(-.6deg) scaleY(1.004); } }
+/* ---- gear on its place: the copy lifts off from where the piece lay, flies over and settles ---- */
+.gear { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(.85); transform-box: fill-box; transform-origin: center; transition: opacity .35s ease, transform .95s cubic-bezier(.3,.9,.3,1); }
+.gear[data-on] { opacity: 1; transform: none; animation: lift .95s ease-out; }
+@keyframes lift { 45% { translate: 0 -30px; } }
+.gear[data-held] { transform: translateY(-18px) rotate(-6deg); filter: drop-shadow(0 0 6px var(--danger)); animation: none; }
 [data-helm] { transform-box: fill-box; transform-origin: 50% 80%; transition: transform .55s cubic-bezier(.3,1.2,.5,1); }
 [data-helm="up"] { transform: translateY(-8px) rotate(-8deg); }
 [data-helm="up"] [data-lens-wrap] { opacity: 0; }
@@ -153,8 +147,6 @@ svg[data-focus] .obj:not([data-lit]) { filter: brightness(.5) saturate(.55); }
 [data-rays] { transition: opacity .5s; }
 @keyframes rayflow { to { stroke-dashoffset: -24; } }
 .flare { mix-blend-mode: screen; pointer-events: none; transition: opacity .4s; }
-svg[data-dazzled] [data-trainee-eyes] { transform: scaleY(.25); transform-box: fill-box; transform-origin: center; }
-[data-trainee-eyes] { transition: transform .3s; }
 .canvas-cloth { fill: #67624f; stroke: #8a846b; stroke-width: .7px; vector-effect: non-scaling-stroke; fill-opacity: .95; }
 .canvas-weave { fill: none; stroke: #3d3a2e; stroke-width: .5px; stroke-opacity: .4; }
 .canvas-absorb { fill: url(#arcglow); mix-blend-mode: screen; opacity: .35; pointer-events: none; }
@@ -172,3 +164,14 @@ svg[data-dazzled] [data-trainee-eyes] { transform: scaleY(.25); transform-box: f
 #readout, #readout[data-state="off"] { background: oklch(0.27 0.03 70 / 94%); border: 2px solid var(--primary); color: var(--ink); }
 #readout svg, #readout:not([data-state="off"]) svg { fill: none; stroke: var(--primary); stroke-width: 2.2; }
 #choices .choice .pick { min-height: 3.2rem; }
+
+/* ---- step 8: the marked standing spot, glowing hot when the arc rays reach it ---- */
+.spot-ring { fill: none; stroke: #8a8f98; stroke-width: 1.4px; stroke-dasharray: 4 4; vector-effect: non-scaling-stroke; transition: stroke .3s; }
+.spot-ring.in { stroke-opacity: .5; }
+.spot-x { fill: none; stroke: #6a6e76; stroke-width: 1px; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+svg[data-dazzled] .spot-ring { stroke: var(--danger); stroke-dasharray: none; }
+
+/* ---- electrode holder stand on the weld table ---- */
+.hold-post { fill: none; stroke: #3b3e44; stroke-width: 3.4px; stroke-linecap: round; }
+.hold-arm { fill: none; stroke: #4a4d54; stroke-width: 2.6px; stroke-linecap: round; }
+.hold-clamp { fill: none; stroke: #8a8d94; stroke-width: 4px; stroke-linecap: round; }

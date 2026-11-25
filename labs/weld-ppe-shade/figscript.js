@@ -1,6 +1,8 @@
 // The station's moving parts, driven by the lesson through FIG.op("kind:a:b"). Same op names as before, so lesson.js and the
-// audio keys are untouched. Every op is safe to run twice. New here: the lit / dimmed focus (set from the step's readout key),
-// the arc's spark particles, and a verdict colour on the picked filter glass.
+// audio keys are untouched. Every op is safe to run twice. No people are drawn: a piece of gear "put on" now flies from where
+// it lies to its own place on the kit mat (the place lights soft green), "mallesh:*" is a no-op and "trainee:*" lights the
+// marked standing spot. Also here: the lit / dimmed focus (set from the step's readout key), the arc's spark particles,
+// and a verdict colour on the picked filter glass.
 (function () {
   "use strict";
   var DATA = window.FIG_DATA, GEO = window.FIG_GEOM;
@@ -8,20 +10,20 @@
   var one = function (sel) { return svg.querySelector(sel); };
   var all = function (sel) { return Array.prototype.slice.call(svg.querySelectorAll(sel)); };
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var readoutKey = "s1", timers = [], curAmps = 0, atBench = false;
+  var readoutKey = "s1", timers = [], curAmps = 0;
   function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
   function flag(el, name, on) { if (!el) return; if (on) el.setAttribute(name, ""); else el.removeAttribute(name); }
 
   /* ---------- focus: the parts of this step are lit, the rest step back ---------- */
   var FOCUS = {
-    s1: ["mallesh", "item-apron", "item-cape"],
-    s2: ["mallesh", "item-gloves"],
-    s3: ["mallesh", "boots"],
-    s4: ["mallesh", "item-helmet", "item-screen"],
-    s5: ["stand", "mallesh"],
-    s6: ["stand", "mallesh"],
-    s7: ["mallesh", "table", "plate", "item-goggles"],
-    s8: ["mallesh", "table", "plate", "trainee", "canvas"]
+    s1: ["kit", "item-apron", "item-cape"],
+    s2: ["kit", "item-gloves"],
+    s3: ["kit", "boots"],
+    s4: ["kit", "item-helmet", "item-screen"],
+    s5: ["stand", "kit"],
+    s6: ["stand", "kit"],
+    s7: ["table", "plate", "tgoggles", "rest", "item-goggles"],
+    s8: ["table", "plate", "spot", "canvas"]
   };
   function focus(list) {
     all(".obj").forEach(function (el) { el.removeAttribute("data-lit"); });
@@ -30,23 +32,13 @@
     list.forEach(function (id) { var e = one('.obj[data-obj="' + id + '"]'); if (e) e.setAttribute("data-lit", ""); });
   }
 
-  /* ---------- gear: the lying piece flies to Mallesh, the worn piece settles on him ---------- */
-  var WEAR_AT = { apron: [0, -62], cape: [0, -70], gloves: [0, -48], goggles: [0, -105], helmet: [0, -105], screen: [8, -98], boots: [0, -10] };
-  function flyFrom(name) {   // where the worn piece starts, relative to where it is worn
-    var el = one('[data-worn="' + name + '"]'), it = one('[data-item="' + name + '"]');
-    if (!el || !it) return;
-    var m = atBench ? GEO.m1 : GEO.m0, w = WEAR_AT[name];
-    var cs = it.style, dx = parseFloat(cs.getPropertyValue("--dx")) || 0, dy = parseFloat(cs.getPropertyValue("--dy")) || 0;
-    if (atBench) {   // the item's offset was measured for the first spot; shift by the way Mallesh walked
-      dx += (GEO.m0[0] - GEO.m1[0]); dy += (GEO.m0[1] - GEO.m1[1]);
-    }
-    el.style.setProperty("--dx", (dx / 1.1).toFixed(0) + "px");
-    el.style.setProperty("--dy", (dy / 1.1).toFixed(0) + "px");
-  }
+  /* ---------- gear: the lying piece disappears, its copy flies to its place on the kit mat and the place lights green ---------- */
   function gear(name, on) {
-    if (on) flyFrom(name);
     flag(one('[data-worn="' + name + '"]'), "data-on", on);
     flag(one('[data-item="' + name + '"]'), "data-gone", on);
+    flag(one('[data-slot="' + name + '"]'), "data-filled", on);
+    if (on) all(".chip-tag.gold").forEach(function (c) { c.style.transition = "opacity .25s"; c.style.opacity = "0"; });   // the label belonged to the spot the piece just left
+    if (!on) { var w = one('[data-worn="' + name + '"]'); if (w) w.removeAttribute("data-held"); }
   }
   function lens(kind) { all(".lens").forEach(function (el) { flag(el, "data-on", el.getAttribute("data-lens") === kind); }); }
   function pick(id) {
@@ -68,11 +60,6 @@
     var els = all('[data-hit="' + id + '"]');
     els.forEach(function (el) { flag(el, "data-flash", true); });
     later(function () { els.forEach(function (el) { flag(el, "data-flash", false); }); }, 1000);
-  }
-  function moveMallesh(bench) {
-    atBench = !!bench;
-    var m = bench ? GEO.m1 : GEO.m0;
-    one("[data-fig]").style.transform = "translate(" + m[0].toFixed(1) + "px," + m[1].toFixed(1) + "px)";
   }
   // the helper chips the slag: the hammer swings down three times, the crust breaks into shards that fly off, the bead shows clean
   function chip(on) {
@@ -130,9 +117,14 @@
     var p = text.split(":");
     switch (p[0]) {
       case "gear": return gear(p[1], p[2] === "on");
-      case "helmet": if (p[1] === "on" || p[1] === "off") return gear("helmet", p[1] === "on"); return one("[data-helm]").setAttribute("data-helm", p[1]);
+      case "helmet":
+        if (p[1] === "on" || p[1] === "off") return gear("helmet", p[1] === "on");
+        one("[data-helm]").setAttribute("data-helm", p[1]);
+        // step 7's wrong answer (the dark welding glass) puts the dark glass at the work; "up" takes it away again
+        if (readoutKey === "s7") { var rs = one('[data-part="rest"]'); rs.style.opacity = p[1] === "down" ? "1" : "0"; rs.style.transform = p[1] === "down" ? "none" : "translateY(-10px)"; }
+        return;
       case "screen":
-        if (p[1] === "hold") return gear("screen", true);
+        if (p[1] === "hold") { gear("screen", true); flag(one('[data-worn="screen"]'), "data-held", true); return; }
         if (p[1] === "drop") return gear("screen", false);
         if (p[1] === "away") { flag(one('[data-item="screen"]'), "data-gone", true); return; }
         return;
@@ -142,10 +134,10 @@
       case "plate": return part("plate", p[1] === "on");
       case "station": return part("station", p[1] === "on");
       case "chip": return chip(p[1] === "go");
-      case "mallesh": return moveMallesh(p[1] === "bench");
+      case "mallesh": return;   // no person is drawn any more
       case "arc": return arc(p[1] === "on");
       case "rays": return rays(p[1]);
-      case "trainee": return part("trainee", p[1] === "on");
+      case "trainee": return part("spot", p[1] === "on");
       case "canvas": { var cv = one('[data-part="canvas"]'); cv.style.opacity = p[1] === "on" ? "1" : "0"; cv.style.transform = p[1] === "on" ? "none" : "translateY(-20px)"; return; }
       case "flare": { var f = one("[data-flare]"); f.style.opacity = p[1] === "on" ? "1" : "0"; flag(svg, "data-dazzled", p[1] === "on"); return; }
       case "flash": return flash(p[1]);
@@ -158,18 +150,16 @@
     ["boots", "cape", "apron", "gloves", "goggles", "helmet", "screen"].forEach(function (n) { gear(n, false); });
     one("[data-helm]").setAttribute("data-helm", "down");
     lens("off"); pick("off"); amps(0);
-    ["plate", "arc", "trainee"].forEach(function (n) { part(n, false); });
+    ["plate", "arc", "spot"].forEach(function (n) { part(n, false); });
+    var rs0 = one('[data-part="rest"]'); rs0.style.opacity = "0"; rs0.style.transform = "translateY(-10px)";
     arcOn = false; svg.removeAttribute("data-arc");
     PARTS.forEach(function (p, idx) { if (p.on) { p.on = false; p.el.style.display = "none"; free.push(idx); } });
     part("station", true);
     chip(false);
-    moveMallesh(false);
     rays("off");
     op("canvas:off"); op("flare:off");
     readoutKey = "s1";
     focus(null);
   }
-  one("[data-fig]").style.transition = "transform 1.1s cubic-bezier(.4,0,.2,1)";
-
   window.FIG = { svg: svg, views: DATA.views, anchors: DATA.anchors, op: op, reset: reset, readout: function () { return readoutKey; } };
 })();

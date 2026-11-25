@@ -1,9 +1,10 @@
 /* The PPE station of the welding lab, drawn in code (no pictures, no text or digits inside the drawing): a small isometric
    station on a plinth in the Starling "anatomy" language. Charcoal / steel base, leather as the only warm material, glass
-   with a restrained green tint (the shade difference IS the lesson). Gives the workbench player window.FIG_DATA (views and
-   anchors) and window.FIG_SVG (the scene). Same hooks as the previous figure: data-hit / data-item / data-worn / data-plate /
-   data-lens / data-needle / data-rays / data-slag / data-flare / data-helm / data-fig and the parts arc, canvas, chips, dial,
-   hammer, plate, station, trainee. */
+   with a restrained green tint (the shade difference IS the lesson). NO PEOPLE are drawn: the gear that used to be put on a
+   figure now travels from the bench to its own place on a KIT MAT, and each place lights soft green when it is filled.
+   Gives the workbench player window.FIG_DATA (views and anchors) and window.FIG_SVG (the scene). Same hooks as before:
+   data-hit / data-item / data-worn / data-plate / data-lens / data-needle / data-rays / data-slag / data-flare / data-helm
+   and the parts arc, canvas, chips, dial, hammer, plate, station, spot (was: trainee), rest, kit. */
 (function () {
   "use strict";
   var S = 46, K = 0.866 * S, HH = 0.5 * S, ZZ = S, OX = 400, OY = 70;
@@ -30,24 +31,33 @@
   var PW = 10.8, PD = 5.4;
   var BENCH = { x: 0.5, y: 0.4, w: 4.4, d: 2.0, top: 1.5 };
   var ITEMP = { apron: [1.25, 1.0], cape: [2.5, 1.0], helmet: [3.75, 0.95], gloves: [1.25, 1.8], goggles: [2.5, 1.8], screen: [3.75, 1.8] }, IS = 0.9;   // bench positions (x, y) and the scale of flat items
-  var M0 = P(3.4, 3.9, 0), M1 = P(7.2, 4.9, 0);               // Mallesh: in front of the bench, then at the weld table
-  var BOOTC = P(1.1, 3.9, 0);
   var STAND = { x: 6.0, y: 0.4, w: 3.8, d: 0.35, h: 3.8 };
   var TABLE = { x: 6.0, y: 2.8, w: 3.4, d: 1.2, top: 1.1 };
   var ARC = P(6.7, 3.4, 1.28);
-  var TRN = P(4.5, 3.9, 0);
   var CANVAS_X = 5.5;
-  var FIGS = 1.1;                                              // the figure is drawn 118 px tall, then scaled
-  function fig(m, lx, ly) { return [m[0] + lx * FIGS, m[1] + ly * FIGS]; }
+  var BOOTC = P(4.6, 2.95, 0);                                   // the safety boots lie on the floor in front of the bench
+  var MAT = { x: 0.6, y: 3.0, w: 3.4, d: 2.2 };                  // the kit mat: one marked place for each piece of gear
+  var SL = { apron: [1.3, 3.65], cape: [2.25, 3.65], gloves: [3.2, 3.65], boots: [1.3, 4.6], helmet: [2.25, 4.6], screen: [3.2, 4.6] };
+  var GSL = [TABLE.x + 0.95, TABLE.y + 1.07];                     // the goggles' place, at the weld table
+  var SPOT = [4.6, 4.5];                                          // the marked standing spot near the arc (step 8)
+  var HB = P(TABLE.x + 3.05, TABLE.y + 0.2, TABLE.top);          // electrode-holder stand on the table
 
   function IP(n) { return P(ITEMP[n][0], ITEMP[n][1], BENCH.top); }
   var A = {
     apron: IP("apron"), cape: IP("cape"), gloves: IP("gloves"),
-    goggles: IP("goggles"), helmet: fig(IP("helmet"), 0, -10), screen: fig(IP("screen"), 0, -12),
+    goggles: IP("goggles"), helmet: [IP("helmet")[0], IP("helmet")[1] - 10], screen: [IP("screen")[0], IP("screen")[1] - 12],
     boots: [BOOTC[0], BOOTC[1] - 22], dial: P(STAND.x + 1.05, STAND.y + STAND.d, 3.05),
     p9: P(STAND.x + 1.75, STAND.y + STAND.d, 1.45), p11: P(STAND.x + 2.85, STAND.y + STAND.d, 1.45), p13: P(STAND.x + 3.95, STAND.y + STAND.d, 1.45),
-    plate: P(7.6, 3.4, 1.25), arc: ARC, trainee: [TRN[0], TRN[1] - 80], canvas: P(CANVAS_X, 3.4, 1.9)
+    plate: P(7.6, 3.4, 1.25), arc: ARC, canvas: P(CANVAS_X, 3.4, 1.9), spot: P(SPOT[0], SPOT[1], 0)
   };
+  // where each piece lies, and where its place is: the worn copy flies the difference
+  var LY = { apron: IP("apron"), cape: IP("cape"), gloves: IP("gloves"), goggles: IP("goggles"), helmet: IP("helmet"), screen: IP("screen"), boots: BOOTC };
+  var SLP = {
+    apron: P(SL.apron[0], SL.apron[1], .03), cape: P(SL.cape[0], SL.cape[1], .03), gloves: P(SL.gloves[0], SL.gloves[1], .03),
+    boots: P(SL.boots[0], SL.boots[1], 0), helmet: P(SL.helmet[0], SL.helmet[1], 0), screen: P(SL.screen[0], SL.screen[1], 0),
+    goggles: P(GSL[0], GSL[1], TABLE.top + .02)
+  };
+  function dxy(n) { return [Math.round(LY[n][0] - SLP[n][0]), Math.round(LY[n][1] - SLP[n][1])]; }
 
   /* views [x, y, w, h] in the 1000 x 640 drawing space; the player fits them into the free part of the screen */
   function V(arr, pad) {
@@ -55,16 +65,17 @@
     arr.forEach(function (p) { x0 = Math.min(x0, p[0]); y0 = Math.min(y0, p[1]); x1 = Math.max(x1, p[0]); y1 = Math.max(y1, p[1]); });
     return [Math.round(x0 - pad), Math.round(y0 - pad), Math.round(x1 - x0 + 2 * pad), Math.round(y1 - y0 + 2 * pad)];
   }
+  var HP = SLP.helmet;
   var VIEWS = {
-    all: V([P(0, PD, 0), P(PW, 0, 0), P(PW, PD, -.5), P(0, 0, 0), P(STAND.x + 2, 0.4, 4.2), fig(M0, 0, -130)], 40),
-    bench: V([P(BENCH.x + .2, BENCH.y + .3, BENCH.top + 1.0), P(BENCH.x + BENCH.w - .2, BENCH.y + BENCH.d, BENCH.top - .2), fig(M0, 0, -70)], 20),
+    all: V([P(0, PD, 0), P(PW, 0, 0), P(PW, PD, -.5), P(0, 0, 0), P(STAND.x + 2, 0.4, 4.2)], 40),
+    bench: V([P(BENCH.x + .2, BENCH.y + .3, BENCH.top + 1.0), P(BENCH.x + BENCH.w - .2, BENCH.y + BENCH.d, BENCH.top - .2), P(MAT.x + 1.2, MAT.y + .3, 0)], 20),
     benchfloor: V([P(BENCH.x - .2, BENCH.y, 2.6), P(BENCH.x + BENCH.w + .2, 4.4, 0)], 30),
-    boots: V([[BOOTC[0] - 40, BOOTC[1] + 6], [BOOTC[0] + 40, BOOTC[1] - 44], fig(M0, -26, 4), fig(M0, 26, -52)], 20),
-    mallesh: V([fig(M0, -34, -134), fig(M0, 34, 6)], 16),
+    boots: V([P(MAT.x - .1, MAT.y + MAT.d + .1, 0), P(MAT.x + MAT.w + .1, MAT.y - .1, .9), [BOOTC[0] + 44, BOOTC[1] + 8], [BOOTC[0] - 20, BOOTC[1] - 50]], 18),
+    mallesh: V([P(MAT.x - .2, MAT.y + MAT.d + .2, 0), P(MAT.x + MAT.w + .2, MAT.y - .2, 0), P(MAT.x, MAT.y, 1.5)], 14),   // name kept for lesson.js: it frames the kit mat
     shade: V([P(STAND.x - .1, STAND.y, 4.0), P(STAND.x + STAND.w + .1, STAND.y + STAND.d + .5, 0)], 14),
-    helm: V([fig(M0, -22, -128), fig(M0, 22, -86)], 12),
-    plate: V([P(TABLE.x - .2, TABLE.y, TABLE.top + 1.8), P(TABLE.x + TABLE.w + .2, TABLE.y + TABLE.d, 0), fig(M1, -30, -134), fig(M1, 30, 8)], 22),
-    arc: V([P(CANVAS_X - 1.8, 2.2, 2.9), P(TABLE.x + TABLE.w + .1, TABLE.y + TABLE.d + .4, 0), fig(M1, -30, -130), fig(M1, 30, 6), [TRN[0] - 28, TRN[1] - 134]], 18)
+    helm: V([[HP[0] - 40, HP[1] - 66], [HP[0] + 40, HP[1] + 10]], 12),
+    plate: V([P(TABLE.x - .2, TABLE.y, TABLE.top + 1.8), P(TABLE.x + TABLE.w + .2, TABLE.y + TABLE.d + .1, 0)], 22),
+    arc: V([P(CANVAS_X - 1.8, 2.2, 2.9), P(TABLE.x + TABLE.w + .1, TABLE.y + TABLE.d + .4, 0), P(SPOT[0] - .9, SPOT[1] + .8, 0), P(SPOT[0] + .5, SPOT[1] - .9, 1.2)], 18)
   };
   var ANCH = {};
   Object.keys(A).forEach(function (k) { ANCH[k] = [Math.round(A[k][0] * 10) / 10, Math.round(A[k][1] * 10) / 10]; });
@@ -76,31 +87,7 @@
   function crease(d) { return '<path class="crease" d="' + d + '"/>'; }
   function sheen(d, w) { return '<path class="sheen" d="' + d + '" style="stroke-width:' + (w || 1.3) + 'px"/>'; }
 
-  /* ---------- Mallesh and the trainee (front view, feet at 0,0, 118 tall) ---------- */
-  function hand(x, sk) {
-    var sg = x < 0 ? -1 : 1;
-    return '<path class="hand" fill="' + sk + '" d="M' + (x - 3.6) + ',-49 Q' + (x - 4.8) + ',-42 ' + (x - 2.8) + ',-39.5 Q' + x + ',-37.6 ' + (x + 2.8) + ',-39.5 Q' + (x + 4.8) + ',-42 ' + (x + 3.6) + ',-49Z"/>' +
-      '<path class="hand" fill="' + sk + '" d="M' + (x + sg * 3.4) + ',-47 Q' + (x + sg * 6.6) + ',-44.5 ' + (x + sg * 5.2) + ',-41.5 Q' + (x + sg * 4) + ',-41 ' + (x + sg * 2.8) + ',-43Z"/>';
-  }
-  function body(tone) {
-    var sk = tone === "t" ? "url(#skinT)" : "url(#skinM)", sh = tone === "t" ? "url(#shirtT)" : "url(#shirtM)", sc = tone === "t" ? "#33363b" : "#3b3e44";
-    return '<g class="bodyg">' +
-      '<path class="trs" d="M-12.5,-52 L-13,-7 L-2,-7 L-1,-52Z" fill="url(#trsG)"/><path class="trs" d="M12.5,-52 L13,-7 L2,-7 L1,-52Z" fill="url(#trsG)"/>' +
-      '<path class="shoe" d="M-14,-7 L-2,-7 L-1,-1 L-16,-1Z"/><path class="shoe" d="M14,-7 L2,-7 L1,-1 L16,-1Z"/>' +
-      '<path class="shirt" fill="' + sh + '" d="M-16.5,-91 Q0,-96 16.5,-91 L14.5,-50 Q0,-47 -14.5,-50Z"/>' +
-      '<path class="arm" style="stroke:' + sc + '" d="M-16,-88 Q-22,-70 -20.5,-49"/><path class="arm" style="stroke:' + sc + '" d="M16,-88 Q22,-70 20.5,-49"/>' +
-      hand(-20.5, sk) + hand(20.5, sk) +
-      '<path class="collar" d="M-6,-95 L0,-88.5 L6,-95"/>' +
-      '<rect class="neck" fill="' + sk + '" x="-3.6" y="-98" width="7.2" height="9" rx="2"/>' +
-      '<ellipse class="ear" fill="' + sk + '" cx="-8.7" cy="-104" rx="1.7" ry="2.6"/><ellipse class="ear" fill="' + sk + '" cx="8.7" cy="-104" rx="1.7" ry="2.6"/>' +
-      '<ellipse class="head" fill="' + sk + '" cx="0" cy="-105" rx="8.6" ry="10.4"/>' +
-      '<path class="hair" d="M-9,-104 Q-10,-117.5 0,-117 Q10,-117.5 9,-104 Q8.6,-109 5,-111 Q0,-112.5 -5,-111 Q-8.6,-109 -9,-104Z"/>' +
-      '<path class="brow" d="M-5.6,-106.4 L-2,-106.8 M2,-106.8 L5.6,-106.4"/>' +
-      '<path class="jaw" d="M-6.5,-98 Q0,-94.4 6.5,-98"/>' +
-      '<path class="rimlight" d="M-8.6,-108 Q-9,-100 -6,-95" /></g>';
-  }
-
-  /* worn gear, in the same frame */
+  /* ---------- standing pieces (drawn in screen space, feet at 0,0) ---------- */
   var G = {};
   G.boots = function () {
     function boot(sg) {
@@ -116,30 +103,6 @@
     }
     return boot(1) + boot(-1);
   };
-  G.cape = function () {
-    var yoke = "M-19.5,-91 Q0,-98 19.5,-91 L23,-77 Q0,-83 -23,-77Z";
-    var sl = "M-18.5,-89 Q-28.5,-68 -25,-43 L-15.5,-43 Q-17.5,-66 -12.5,-85Z", sr = "M18.5,-89 Q28.5,-68 25,-43 L15.5,-43 Q17.5,-66 12.5,-85Z";
-    return lth(sl, "lthB") + lth(sr, "lthB") + lth(yoke, "lthA") +
-      crease("M-22,-70 Q-21,-62 -21.5,-54 M22,-70 Q21,-62 21.5,-54") + stitch("M-23,-78 Q0,-84 23,-78") +
-      '<path class="cuff" d="M-25,-46 L-15.5,-46 M25,-46 L15.5,-46"/>' + sheen("M-17,-91 Q-3,-95 6,-94", 1.4);
-  };
-  G.apron = function () {
-    var d = "M-12.5,-87 L12.5,-87 Q14.5,-70 15.5,-58 L16.5,-31 Q0,-26.5 -16.5,-31 L-15.5,-58 Q-14.5,-70 -12.5,-87Z";
-    return '<path class="strap" d="M-9,-87 Q-7,-95 -5.5,-98 M9,-87 Q7,-95 5.5,-98"/>' + lth(d, "lthA") +
-      '<path class="strap tie" d="M-15.5,-58 L15.5,-58"/>' + crease("M-6,-80 Q-4,-70 -5,-62 M7,-82 Q5,-72 6,-64 M-8,-46 Q0,-43 8,-46") +
-      stitch("M-11.5,-85 Q-13,-70 -14,-58 L-15,-33 M11.5,-85 Q13,-70 14,-58 L15,-33 M-14.5,-31.5 Q0,-28 14.5,-31.5") +
-      '<path class="pocket" d="M-8,-52 L8,-52 L8,-40 L-8,-40Z"/>' + sheen("M-9,-84 Q-12,-66 -12.5,-46", 1.6) +
-      '<circle class="rivet" cx="-13" cy="-58" r="1"/><circle class="rivet" cx="13" cy="-58" r="1"/>';
-  };
-  G.gloves = function () {
-    function gl(sg) {
-      var x = sg * 20.5;
-      var d = "M" + (x - 5.8) + ",-58 L" + (x + 5.8) + ",-58 L" + (x + 5.4) + ",-46 Q" + (x + 6) + ",-38.5 " + x + ",-37.5 Q" + (x - 6) + ",-38.5 " + (x - 5.4) + ",-46Z";
-      return lth(d, "lthC") + '<path class="cuff" d="M' + (x - 6.2) + ",-55 L" + (x + 6.2) + ',-55"/><path class="cuff" d="M' + (x - 5) + ",-42 Q" + x + ",-40.4 " + (x + 5) + ',-42"/>' +
-        stitch("M" + (x - 4.4) + ",-56 L" + (x - 4.2) + ",-44") + sheen("M" + (x - 3) + ",-56 Q" + (x - 4) + ",-48 " + (x - 2.4) + ",-41", 1.2);
-    }
-    return gl(-1) + gl(1);
-  };
   // helmet in head-centred coordinates (origin = head centre); the window holds the lens views
   function helmetCore() {
     var shell = "M-13.6,3 Q-15.5,-17 0,-19.5 Q15.5,-17 13.6,3 L12.6,13 Q0,17 -12.6,13Z";
@@ -154,7 +117,6 @@
       '<path class="lensshine" d="M-7,5.6 L-2.4,-3 L0.4,-3 L-4,5.6Z"/></g>' +
       '<circle class="bolt" cx="-13.2" cy="-1.5" r="1.7"/><circle class="bolt" cx="13.2" cy="-1.5" r="1.7"/>';
   }
-  G.helmet = function () { return '<g transform="translate(0,-105)">' + helmetCore() + "</g>"; };
   function screenCore() {
     return '<path class="paddle" d="M-9.5,-14 L10.5,-14 L12,8 L-11,8Z" fill="url(#fibre)"/>' +
       '<path class="paddle-edge" d="M-9.5,-14 L10.5,-14 L12,8 L-11,8Z"/>' +
@@ -162,75 +124,42 @@
       '<rect class="winframe" x="-7.6" y="-10.6" width="16.2" height="13.2" rx="1.4"/>' +
       '<circle class="bolt" cx="-9" cy="6" r="1.1"/><circle class="bolt" cx="10" cy="6" r="1.1"/>';
   }
-  G.screen = function () {
-    return '<g transform="translate(9,-98)"><path class="handle" d="M2.5,12 L10,50"/>' + screenCore() + "</g>";
-  };
-  G.goggles = function () {
-    return '<g transform="translate(0,-105)"><path class="gstrap" d="M-8.8,0.4 Q0,-3 8.8,0.4"/>' +
-      '<g class="gog"><ellipse cx="-4.3" cy="0.6" rx="3.5" ry="3" class="gframe"/><ellipse cx="4.3" cy="0.6" rx="3.5" ry="3" class="gframe"/>' +
-      '<ellipse cx="-4.3" cy="0.6" rx="2.6" ry="2.2" class="gclear"/><ellipse cx="4.3" cy="0.6" rx="2.6" ry="2.2" class="gclear"/>' +
-      '<path class="gbridge" d="M-1,0.4 Q0,-.6 1,0.4"/><path class="lensshine" d="M-5.6,-0.4 L-4.4,-1.2 M2.9,-0.4 L4.1,-1.2" style="stroke-width:.7px"/></g></g>';
-  };
-
-  /* ---------- the figure: body, then the gear in the order it goes on ---------- */
-  function mallesh() {
-    var o = '<g data-fig="mallesh" class="obj" data-obj="mallesh" style="transform:translate(' + f(M0[0]) + "px," + f(M0[1]) + 'px)"><g transform="scale(' + FIGS + ')">' + body("m");
-    var order = ["boots", "cape", "apron", "gloves", "goggles", "helmet", "screen"];
-    order.forEach(function (n) {
-      var cls = "gear" + (n === "helmet" ? "" : "");
-      var attrs = ' class="gear" data-worn="' + n + '" style="--dx:' + dxy(n)[0] + "px;--dy:" + dxy(n)[1] + 'px"';
-      if (n === "helmet") o += '<g data-helm="down"><g' + attrs + ">" + G[n]() + "</g></g>";
-      else o += "<g" + attrs + ">" + G[n]() + "</g>";
-    });
-    return o + "</g></g>";
-  }
-  // each lying item flies from where it lies to where it is worn (in the drawing's own units)
-  function dxy(n) {
-    var from = { apron: A.apron, cape: A.cape, gloves: A.gloves, goggles: A.goggles, helmet: A.helmet, screen: A.screen, boots: A.boots }[n];
-    var to = { apron: fig(M0, 0, -62), cape: fig(M0, 0, -70), gloves: fig(M0, 0, -48), goggles: fig(M0, 0, -105), helmet: fig(M0, 0, -105), screen: fig(M0, 8, -98), boots: fig(M0, 0, -10) }[n];
-    return [Math.round((from[0] - to[0]) / FIGS), Math.round((from[1] - to[1]) / FIGS)];
-  }
-  function trainee() {
-    return '<g data-part="trainee" class="obj" data-obj="trainee" style="opacity:0"><g transform="translate(' + f(TRN[0]) + "," + f(TRN[1]) + ') scale(1.04)">' + body("t") +
-      '<g data-trainee-eyes=""><circle class="eye" cx="-3.2" cy="-106" r="1.1"/><circle class="eye" cx="3.2" cy="-106" r="1.1"/></g></g>' +
-      '<ellipse data-flare="" class="flare" cx="' + f(TRN[0]) + '" cy="' + f(TRN[1] - 108) + '" rx="46" ry="38" fill="url(#flareGrad)" style="opacity:0"/></g>';
-  }
 
   /* ---------- items lying on the bench (flat, in the bench plane) and on the floor ---------- */
   function pad(cx, cy, rx, ry) { return '<ellipse class="pad" cx="' + f(cx) + '" cy="' + f(cy) + '" rx="' + rx + '" ry="' + ry + '"/>'; }
-  function item(id, inner, padc, extra) {
-    var d = dxy(id);
-    return '<g class="obj item" data-obj="item-' + id + '" data-item="' + id + '" data-hit="' + id + '" style="--dx:' + d[0] * FIGS + "px;--dy:" + d[1] * FIGS + 'px">' + inner + pad(padc[0], padc[1], padc[2], padc[3]) + "</g>";
+  function item(id, inner, padc) {
+    return '<g class="obj item" data-obj="item-' + id + '" data-item="' + id + '" data-hit="' + id + '">' + inner + pad(padc[0], padc[1], padc[2], padc[3]) + "</g>";
   }
-  function apronFlat() {
-    var o = A.apron;
-    return '<g transform="' + onTop(ITEMP.apron[0], ITEMP.apron[1], BENCH.top) + ' scale(' + IS + ')' + '">' +
+  // the four flat pieces: p = [x, y, z] of where they lie, sc = scale
+  function apronFlat(p, sc) {
+    return '<g transform="' + onTop(p[0], p[1], p[2]) + ' scale(' + (sc || IS) + ')' + '">' +
       '<path class="strap" d="M-.12,-.46 Q-.16,-.62 -.1,-.7 M.12,-.46 Q.16,-.62 .1,-.7"/>' +
       lth("M-.3,-.46 L.3,-.46 Q.33,-.1 .37,.1 L.34,.46 Q0,.5 -.34,.46 L-.37,.1 Q-.33,-.1 -.3,-.46Z", "lthA") +
       crease("M-.12,-.3 Q-.08,-.12 -.1,.02 M.14,-.34 Q.1,-.14 .12,0 M-.16,.22 Q0,.28 .16,.22") + stitch("M-.26,-.42 Q-.3,-.1 -.33,.1 L-.3,.42 M.26,-.42 Q.3,-.1 .33,.1 L.3,.42") +
       '<rect class="pocket" x="-.17" y=".05" width=".34" height=".24" rx=".02"/>' + sheen("M-.22,-.4 Q-.27,-.1 -.28,.2", 1.4) + "</g>";
   }
-  function capeFlat() {
-    return '<g transform="' + onTop(ITEMP.cape[0], ITEMP.cape[1], BENCH.top) + ' scale(' + IS + ')' + '">' +
+  function capeFlat(p, sc) {
+    return '<g transform="' + onTop(p[0], p[1], p[2]) + ' scale(' + (sc || IS) + ')' + '">' +
       lth("M-.46,-.12 L-.66,.42 L-.5,.47 L-.3,.02Z", "lthB") + lth("M.46,-.12 L.66,.42 L.5,.47 L.3,.02Z", "lthB") +
       lth("M-.46,-.12 L-.28,-.34 Q0,-.42 .28,-.34 L.46,-.12 Q.4,.02 0,-.02 Q-.4,.02 -.46,-.12Z", "lthA") +
       stitch("M-.4,-.1 Q0,-.12 .4,-.1") + crease("M-.56,.12 L-.5,.3 M.56,.12 L.5,.3") + sheen("M-.3,-.3 Q-.1,-.36 .12,-.35", 1.4) + "</g>";
   }
-  function glovesFlat() {
+  function glovesFlat(p, sc) {
     function gl(v, s) {
       var g = "";
       [-.075, -.025, .025, .075].forEach(function (u, i) { var len = [.17, .2, .19, .15][i]; g += lth("M" + (u - .021) + ",-.07 L" + (u - .021) + "," + (-.07 - len) + " Q" + u + "," + (-.1 - len) + " " + (u + .021) + "," + (-.07 - len) + " L" + (u + .021) + ",-.07Z", "lthC"); });
       return '<g transform="translate(' + v + ',0) scale(' + s + ',1)">' + g + lth("M-.1,-.09 L.1,-.09 L.1,.1 Q0,.14 -.1,.1Z", "lthC") + lth("M.09,.02 L.2,-.08 Q.23,-.05 .2,0 L.09,.1Z", "lthC") + lth("M-.11,.1 L.11,.1 L.12,.27 L-.12,.27Z", "lthB") +
         stitch("M-.06,-.07 L-.06,.07") + "</g>";
     }
-    return '<g transform="' + onTop(ITEMP.gloves[0], ITEMP.gloves[1], BENCH.top) + ' scale(' + IS + ')' + '">' + gl(-.2, 1) + gl(.2, -1) + "</g>";
+    return '<g transform="' + onTop(p[0], p[1], p[2]) + ' scale(' + (sc || IS) + ')' + '">' + gl(-.2, 1) + gl(.2, -1) + "</g>";
   }
-  function gogglesFlat() {
-    return '<g transform="' + onTop(ITEMP.goggles[0], ITEMP.goggles[1], BENCH.top) + ' scale(' + IS + ')' + '"><path class="gstrap" d="M-.2,-.04 Q-.5,-.22 -.46,.14 Q-.4,.4 -.2,.2 M.2,-.04 Q.5,-.22 .46,.14 Q.4,.4 .2,.2" style="stroke-width:1.6px"/>' +
+  function gogglesFlat(p, sc) {
+    return '<g transform="' + onTop(p[0], p[1], p[2]) + ' scale(' + (sc || IS) + ')' + '"><path class="gstrap" d="M-.2,-.04 Q-.5,-.22 -.46,.14 Q-.4,.4 -.2,.2 M.2,-.04 Q.5,-.22 .46,.14 Q.4,.4 .2,.2" style="stroke-width:1.6px"/>' +
       '<circle cx="-.13" cy="0" r=".1" class="gframe"/><circle cx=".13" cy="0" r=".1" class="gframe"/><circle cx="-.13" cy="0" r=".075" class="gclear"/><circle cx=".13" cy="0" r=".075" class="gclear"/><path class="gbridge" d="M-.04,0 Q0,-.03 .04,0"/></g>';
   }
   function standing(o, inner, sc, rot) { return '<g transform="translate(' + f(o[0]) + "," + f(o[1]) + ") rotate(" + (rot || 0) + ") scale(" + sc + ')">' + inner + "</g>"; }
   var shadowE = function (o, rx) { return '<ellipse class="contact" cx="' + f(o[0]) + '" cy="' + f(o[1] + 1) + '" rx="' + rx + '" ry="' + f(rx * .45) + '"/>'; };
+  var HANDLE_SCREEN = function () { return '<path class="handle" d="M2,11 L4,30"/>' + screenCore(); };
 
   function benchGroup() {
     var b = BENCH, s = "";
@@ -242,21 +171,68 @@
     return '<g class="obj bench" data-obj="bench">' + s + "</g>";
   }
   function items() {
-    var s = "", o, h = IP("helmet"), sc = IP("screen");
-    o = A.apron; s += item("apron", apronFlat(), [o[0], o[1] - 2, 38, 22]);
-    o = A.cape; s += item("cape", capeFlat(), [o[0], o[1] - 2, 42, 22]);
+    var s = "", o, h = IP("helmet"), sc = IP("screen"), bz = BENCH.top;
+    o = A.apron; s += item("apron", apronFlat([ITEMP.apron[0], ITEMP.apron[1], bz]), [o[0], o[1] - 2, 38, 22]);
+    o = A.cape; s += item("cape", capeFlat([ITEMP.cape[0], ITEMP.cape[1], bz]), [o[0], o[1] - 2, 42, 22]);
     s += item("helmet", shadowE(h, 18) + standing([h[0], h[1] - 15], helmetCore(), 1.05), [h[0], h[1] - 14, 24, 28]);
-    o = A.gloves; s += item("gloves", glovesFlat(), [o[0], o[1] - 2, 36, 20]);
-    o = A.goggles; s += item("goggles", gogglesFlat(), [o[0], o[1] - 2, 32, 18]);
+    o = A.gloves; s += item("gloves", glovesFlat([ITEMP.gloves[0], ITEMP.gloves[1], bz]), [o[0], o[1] - 2, 36, 20]);
+    o = A.goggles; s += item("goggles", gogglesFlat([ITEMP.goggles[0], ITEMP.goggles[1], bz]), [o[0], o[1] - 2, 32, 18]);
     s += item("screen", shadowE(sc, 14) + standing([sc[0], sc[1] - 16], '<path class="handle" d="M2,11 L4,30"/>' + screenCore(), 1.0, -6), [sc[0], sc[1] - 14, 22, 28]);
     return s;
   }
 
   function bootsGroup() {
-    var d = dxy("boots");
-    return '<g class="obj item" data-obj="boots" data-item="boots" data-hit="boots" style="--dx:' + d[0] * FIGS + "px;--dy:" + d[1] * FIGS + 'px">' +
-      halo(1.2, 3.1, 1.2, .8) + '<ellipse class="contact" cx="' + f(BOOTC[0]) + '" cy="' + f(BOOTC[1] + 1) + '" rx="30" ry="9"/>' +
+    return '<g class="obj item" data-obj="boots" data-item="boots" data-hit="boots">' +
+      halo(4.0, 2.55, 1.2, .8) + '<ellipse class="contact" cx="' + f(BOOTC[0]) + '" cy="' + f(BOOTC[1] + 1) + '" rx="30" ry="9"/>' +
       standing(BOOTC, G.boots(), 1.45) + pad(BOOTC[0], BOOTC[1] - 20, 40, 30) + "</g>";
+  }
+
+  /* ---------- the kit mat: a marked place for each piece; the worn copy flies in from where the piece lay ---------- */
+  function slotShape(n) {
+    var gg = n === "goggles";
+    var p = gg ? [GSL[0], GSL[1], TABLE.top + .015] : [SL[n][0], SL[n][1], .02];
+    var flat = n === "apron" || n === "cape" || n === "gloves" || gg;
+    var sh = flat
+      ? '<rect class="sl-line" x="' + (gg ? -.3 : -.4) + '" y="' + (gg ? -.16 : -.36) + '" width="' + (gg ? .6 : .8) + '" height="' + (gg ? .32 : .72) + '" rx=".08"/>'
+      : '<ellipse class="sl-line" cx="0" cy="0" rx=".44" ry=".36"/>';
+    var c = P(p[0], p[1], p[2]);
+    return '<g class="slot" data-slot="' + n + '"><g transform="' + onTop(p[0], p[1], p[2]) + '">' + sh + '</g><ellipse class="sl-glow" cx="' + f(c[0]) + '" cy="' + f(c[1]) + '" rx="' + (gg ? 34 : 52) + '" ry="' + (gg ? 16 : 26) + '" fill="url(#slotGlow)"/></g>';
+  }
+  function W(n, inner) { var d = dxy(n); return '<g class="gear" data-worn="' + n + '" style="--dx:' + d[0] + "px;--dy:" + d[1] + 'px">' + inner + "</g>"; }
+  function wornCopy(n) {
+    var p = SLP[n];
+    switch (n) {
+      case "apron": return W(n, apronFlat([SL.apron[0], SL.apron[1], .03]));
+      case "cape": return W(n, capeFlat([SL.cape[0], SL.cape[1], .03]));
+      case "gloves": return W(n, glovesFlat([SL.gloves[0], SL.gloves[1], .03]));
+      case "goggles": return W(n, gogglesFlat([GSL[0], GSL[1], TABLE.top + .03], .55));
+      case "boots": return W(n, shadowE(p, 24) + standing(p, G.boots(), 1.1));
+      case "helmet": return '<g data-helm="down">' + W(n, shadowE(p, 22) + standing([p[0], p[1] - 20], helmetCore(), 1.2)) + "</g>";
+      case "screen": return W(n, shadowE(p, 20) + standing([p[0], p[1] - 22], HANDLE_SCREEN(), 1.15, -6));
+    }
+    return "";
+  }
+  function kit() {
+    var m = MAT, q = [P(m.x, m.y, .01), P(m.x + m.w, m.y, .01), P(m.x + m.w, m.y + m.d, .01), P(m.x, m.y + m.d, .01)];
+    var s = halo(m.x, m.y, m.w, m.d) + poly("mat", q) + line([q[0], q[1], q[2], q[3], q[0]], "mat-edge");
+    ["apron", "cape", "gloves", "boots", "helmet", "screen"].forEach(function (n) { s += slotShape(n); });
+    ["boots", "cape", "apron", "gloves", "helmet", "screen"].forEach(function (n) { s += wornCopy(n); });
+    return '<g class="obj kit" data-obj="kit" data-part="kit">' + s + "</g>";
+  }
+  function tableGoggles() {   // the goggles' place and the worn goggles, on the weld table by the plate
+    return '<g class="obj tgoggles" data-obj="tgoggles">' + slotShape("goggles") + wornCopy("goggles") + "</g>";
+  }
+  function rest() {          // the dark welding glass on a little foot: what step 7's wrong answer puts at the work
+    var o = P(TABLE.x + 2.55, TABLE.y + 1.0, TABLE.top);
+    return '<g class="obj rest" data-obj="rest" data-part="rest" style="opacity:0;transform:translateY(-10px)">' + shadowE(o, 14) +
+      '<g transform="translate(' + f(o[0]) + "," + f(o[1]) + ')"><rect class="pframe" x="-13" y="-42" width="26" height="38" rx="2.4"/><rect class="pglass" x="-11" y="-40" width="22" height="34" rx="1.4" fill="url(#p13Fill)"/>' +
+      '<path class="pshine" d="M-9,-8 L-3,-40 L1,-40 L-5,-8Z"/><rect class="pedge" x="-11" y="-40" width="22" height="34" rx="1.4"/></g></g>';
+  }
+  function spot() {          // the marked standing spot near the arc: a ring on the floor, glowing hot when the rays reach it
+    var c = P(SPOT[0], SPOT[1], .02);
+    return '<g class="obj spot" data-obj="spot" data-part="spot" style="opacity:0">' + halo(SPOT[0] - .6, SPOT[1] - .6, 1.2, 1.2) +
+      '<g transform="' + onTop(SPOT[0], SPOT[1], .02) + '"><circle class="spot-ring" r=".58"/><circle class="spot-ring in" r=".34"/><path class="spot-x" d="M-.12,-.12 L.12,.12 M.12,-.12 L-.12,.12"/></g>' +
+      '<ellipse data-flare="" class="flare" cx="' + f(c[0]) + '" cy="' + f(c[1] - 6) + '" rx="62" ry="34" fill="url(#flareGrad)" style="opacity:0"/></g>';
   }
 
   /* ---------- the shade stand: current dial and three filter glasses ---------- */
@@ -313,19 +289,23 @@
     return '<g class="obj platepart" data-obj="plate" data-part="plate" style="opacity:0">' + o + "</g>";
   }
   function arcPart() {
-    var h = fig(M1, 21, -50), a = ARC, b = a, o = "";
+    var a = ARC, o = "";
+    var HT = [HB[0], HB[1] - 80], HE = [a[0] + 46, a[1] - 54];   // holder post top, electrode clamp
     var bolt = "M" + f(a[0]) + "," + f(a[1]) + " l-3,-4 l4,-2 l-3,-5 l4,-3";
     o += '<g data-part="arc" style="opacity:0">' +
-      '<path class="electrode" d="M' + f(h[0]) + "," + f(h[1]) + " L" + f(a[0] + 1) + "," + f(a[1] - 4) + '"/><path class="flux" d="M' + f((h[0] * 2 + a[0]) / 3) + "," + f((h[1] * 2 + a[1]) / 3) + " L" + f(a[0] + 1) + "," + f(a[1] - 4) + '"/>' +
+      '<ellipse class="contact" cx="' + f(HB[0]) + '" cy="' + f(HB[1] + 1) + '" rx="13" ry="6"/>' +
+      '<path class="hold-post" d="M' + f(HB[0]) + "," + f(HB[1]) + " L" + f(HT[0]) + "," + f(HT[1]) + '"/><path class="hold-arm" d="M' + f(HT[0]) + "," + f(HT[1]) + " L" + f(HE[0] + 12) + "," + f(HE[1] - 2) + '"/>' +
+      '<path class="hold-clamp" d="M' + f(HE[0] + 12) + "," + f(HE[1] - 2) + " L" + f(HE[0]) + "," + f(HE[1]) + '"/>' +
+      '<path class="electrode" d="M' + f(HE[0]) + "," + f(HE[1]) + " L" + f(a[0] + 1) + "," + f(a[1] - 4) + '"/><path class="flux" d="M' + f((HE[0] * 2 + a[0]) / 3) + "," + f((HE[1] * 2 + a[1]) / 3) + " L" + f(a[0] + 1) + "," + f(a[1] - 4) + '"/>' +
       '<g class="arcpulse"><ellipse class="arc-halo" cx="' + f(a[0]) + '" cy="' + f(a[1] - 4) + '" rx="58" ry="40"/><ellipse class="arc-halo2" cx="' + f(a[0]) + '" cy="' + f(a[1] - 4) + '" rx="18" ry="13"/>' +
       '<path class="arc-bolt" d="' + bolt + '"/><circle class="arc-core" cx="' + f(a[0]) + '" cy="' + f(a[1] - 4) + '" r="2.4"/></g>' +
       '<g class="sparks-layer"></g></g>';
     return o;
   }
   function rays() {
-    var a = ARC, head = [TRN[0], TRN[1] - 108], cv = P(CANVAS_X, 3.4, 1.7);
+    var a = ARC, to0 = P(SPOT[0], SPOT[1], .5), cv = P(CANVAS_X, 3.4, 1.7);
     function ray(to, kind) { return '<g data-rays="' + kind + '" style="opacity:0"><path class="ray" d="M' + f(a[0] - 4) + "," + f(a[1] - 6) + " L" + f(to[0]) + "," + f(to[1]) + '"/></g>'; }
-    return ray(head, "reach") + ray(cv, "blocked");
+    return ray(to0, "reach") + ray(cv, "blocked");
   }
   function canvasScreen() {
     var x = CANVAS_X, y0 = 2.7, y1 = 4.4, h = 2.55, c = "";
@@ -339,13 +319,8 @@
 
   /* ---------- assemble ---------- */
   function build() {
-    var s = '<svg xmlns="http://www.w3.org/2000/svg" class="weld-svg" viewBox="0 0 1000 640" role="img" aria-label="A small welding safety station on a plinth: a bench with a leather apron, cape, gloves, goggles, helmet and hand screen, safety boots, a stand with a current dial and three filter glasses, a weld table, and Mallesh, who puts the gear on.">';
+    var s = '<svg xmlns="http://www.w3.org/2000/svg" class="weld-svg" viewBox="0 0 1000 640" role="img" aria-label="A small welding safety station on a plinth: a bench with a leather apron, cape, gloves, goggles, helmet and hand screen, safety boots on the floor, a kit mat with a marked place for each piece of gear, a stand with a current dial and three filter glasses, and a weld table.">';
     s += "<defs>" +
-      '<radialGradient id="skinM" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#8a8d94"/><stop offset="1" stop-color="#5a5d64"/></radialGradient>' +
-      '<radialGradient id="skinT" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#777a81"/><stop offset="1" stop-color="#4c4f55"/></radialGradient>' +
-      '<linearGradient id="shirtM" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#454850"/><stop offset=".6" stop-color="#363940"/><stop offset="1" stop-color="#2a2c32"/></linearGradient>' +
-      '<linearGradient id="shirtT" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3a3d43"/><stop offset="1" stop-color="#25272c"/></linearGradient>' +
-      '<linearGradient id="trsG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2d2f34"/><stop offset="1" stop-color="#1c1d20"/></linearGradient>' +
       '<linearGradient id="lthA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#85715a"/><stop offset=".5" stop-color="#5e4e3d"/><stop offset="1" stop-color="#3b3127"/></linearGradient>' +
       '<linearGradient id="lthB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#76644f"/><stop offset=".55" stop-color="#53443a"/><stop offset="1" stop-color="#33291f"/></linearGradient>' +
       '<linearGradient id="lthC" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9a8468"/><stop offset=".55" stop-color="#6f5d47"/><stop offset="1" stop-color="#45392b"/></linearGradient>' +
@@ -360,6 +335,7 @@
       '<radialGradient id="arcglow"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".25" stop-color="#bcd8ff" stop-opacity=".62"/><stop offset="1" stop-color="#5a8dff" stop-opacity="0"/></radialGradient>' +
       '<radialGradient id="arcglow2"><stop offset="0" stop-color="#fff" stop-opacity="1"/><stop offset="1" stop-color="#dfeaff" stop-opacity="0"/></radialGradient>' +
       '<radialGradient id="flareGrad"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".35" stop-color="#ffd9c8" stop-opacity=".55"/><stop offset="1" stop-color="#ff4a32" stop-opacity="0"/></radialGradient>' +
+      '<radialGradient id="slotGlow"><stop offset="0" stop-color="#7ee8ae" stop-opacity=".75"/><stop offset=".55" stop-color="#4fd18c" stop-opacity=".28"/><stop offset="1" stop-color="#4fd18c" stop-opacity="0"/></radialGradient>' +
       '<radialGradient id="plinthPool"><stop offset="0" stop-color="#fff2dc" stop-opacity=".16"/><stop offset="1" stop-color="#fff2dc" stop-opacity="0"/></radialGradient>' +
       '<filter id="soft1" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation=".9"/></filter>' +
       '<filter id="soft3" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="3"/></filter>' +
@@ -374,13 +350,14 @@
     s += '<g class="obj plinth" data-obj="plinth">' + box(0, 0, -.5, PW, PD, .5, "plinth") + '<g class="grid">' + g + '</g><ellipse class="pool" cx="' + f(P(PW / 2, PD / 2, 0)[0]) + '" cy="' + f(P(PW / 2, PD / 2, 0)[1]) + '" rx="440" ry="220"/></g>';
     // the station: bench, gear lying on it, boots, stand (one group so it can step back during steps 7 and 8)
     s += '<g data-part="station">' + benchGroup() + stand() + items() + bootsGroup() + "</g>";
+    s += kit();
     s += table() + weldPlate();
+    s += tableGoggles() + rest();
     s += canvasScreen();
-    s += mallesh();
-    s += trainee();
+    s += spot();
     s += rays() + arcPart();
     return s + "</svg>";
   }
   window.FIG_SVG = build();
-  window.FIG_GEOM = { arc: ARC, m0: M0, m1: M1, trn: TRN, hammer: P(TABLE.x + 1.8, TABLE.y + .6, TABLE.top + .1) };
+  window.FIG_GEOM = { arc: ARC, hammer: P(TABLE.x + 1.8, TABLE.y + .6, TABLE.top + .1) };
 })();

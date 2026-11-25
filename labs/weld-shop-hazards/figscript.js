@@ -232,7 +232,11 @@
       case "machine": return machine(p[1] === "on");
       case "cord": return cord(p[1] === "on", instant);
       case "flash": return flash(p[1]);
-      case "readout": readoutKey = p[1]; return;
+      case "readout":
+        readoutKey = p[1];
+        var tg = $("traineeGrp");   // the answer to step 4 (the lesson moves on to r5) lights the lock plate green: only the authorised person has the key
+        if (tg) { if (p[1] === "r5") tg.setAttribute("data-ok", ""); else tg.removeAttribute("data-ok"); }
+        return;
     }
   }
   function reset() {

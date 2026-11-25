@@ -171,10 +171,19 @@ svg[data-plate="hot"] .hotplate { opacity: 1; }
 .shim.s1 { animation-delay: .7s; } .shim.s2 { animation-delay: 1.4s; } .shim.s3 { animation-delay: 2.1s; }
 @keyframes shim { 0% { transform: translateY(8px); opacity: 0; } 30% { opacity: .9; } 100% { transform: translateY(-14px); opacity: 0; } }
 
-/* the visitor: plain grey, the helmet is the one light shape */
-.skin { fill: #7b7268; stroke: #a19a8f; stroke-width: .5px; vector-effect: non-scaling-stroke; }
+/* step 4's authorisation corner (no person): the visitor's helmet on a peg, an empty marked spot, the machine's lock plate and key */
 .helmet { fill: #d9d6cd; stroke: #f3f0e8; stroke-width: .6px; vector-effect: non-scaling-stroke; }
 .helmet-b { fill: none; stroke: #bdb9ae; stroke-width: 2px; stroke-linecap: round; }
+.helmet-shine { fill: none; stroke: #fff; stroke-opacity: .5; stroke-width: 1.6px; stroke-linecap: round; filter: blur(.4px); }
+.spot-ring { fill: none; stroke: #8a8f98; stroke-width: 1.4px; stroke-dasharray: 4 4; vector-effect: non-scaling-stroke; transition: stroke .4s; }
+.spot-ring.in { stroke-opacity: .5; }
+.spot-x { stroke: #6a6e76; stroke-width: 1px; stroke-linecap: round; fill: none; }
+.lockplate { fill: #2b2d31; stroke: #6a6e76; stroke-width: .8px; vector-effect: non-scaling-stroke; transition: stroke .4s, filter .4s; }
+.keyhole { fill: #0c0c0d; stroke: #4a4d54; stroke-width: .5px; vector-effect: non-scaling-stroke; }
+.keytag { fill: #8c8f96; stroke: #1b1c1f; stroke-width: .5px; vector-effect: non-scaling-stroke; transition: fill .4s; }
+#traineeGrp[data-ok] .lockplate { stroke: var(--safe); filter: drop-shadow(0 0 5px var(--safe)); }
+#traineeGrp[data-ok] .keytag { fill: var(--safe); }
+#traineeGrp[data-ok] .spot-ring { stroke: var(--safe); stroke-dasharray: none; }
 
 /* fire: soft layered flames with a glow and smoke */
 .fire { transform-box: fill-box; transform-origin: 50% 100%; pointer-events: none; }
