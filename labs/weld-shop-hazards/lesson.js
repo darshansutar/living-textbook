@@ -158,7 +158,7 @@ window.WORKBENCH = {
        },
        {
         "at": "trainee",
-        "text": "Trainee"
+        "text": "Visitor's helmet"
        }
       ],
       "setup": [
@@ -172,11 +172,13 @@ window.WORKBENCH = {
          {
           "text": "Only an authorised person",
           "say": "Yes. Do not permit unauthorised persons to use welding or cutting equipment.",
+          "pic": "pics/auth-person.jpg",
           "right": true
          },
          {
           "text": "Any trainee who asks",
           "say": "No. Unauthorised persons must not use welding or cutting equipment.",
+          "pic": "pics/any-trainee.jpg",
           "do": [
            "spark:on"
           ],
@@ -216,11 +218,13 @@ window.WORKBENCH = {
          {
           "text": "Nearby, in working condition",
           "say": "Yes. Keep a suitable fire extinguisher nearby at all times, and make sure it works.",
+          "pic": "pics/ext-nearby.jpg",
           "right": true
          },
          {
           "text": "In the store room, where it is safe",
           "say": "No. If a fire starts it must be at hand, not in the store.",
+          "pic": "pics/ext-store.jpg",
           "do": [
            "ext:store",
            "fire:on"
@@ -262,12 +266,14 @@ window.WORKBENCH = {
          {
           "text": "Yes, it has stopped glowing",
           "say": "Many of you said it is safe. Let us see.",
+          "pic": "pics/plate-glowless.jpg",
           "right": true,
           "reveal": "Hot metal does not always glow. Use tongs, and mark hot metal after welding."
          },
          {
           "text": "No, it can still be hot",
           "say": "Many of you said it can still be hot. Let us see.",
+          "pic": "pics/plate-hot.jpg",
           "right": true,
           "reveal": "You were right. Hot metal does not always glow. Use tongs, and mark hot metal after welding."
          }

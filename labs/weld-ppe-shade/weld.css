@@ -17,7 +17,11 @@
 /* gear worn by Mallesh */
 .gear { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(.7); transform-box: fill-box; transform-origin: center; transition: opacity .6s ease, transform .85s cubic-bezier(.3,.9,.3,1); }
 .gear[data-on] { opacity: 1; transform: none; }
-[data-helm="up"] { transform: translateY(-70px); }
+[data-helm] { transform-box: fill-box; transform-origin: 50% 80%; transition: transform .5s cubic-bezier(.3,1.2,.5,1); }
+[data-helm="up"] { transform: translateY(-34px) rotate(-10deg); }
+/* while the raised arm swings the hammer, the hanging arm on that side is hidden */
+[data-arm] { transition: opacity .25s; }
+.chipping [data-arm="R"] { opacity: 0; }
 [data-helm="up"] [data-lens-wrap] { opacity: 0; }
 
 /* what the welder sees through the helmet glass */

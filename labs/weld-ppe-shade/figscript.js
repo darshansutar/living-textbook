@@ -24,7 +24,7 @@
     var deg = -120 + 240 * Math.max(0, Math.min(400, a)) / 400;
     one("[data-needle]").style.transform = "rotate(" + deg + "deg)";
   }
-  function part(name, on) { var el = one('[data-part="' + name + '"]'); if (el) el.style.opacity = on ? "1" : "0"; }
+  function part(name, on) { var el = one('[data-part="' + name + '"]'); if (el) el.style.opacity = on ? "1" : (name === "station" ? ".22" : "0"); }
   function rays(kind) { all("[data-rays]").forEach(function (el) { el.style.opacity = el.getAttribute("data-rays") === kind ? "1" : "0"; }); }
   function flash(id) {
     var els = all('[data-hit="' + id + '"]');
@@ -34,11 +34,12 @@
   // the helper chips the slag: the hammer swings down twice, the crust breaks into shards that fly off, the bead shows clean
   function chip(on) {
     var h = one('[data-part="hammer"]'), c = one('[data-part="chips"]'), slag = one("[data-slag]");
-    if (!on) { h.style.opacity = "0"; h.classList.remove("swing"); c.style.opacity = "0"; c.classList.remove("fly"); slag.style.opacity = "1"; return; }
+    if (!on) { svg.classList.remove("chipping"); h.style.opacity = "0"; h.classList.remove("swing"); c.style.opacity = "0"; c.classList.remove("fly"); slag.style.opacity = "1"; return; }
+    svg.classList.add("chipping");
     h.style.opacity = "1";
     h.classList.add("swing");
     later(function () { c.style.opacity = "1"; c.classList.add("fly"); slag.style.opacity = "0"; }, 700);
-    later(function () { c.style.opacity = "0"; h.style.opacity = "0"; h.classList.remove("swing"); }, 2700);
+    later(function () { c.style.opacity = "0"; h.style.opacity = "0"; h.classList.remove("swing"); svg.classList.remove("chipping"); }, 2700);
   }
 
   function op(text, instant) {
@@ -58,7 +59,7 @@
       case "plate": return part("plate", p[1] === "on");
       case "station": return part("station", p[1] === "on");
       case "chip": return chip(p[1] === "go");
-      case "mallesh": one("[data-fig]").style.transform = p[1] === "bench" ? "translate(340px,0)" : "none"; return;
+      case "mallesh": one("[data-fig]").style.transform = p[1] === "bench" ? "translate(70px,60px)" : "none"; return;
       case "arc": return part("arc", p[1] === "on");
       case "rays": return rays(p[1]);
       case "trainee": return part("trainee", p[1] === "on");

@@ -31,7 +31,7 @@ window.WORKBENCH = {
     "s5": "Job: thin plate · 80 A",
     "s6": "Job: heavy plate · 350 A",
     "s7": "Weld: cooled · Slag on bead",
-    "s8": "Arc: lit · A trainee nearby"
+    "s8": "Arc: lit · Seat nearby"
    }
   },
   "end": {
@@ -253,11 +253,13 @@ window.WORKBENCH = {
          {
           "text": "The helmet, worn on the head",
           "say": "Yes. A helmet screen is worn on the head, so the welder can use both hands.",
+          "pic": "pics/helmet-head.jpg",
           "right": true
          },
          {
           "text": "The hand screen",
           "say": "A hand screen must be held in one hand. The helmet leaves both hands free.",
+          "pic": "pics/hand-screen.jpg",
           "do": [
            "cam:mallesh",
            "screen:hold"
@@ -296,11 +298,13 @@ window.WORKBENCH = {
          {
           "text": "Shade 8 to 9",
           "say": "Yes. Up to one hundred amperes, use shade eight to nine.",
+          "pic": "pics/shade-light.jpg",
           "right": true
          },
          {
           "text": "Shade 12 to 14",
           "say": "That is too dark for this current. Shade twelve to fourteen is for above three hundred amperes.",
+          "pic": "pics/shade-dark.jpg",
           "do": [
            "pick:p13",
            "lens:dark",
@@ -360,6 +364,7 @@ window.WORKBENCH = {
          {
           "text": "Shade 8 to 9",
           "say": "That is too light for this current. The glass must match the welding current.",
+          "pic": "pics/shade-light.jpg",
           "do": [
            "pick:p9",
            "lens:glare",
@@ -374,6 +379,7 @@ window.WORKBENCH = {
          {
           "text": "Shade 12 to 14",
           "say": "Yes. Above three hundred amperes, use shade twelve to fourteen.",
+          "pic": "pics/shade-dark.jpg",
           "right": true
          }
         ],
@@ -430,6 +436,7 @@ window.WORKBENCH = {
          {
           "text": "The dark welding glass",
           "say": "No. The dark glass is for the arc. Chipping needs plain goggles with clear glass.",
+          "pic": "pics/glass-dark.jpg",
           "do": [
            "helmet:down",
            "lens:dark"
@@ -442,6 +449,7 @@ window.WORKBENCH = {
          {
           "text": "Plain chipping goggles",
           "say": "Yes. Plain goggles protect the eyes while chipping slag or grinding.",
+          "pic": "pics/goggles-clear.jpg",
           "right": true
          }
         ],
@@ -478,6 +486,7 @@ window.WORKBENCH = {
          {
           "text": "Nothing. Standing a little apart is enough",
           "say": "No. Arc rays reach people nearby. Use a canvas screen or a welding booth.",
+          "pic": "pics/stand-apart.jpg",
           "do": [
            "flare:on"
           ],
@@ -488,6 +497,7 @@ window.WORKBENCH = {
          {
           "text": "A portable fireproof canvas screen",
           "say": "Yes. Portable fireproof canvas screens protect persons working near the welding area from arc flashes.",
+          "pic": "pics/canvas-screen.jpg",
           "right": true
          }
         ],

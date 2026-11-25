@@ -15,6 +15,10 @@
     return ("0000000" + h.toString(16)).slice(-8);
   }
   var files = {}, TEXTS = window.LAB_LINES.en || {};
+  // answer-choice pictures: the workbench looks them up by their own path
+  window.WORKBENCH.en.chapters.forEach(function (c) { c.steps.forEach(function (s) { s.tasks.forEach(function (t) {
+    (t.choices || []).forEach(function (o) { if (o.pic) files[o.pic] = o.pic; });
+  }); }); });
   if (LINES) Object.keys(TEXTS).forEach(function (key) { files["say/" + hashOf(TEXTS[key]) + ".mp3"] = AUDIO + LINES + key + ".mp3"; });
   window.STORY_FILES = { files: files, texts: {} };
 })();

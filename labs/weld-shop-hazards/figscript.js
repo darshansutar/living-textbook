@@ -57,7 +57,7 @@
     var n = part("dial").querySelector(".needle");
     n.style.transformBox = "fill-box"; n.style.transformOrigin = "0% 100%";
     n.style.transition = instant || reduced ? "none" : "transform 700ms ease";
-    n.style.transform = on ? "" : "rotate(-60deg)";
+    n.style.transform = on ? "" : "rotate(-70deg)";
   }
   function flash(id) {
     all('[data-hit="' + id + '"]').forEach(function (el) {
