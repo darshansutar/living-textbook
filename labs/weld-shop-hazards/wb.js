@@ -1,7 +1,8 @@
 /* Copied from labs/smart-switch/wb.js (en2 Starling workbench player) with the Living Textbook hooks (LAB_DIRECT, LAB_ON_DONE, window.WB)
    and these welding-lab changes (marked LT-WELD): lines without a voice file pace silently, a wrong tap on a decoy flashes it red and
    speaks the script's miss line, a pointing hand after 6 idle seconds, a prediction whose reveal depends on the pick (choice.reveal),
-   a task can run ops on opening (task.do).
+   a task can run ops on opening (task.do), and (LT-FOCUS, 2026-11-25) the figure may light only the current step's parts (FIG.step), give
+   a step its own camera view (FIG.stepViews) and pull the camera back on the end card.
    Workbench player: a hands-on workshop on a working model, in chapters.
    load.js supplies window.WORKBENCH ({lang: lesson}), window.WORKBENCH_LANGS,
    window.STORY_FILES (signed links to the voice files) and the figure, whose
@@ -156,7 +157,7 @@
   var chips = [];
   function setChips(list) {
     chipLayer.textContent = "";
-    chips = (list || []).map(function (c) {
+    chips = (list || []).filter(function (c) { return !FIG.chipOk || c.point || FIG.chipOk(c.at); }).map(function (c) {   // LT-FOCUS: no label on a dimmed part
       var el = document.createElement("span");
       el.className = "chip-tag" + (c.side ? " " + c.side : "");
       el.textContent = c.text;
@@ -360,7 +361,8 @@
     paintProgress();
     clearTask();
     setChips([]);
-    view(chapter().steps[0].view);
+    if (FIG.step) FIG.step(null);   // LT-FOCUS: nothing dimmed on the introduction
+    view((FIG.stepViews && FIG.stepViews[chapter().steps[0].id]) || chapter().steps[0].view);
     setBubble(chapter().intro);
     say(chapter().intro);
     button(UI.begin, function () { startStep(0); });
@@ -372,7 +374,8 @@
     $("steptitle").textContent = s.title;
     paintProgress();
     run(s.setup);
-    view(s.view);
+    if (FIG.step) FIG.step(s.id);   // LT-FOCUS: light this step's parts, dim the rest
+    view((FIG.stepViews && FIG.stepViews[s.id]) || s.view);
     setChips(s.chips);
     runTask();
   }
@@ -594,6 +597,9 @@
   function finishChapter() {
     clearTask();
     setChips([]);
+    if (FIG.step) FIG.step(null);   // LT-FOCUS: the job is done, the whole bay lights up and the camera pulls back
+    if (FIG.quiet) FIG.quiet();
+    view("all");
     done[chapter().id] = true;
     body.dataset.screen = "end";
     $("panel").scrollTop = 0;

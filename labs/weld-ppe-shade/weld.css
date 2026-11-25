@@ -1,28 +1,102 @@
-/* Scene styles for the PPE lab (the player's own styles are in workbench.css, copied from labs/smart-switch). */
-#stage .weld-svg { text-rendering: geometricPrecision; }
+/* PPE station, Starling "anatomy" language and our colour call. The player's own styles are in workbench.css (unchanged).
+   Base = charcoal / steel. Leather is the only warm material (it IS the subject). Colour is reserved for meaning:
+   amber = the thing to tap (--primary) · green = right / the shade glass tint · red = wrong, danger · blue-white = arc light. */
+
+#stage { --e-lit: #b9b4a8; --danger: #ff5a46; --safe: #5fd39a; --arc: #bcd8ff; --hot: #ff9a3c; }
+#stage > svg, #stage .weld-svg { overflow: visible; text-rendering: geometricPrecision; }
 #stage .instant *, #stage .instant { transition: none !important; }
 
-/* gear lying on the bench / hanging on the wall: flies off to Mallesh when put on */
-.item { transition: opacity .55s ease, transform .8s cubic-bezier(.5,0,.3,1); transform-box: fill-box; transform-origin: center; }
-.item[data-gone] { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(.6); pointer-events: none; }
-.ring { fill: none; stroke: var(--primary); stroke-width: 3; opacity: 0; pointer-events: none; }
-.item[data-gone] + .ring { display: none; }
-[data-glow] + .ring { opacity: .95; animation: ringpulse 1.6s ease-in-out infinite; }
-@keyframes ringpulse { 50% { stroke-width: 6; opacity: .45; } }
-#stage .weld-svg [data-glow] { filter: drop-shadow(0 0 7px var(--primary)) drop-shadow(0 0 2px var(--primary)); animation: glowpulse 1.6s ease-in-out infinite; }
-@keyframes glowpulse { 50% { filter: drop-shadow(0 0 14px var(--primary)) drop-shadow(0 0 4px var(--primary)); } }
-#stage .weld-svg [data-flash] { filter: drop-shadow(0 0 10px #ff4a3a) drop-shadow(0 0 3px #ff4a3a); animation: shake .5s ease-in-out 2; }
-@keyframes shake { 25% { translate: -4px 0; } 75% { translate: 4px 0; } }
+/* ---- solids: three flat shades + a hairline edge ---- */
+.solid .f { stroke: var(--e); stroke-width: .6px; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.solid .f.t { fill: var(--t); } .solid .f.l { fill: var(--l); } .solid .f.r { fill: var(--r); }
+.m-steel-dk { --t: #35373b; --l: #232528; --r: #2b2d31; --e: #4b4e54; }
+.m-steel    { --t: #44474c; --l: #2d3034; --r: #373a3f; --e: #5f636a; }
+.m-plate    { --t: #5d6168; --l: #3a3d42; --r: #46494f; --e: #8a8f98; }
+.m-plinth   { --t: #26282c; --l: #17181a; --r: #1e2023; --e: #444850; }
+.iso-line { fill: none; stroke: #565a61; stroke-width: .6px; vector-effect: non-scaling-stroke; stroke-linecap: round; stroke-linejoin: round; }
+.iso-line.faint { stroke: #35383d; }
+.iso-halo { fill: #000; stroke: none; filter: blur(8px); opacity: .85; transform: translateY(3px); pointer-events: none; }
+.grid { opacity: .5; }
+.pool { fill: url(#plinthPool); mix-blend-mode: screen; pointer-events: none; transition: opacity .6s; }
+svg[data-focus] .pool { opacity: .3; }
+.contact { fill: #000; opacity: .5; pointer-events: none; }
 
-/* gear worn by Mallesh */
-.gear { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(.7); transform-box: fill-box; transform-origin: center; transition: opacity .6s ease, transform .85s cubic-bezier(.3,.9,.3,1); }
+/* ---- focus: while a step is on, everything that is not part of it steps back ---- */
+.obj { transition: filter .6s var(--ease); }
+svg[data-focus] .obj:not([data-lit]) { filter: brightness(.5) saturate(.55); }
+.obj[data-lit] { filter: brightness(1.2); }
+.obj[data-lit] .solid .f { stroke: var(--e-lit); }
+[data-part="station"], [data-part="plate"], [data-part="trainee"], [data-part="canvas"] { transition: opacity .8s ease, transform .8s var(--ease); }
+
+/* ---- leather: gradient, grain, crease, stitch, sheen ---- */
+.lth { stroke: #1b1611; stroke-width: .6px; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.stitch { fill: none; stroke: #b79d76; stroke-width: .7px; stroke-dasharray: 1.6 1.4; vector-effect: non-scaling-stroke; opacity: .85; }
+.crease { fill: none; stroke: #20190f; stroke-width: .9px; vector-effect: non-scaling-stroke; stroke-linecap: round; opacity: .55; }
+.sheen { fill: none; stroke: #fff4dc; stroke-opacity: .3; stroke-linecap: round; filter: blur(.5px); vector-effect: non-scaling-stroke; mix-blend-mode: screen; }
+.strap { fill: none; stroke: #3a2f24; stroke-width: 2.4px; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.strap.tie { stroke-width: 1.6px; }
+.pocket { fill: none; stroke: #20190f; stroke-width: .8px; vector-effect: non-scaling-stroke; opacity: .6; }
+.rivet { fill: #a9a39a; stroke: #2a2724; stroke-width: .4px; }
+.cuff { fill: none; stroke: #2b2218; stroke-width: 1.1px; stroke-linecap: round; opacity: .8; }
+.sole { fill: #121110; }
+.toecap { fill: #3d4046; fill-opacity: .7; stroke: #1a1b1e; stroke-width: .4px; vector-effect: non-scaling-stroke; }
+.tongue { fill: #2a231c; stroke: #0f0c09; stroke-width: .3px; vector-effect: non-scaling-stroke; }
+.lace { fill: none; stroke: #8a8378; stroke-width: .9px; stroke-linecap: round; opacity: .8; }
+
+/* ---- Mallesh: a quiet charcoal silhouette ---- */
+.bodyg .trs { stroke: #44474e; stroke-width: .5px; vector-effect: non-scaling-stroke; }
+.bodyg .shoe { fill: #17181a; stroke: #3a3c41; stroke-width: .5px; vector-effect: non-scaling-stroke; }
+.bodyg .shirt { stroke: #5a5e65; stroke-width: .5px; vector-effect: non-scaling-stroke; }
+.bodyg .arm { fill: none; stroke-width: 8.2px; stroke-linecap: round; }
+.bodyg .hand, .bodyg .head, .bodyg .neck { stroke: #5d6067; stroke-width: .4px; vector-effect: non-scaling-stroke; }
+.bodyg .hair { fill: #121315; }
+.bodyg .ear { stroke: #4c4f55; stroke-width: .3px; vector-effect: non-scaling-stroke; }
+.bodyg .collar { fill: none; stroke: #20222a; stroke-width: 1.4px; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.bodyg .brow { fill: none; stroke: #17181a; stroke-width: .9px; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.bodyg .jaw { fill: none; stroke: #3d4046; stroke-width: .7px; vector-effect: non-scaling-stroke; opacity: .6; }
+.bodyg .rimlight { fill: none; stroke: #d9d4c8; stroke-opacity: .22; stroke-width: 1px; vector-effect: non-scaling-stroke; }
+.bodyg .eye { fill: #0f1011; }
+.eye { fill: #0f1011; }
+
+/* ---- gear lying on the bench / floor: flies off to Mallesh when it is put on ---- */
+.item { transition: opacity .55s ease, transform .85s cubic-bezier(.5,0,.3,1), filter .6s var(--ease); transform-box: fill-box; transform-origin: center; }
+.item[data-gone] { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(.55); pointer-events: none; }
+.pad { fill: transparent; stroke: none; pointer-events: all; }
+#stage [data-glow] .pad { stroke: var(--primary); stroke-width: 1.4px; vector-effect: non-scaling-stroke; stroke-dasharray: 3 2; animation: padglow 1.6s ease-in-out infinite; }
+@keyframes padglow { 50% { stroke-opacity: .35; } }
+#stage .item[data-glow] { filter: drop-shadow(0 0 3px var(--primary)) drop-shadow(0 0 1px var(--primary)); animation: glowpulse 1.6s ease-in-out infinite; }
+@keyframes glowpulse { 50% { filter: drop-shadow(0 0 6px var(--primary)) drop-shadow(0 0 1.5px var(--primary)); } }
+#stage .item[data-glow] .lth { stroke: var(--primary); stroke-width: 1px; }
+#stage [data-flash] { filter: drop-shadow(0 0 9px #ff4a3a) drop-shadow(0 0 2px #ff4a3a); animation: shake .5s ease-in-out 2; }
+@keyframes shake { 25% { translate: -3px 0; } 75% { translate: 3px 0; } }
+/* a gear piece that is not part of this step can still be tapped (a wrong tap), so it stays reachable but quiet */
+
+/* ---- gear worn by Mallesh: drops in and settles, then breathes a little ---- */
+.gear { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(.7); transform-box: fill-box; transform-origin: center; transition: opacity .6s ease, transform .9s cubic-bezier(.3,1,.3,1); }
 .gear[data-on] { opacity: 1; transform: none; }
-[data-helm] { transform-box: fill-box; transform-origin: 50% 80%; transition: transform .5s cubic-bezier(.3,1.2,.5,1); }
-[data-helm="up"] { transform: translateY(-34px) rotate(-10deg); }
-/* while the raised arm swings the hammer, the hanging arm on that side is hidden */
-[data-arm] { transition: opacity .25s; }
-.chipping [data-arm="R"] { opacity: 0; }
+.gear[data-on][data-worn="apron"], .gear[data-on][data-worn="cape"] { animation: drape 4.6s ease-in-out 1s infinite; transform-origin: 50% 0%; }
+@keyframes drape { 50% { transform: skewX(-.6deg) scaleY(1.004); } }
+[data-helm] { transform-box: fill-box; transform-origin: 50% 80%; transition: transform .55s cubic-bezier(.3,1.2,.5,1); }
+[data-helm="up"] { transform: translateY(-8px) rotate(-8deg); }
 [data-helm="up"] [data-lens-wrap] { opacity: 0; }
+
+/* helmet, glass, screens */
+.shell { stroke: #14151a; stroke-width: .6px; vector-effect: non-scaling-stroke; }
+.shellrim { fill: none; stroke: #8b909a; stroke-opacity: .5; stroke-width: .8px; vector-effect: non-scaling-stroke; }
+.shellrim.lo { stroke: #0e0f12; stroke-opacity: .7; }
+.shellshine { fill: none; stroke: #fff; stroke-opacity: .22; stroke-width: 1.3px; stroke-linecap: round; vector-effect: non-scaling-stroke; filter: blur(.4px); }
+.shellshine.s2 { stroke-opacity: .32; }
+.winframe { fill: #0a0a0b; stroke: #4a4d54; stroke-width: .6px; vector-effect: non-scaling-stroke; }
+.lensglass { fill: #0c1710; }
+.lensshine { fill: #fff; fill-opacity: .1; stroke: none; }
+.bolt { fill: #6c7078; stroke: #1b1c1f; stroke-width: .4px; vector-effect: non-scaling-stroke; }
+.handle { fill: none; stroke: #232224; stroke-width: 3px; stroke-linecap: round; }
+.paddle { stroke: #151413; stroke-width: .6px; vector-effect: non-scaling-stroke; }
+.paddle-edge { fill: none; stroke: #6a6258; stroke-opacity: .5; stroke-width: .6px; vector-effect: non-scaling-stroke; }
+.gframe { fill: #151618; stroke: #5a5e66; stroke-width: .5px; vector-effect: non-scaling-stroke; }
+.gclear { fill: #cfd6dc; fill-opacity: .55; stroke: #fff; stroke-opacity: .5; stroke-width: .4px; vector-effect: non-scaling-stroke; }
+.gstrap { fill: none; stroke: #1a1b1d; stroke-width: 1.1px; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.gbridge { fill: none; stroke: #5a5e66; stroke-width: .8px; stroke-linecap: round; vector-effect: non-scaling-stroke; }
 
 /* what the welder sees through the helmet glass */
 .lens { opacity: 0; transition: opacity .45s ease; }
@@ -30,26 +104,63 @@
 [data-lens-wrap] .lens[data-on][data-lens="glare"] circle { animation: glare .5s ease-in-out infinite alternate; }
 @keyframes glare { to { opacity: .6; } }
 
-/* filter glasses and the picked one */
-.plate { transition: transform .5s cubic-bezier(.3,1.3,.5,1), filter .4s; transform-box: fill-box; }
-.plate[data-pick] { transform: translateY(-14px) scale(1.12); filter: drop-shadow(0 0 8px var(--primary)); }
+/* ---- shade stand: dial and glasses ---- */
+.dial-rim { fill: #1b1c1f; stroke: #565a61; stroke-width: .8px; vector-effect: non-scaling-stroke; }
+.dial-face { fill: #0f1012; stroke: #2e3034; stroke-width: .5px; vector-effect: non-scaling-stroke; }
+.tick { stroke: #a8aab0; stroke-width: .9px; vector-effect: non-scaling-stroke; stroke-linecap: round; fill: none; }
+.dial-arc { fill: none; stroke: #46494f; stroke-width: 1px; vector-effect: non-scaling-stroke; }
+.needle { transition: transform .9s cubic-bezier(.4,1.2,.5,1); }
+.needle-l { stroke: #f2efe6; stroke-width: 1.5px; vector-effect: non-scaling-stroke; stroke-linecap: round; fill: none; }
+.needle-h { fill: #f2efe6; }
+.hub { fill: #2a2b2e; stroke: #8d9199; stroke-width: .6px; vector-effect: non-scaling-stroke; }
+.plate { transition: transform .55s cubic-bezier(.3,1.3,.5,1), filter .4s; transform-box: fill-box; }
+.pframe { fill: #17181b; stroke: #50535a; stroke-width: .6px; vector-effect: non-scaling-stroke; }
+.pglass { stroke: none; }
+.pedge { fill: none; stroke: #d7ecdc; stroke-opacity: .35; stroke-width: .6px; vector-effect: non-scaling-stroke; }
+.pshine { fill: #fff; fill-opacity: .16; stroke: none; }
+.pshine.s2 { fill-opacity: .1; }
+.plate[data-pick] { transform: translateY(-14px) scale(1.1); }
+.plate[data-pick][data-verdict="ok"] { filter: drop-shadow(0 0 7px var(--safe)) drop-shadow(0 0 1px var(--safe)); }
+.plate[data-pick][data-verdict="bad"] { filter: drop-shadow(0 0 7px var(--danger)) drop-shadow(0 0 1px var(--danger)); }
 
-/* hammer and slag */
+/* ---- weld plate, bead, slag, hammer ---- */
+.bead { fill: none; stroke: #c9ccd2; stroke-width: 3.2px; stroke-linecap: round; opacity: .9; }
+.bead-r { fill: none; stroke: #5b5f66; stroke-width: .8px; vector-effect: non-scaling-stroke; stroke-linecap: round; opacity: .8; }
+.slag { fill: #2a221b; stroke: #0f0b08; stroke-width: .6px; vector-effect: non-scaling-stroke; stroke-linejoin: round; transition: opacity .5s; }
+.slag-hi { fill: none; stroke: #8a735a; stroke-opacity: .5; stroke-width: 1px; vector-effect: non-scaling-stroke; stroke-linecap: round; transition: opacity .5s; }
+.hh { fill: none; stroke: #2a2724; stroke-width: 3px; stroke-linecap: round; }
+.hhead { fill: #5a5e65; stroke: #0f1011; stroke-width: .6px; vector-effect: non-scaling-stroke; }
+[data-part="hammer"] { transition: opacity .3s; }
 [data-part="hammer"].swing { animation: hammer .72s ease-in-out 3; }
-@keyframes hammer { 0%, 100% { transform: translateY(-4px); } 42%, 58% { transform: translateY(34px); } }
+@keyframes hammer { 0%, 100% { transform: translateY(-4px); } 42%, 58% { transform: translateY(30px); } }
 [data-part="chips"] { transition: opacity .3s; }
-[data-part="chips"].fly [data-chip] { animation: shard 1.7s ease-out forwards; transform-box: fill-box; transform-origin: center; }
-@keyframes shard { from { transform: translate(0,0) rotate(0); opacity: 1; } 70% { opacity: 1; } to { transform: translate(var(--cx), var(--cy)) rotate(140deg); opacity: 0; } }
-[data-slag] { transition: opacity .5s; }
+.chip { fill: #3b2f25; stroke: #0f0b08; stroke-width: .4px; vector-effect: non-scaling-stroke; transform-box: fill-box; transform-origin: center; }
+[data-part="chips"].fly .chip { animation: shard 1.7s ease-out forwards; }
+@keyframes shard { from { transform: translate(0, 0) rotate(0); opacity: 1; } 70% { opacity: 1; } to { transform: translate(var(--cx), var(--cy)) rotate(140deg); opacity: 0; } }
+.chipping [data-arm="R"] { opacity: 0; }
 
-/* the arc and its rays */
-.arcpulse { animation: arcpulse .25s steps(2, jump-none) infinite; }
+/* ---- the arc, its bloom, sparks and rays: blue-white and orange only ---- */
+.arc-halo, .arc-halo2 { mix-blend-mode: screen; pointer-events: none; }
+.arc-halo { fill: url(#arcglow); } .arc-halo2 { fill: url(#arcglow2); }
+.arc-core { fill: #fff; }
+.arc-bolt { fill: none; stroke: #e8f1ff; stroke-width: 1.1px; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.arcpulse { animation: arcpulse .22s steps(2, jump-none) infinite; }
 @keyframes arcpulse { 50% { opacity: .78; } }
-.ray { animation: rayflow .8s linear infinite; }
-@keyframes rayflow { to { stroke-dashoffset: -36; } }
-[data-trainee-eyes].squint { transition: transform .3s; }
+.electrode { fill: none; stroke: #3a3d43; stroke-width: 2px; stroke-linecap: round; }
+.flux { fill: none; stroke: #9a7f60; stroke-width: 2.4px; stroke-linecap: round; }
+.spark { stroke-width: 1px; stroke-linecap: round; vector-effect: non-scaling-stroke; pointer-events: none; }
+.ray { fill: none; stroke: #bcd8ff; stroke-opacity: .75; stroke-width: 1.4px; stroke-dasharray: 5 7; vector-effect: non-scaling-stroke; animation: rayflow .8s linear infinite; }
+[data-rays] { transition: opacity .5s; }
+@keyframes rayflow { to { stroke-dashoffset: -24; } }
+.flare { mix-blend-mode: screen; pointer-events: none; transition: opacity .4s; }
+svg[data-dazzled] [data-trainee-eyes] { transform: scaleY(.25); transform-box: fill-box; transform-origin: center; }
+[data-trainee-eyes] { transition: transform .3s; }
+.canvas-cloth { fill: #67624f; stroke: #8a846b; stroke-width: .7px; vector-effect: non-scaling-stroke; fill-opacity: .95; }
+.canvas-weave { fill: none; stroke: #3d3a2e; stroke-width: .5px; stroke-opacity: .4; }
+.canvas-absorb { fill: url(#arcglow); mix-blend-mode: screen; opacity: .35; pointer-events: none; }
+[data-part="canvas"] { transform-box: fill-box; }
 
-/* gold "Tap:" label that bobs above the target, every other label is faded */
+/* ---- gold "Tap:" label that bobs above the target, every other label is faded ---- */
 .chip-tag.gold { background: var(--primary); color: var(--primary-ink); border-color: oklch(0.95 0.08 80); font-weight: 800; animation: chipbob 1.4s ease-in-out infinite; }
 .chip-tag.gold::after { background: var(--primary); border-color: oklch(0.95 0.08 80); }
 @keyframes chipbob { 50% { translate: -50% calc(-100% - .85rem); } }
@@ -60,3 +171,4 @@
 /* the status pill is a plain gold-edged tag here, not a danger sign */
 #readout, #readout[data-state="off"] { background: oklch(0.27 0.03 70 / 94%); border: 2px solid var(--primary); color: var(--ink); }
 #readout svg, #readout:not([data-state="off"]) svg { fill: none; stroke: var(--primary); stroke-width: 2.2; }
+#choices .choice .pick { min-height: 3.2rem; }
