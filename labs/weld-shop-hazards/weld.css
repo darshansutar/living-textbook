@@ -1,0 +1,21 @@
+/* Scene styles for the welding-area lab (the workbench look: dark stage, gold glow on the part to tap). */
+#stage svg .sh { stroke: #14100d; stroke-width: 1.2px; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+#stage svg .noedge { stroke: none; }
+#stage svg .ln, #stage svg .cord, #stage svg .bead { vector-effect: non-scaling-stroke; pointer-events: none; }
+#stage svg .ring { opacity: 0; stroke: var(--primary); stroke-width: 3px; vector-effect: non-scaling-stroke; pointer-events: none; }
+#stage [data-glow] .sh { stroke: var(--primary); stroke-width: 2.6px; animation: glowline 1.6s ease-in-out infinite; }
+#stage [data-glow] .ring { opacity: 1; animation: ringpulse 1.6s ease-in-out infinite; }
+#stage [data-glow] .wetpool { stroke: var(--primary); stroke-width: 3px; animation: glowline 1.6s ease-in-out infinite; }
+#stage [data-flash] .sh, #stage [data-flash] .wetpool { stroke: #ff5a47 !important; stroke-width: 3px !important; animation: none !important; }
+#stage [data-flash] { filter: drop-shadow(0 0 7px #ff5a47); }
+@keyframes ringpulse { 0%, 100% { stroke-opacity: .35; } 50% { stroke-opacity: 1; } }
+#stage .hw { animation: heatrise 1.8s ease-in-out infinite; transform-box: fill-box; }
+#stage .hw1 { animation-delay: .35s; }
+#stage .hw2 { animation-delay: .7s; }
+@keyframes heatrise { 0% { transform: translateY(6px); opacity: 0; } 40% { opacity: .9; } 100% { transform: translateY(-10px); opacity: 0; } }
+#stage .fire { transform-box: fill-box; transform-origin: 50% 100%; animation: flick .5s ease-in-out infinite alternate; }
+@keyframes flick { from { transform: scale(1, 1); } to { transform: scale(.92, 1.1); } }
+#stage [data-part="spark"] line { animation: sparkle .25s steps(2, jump-none) infinite; }
+@keyframes sparkle { from { opacity: 1; } to { opacity: .35; } }
+.listen { display: none !important; }
+.weld-svg { overflow: visible; }

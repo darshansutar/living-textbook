@@ -1,0 +1,11 @@
+/* Living Textbook: inside a lesson, keep the workbench's bar, card and sign clear of the lesson's step rail (top)
+   and its Back / Next buttons (bottom). */
+.lt-embed #hud { top: calc(5.2vw + .6rem); }
+.lt-embed #panel { top: calc(5.2vw + var(--hud-h)); max-height: calc(100% - 5.2vw - var(--hud-h) - 6vw - 1rem); }
+.lt-embed body[data-screen="work"] #focus, .lt-embed body[data-screen="end"] #focus { top: calc(5.2vw + var(--hud-h)); bottom: calc(6vw + .6rem); }
+.lt-embed #readout { bottom: calc(6vw + .8rem); }
+.lt-embed .title-block { bottom: calc(6vw + 2rem); }
+/* end card: keep Continue / Practise again always reachable when the mistakes list makes the card scroll (checked at 1024x768 and 1366x768) */
+.lt-embed #endcard { gap: .6rem; }
+.lt-embed #end_list li { padding: .45rem .7rem; font-size: .95rem; }
+.lt-embed .end-actions { position: sticky; bottom: 0; padding-top: .5rem; background: linear-gradient(to bottom, transparent, rgb(20 17 14 / 96%) 35%); }

@@ -1,0 +1,58 @@
+/* Scene styles for the PPE lab (the player's own styles are in workbench.css, copied from labs/smart-switch). */
+#stage .weld-svg { text-rendering: geometricPrecision; }
+#stage .instant *, #stage .instant { transition: none !important; }
+
+/* gear lying on the bench / hanging on the wall: flies off to Mallesh when put on */
+.item { transition: opacity .55s ease, transform .8s cubic-bezier(.5,0,.3,1); transform-box: fill-box; transform-origin: center; }
+.item[data-gone] { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(.6); pointer-events: none; }
+.ring { fill: none; stroke: var(--primary); stroke-width: 3; opacity: 0; pointer-events: none; }
+.item[data-gone] + .ring { display: none; }
+[data-glow] + .ring { opacity: .95; animation: ringpulse 1.6s ease-in-out infinite; }
+@keyframes ringpulse { 50% { stroke-width: 6; opacity: .45; } }
+#stage .weld-svg [data-glow] { filter: drop-shadow(0 0 7px var(--primary)) drop-shadow(0 0 2px var(--primary)); animation: glowpulse 1.6s ease-in-out infinite; }
+@keyframes glowpulse { 50% { filter: drop-shadow(0 0 14px var(--primary)) drop-shadow(0 0 4px var(--primary)); } }
+#stage .weld-svg [data-flash] { filter: drop-shadow(0 0 10px #ff4a3a) drop-shadow(0 0 3px #ff4a3a); animation: shake .5s ease-in-out 2; }
+@keyframes shake { 25% { translate: -4px 0; } 75% { translate: 4px 0; } }
+
+/* gear worn by Mallesh */
+.gear { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(.7); transform-box: fill-box; transform-origin: center; transition: opacity .6s ease, transform .85s cubic-bezier(.3,.9,.3,1); }
+.gear[data-on] { opacity: 1; transform: none; }
+[data-helm="up"] { transform: translateY(-70px); }
+[data-helm="up"] [data-lens-wrap] { opacity: 0; }
+
+/* what the welder sees through the helmet glass */
+.lens { opacity: 0; transition: opacity .45s ease; }
+.lens[data-on] { opacity: 1; }
+[data-lens-wrap] .lens[data-on][data-lens="glare"] circle { animation: glare .5s ease-in-out infinite alternate; }
+@keyframes glare { to { opacity: .6; } }
+
+/* filter glasses and the picked one */
+.plate { transition: transform .5s cubic-bezier(.3,1.3,.5,1), filter .4s; transform-box: fill-box; }
+.plate[data-pick] { transform: translateY(-14px) scale(1.12); filter: drop-shadow(0 0 8px var(--primary)); }
+
+/* hammer and slag */
+[data-part="hammer"].swing { animation: hammer .72s ease-in-out 3; }
+@keyframes hammer { 0%, 100% { transform: translateY(-4px); } 42%, 58% { transform: translateY(34px); } }
+[data-part="chips"] { transition: opacity .3s; }
+[data-part="chips"].fly [data-chip] { animation: shard 1.7s ease-out forwards; transform-box: fill-box; transform-origin: center; }
+@keyframes shard { from { transform: translate(0,0) rotate(0); opacity: 1; } 70% { opacity: 1; } to { transform: translate(var(--cx), var(--cy)) rotate(140deg); opacity: 0; } }
+[data-slag] { transition: opacity .5s; }
+
+/* the arc and its rays */
+.arcpulse { animation: arcpulse .25s steps(2, jump-none) infinite; }
+@keyframes arcpulse { 50% { opacity: .78; } }
+.ray { animation: rayflow .8s linear infinite; }
+@keyframes rayflow { to { stroke-dashoffset: -36; } }
+[data-trainee-eyes].squint { transition: transform .3s; }
+
+/* gold "Tap:" label that bobs above the target, every other label is faded */
+.chip-tag.gold { background: var(--primary); color: var(--primary-ink); border-color: oklch(0.95 0.08 80); font-weight: 800; animation: chipbob 1.4s ease-in-out infinite; }
+.chip-tag.gold::after { background: var(--primary); border-color: oklch(0.95 0.08 80); }
+@keyframes chipbob { 50% { translate: -50% calc(-100% - .85rem); } }
+.chip-tag.gold.left { animation-name: chipbobx; }
+@keyframes chipbobx { 50% { translate: calc(-100% - 1rem) -50%; } }
+.chip-tag:not(.gold) { background: oklch(0.2 0.01 62 / 80%); }
+
+/* the status pill is a plain gold-edged tag here, not a danger sign */
+#readout, #readout[data-state="off"] { background: oklch(0.27 0.03 70 / 94%); border: 2px solid var(--primary); color: var(--ink); }
+#readout svg, #readout:not([data-state="off"]) svg { fill: none; stroke: var(--primary); stroke-width: 2.2; }
