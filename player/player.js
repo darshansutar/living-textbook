@@ -407,9 +407,19 @@
     });
     onCleanup(() => { if (adv) clearTimeout(adv); });
     v.addEventListener('click', () => (v.paused ? v.play() : v.pause()));
-    v.play().catch(() => setNext(true, true));
+    // the browser can refuse to start a video that no tap led to (opened on a link, or a tab that had no gesture yet):
+    // then the picture would sit black on its first caption. Show a big Play button instead of a dead screen.
+    const startTap = () => {
+      if (screenEl.querySelector('.tap-play')) return;
+      const b = h('button', { class: 'tap-play', type: 'button', 'aria-label': 'Play', html: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>' });
+      b.addEventListener('click', e => { e.stopPropagation(); v.play().catch(() => { /* still blocked: the video's own tap toggles it */ }); });
+      screenEl.appendChild(b);
+      v.addEventListener('play', () => b.remove(), { once: true });
+    };
+    const first = v.play();
+    if (first && first.catch) first.catch(() => { setNext(true, true); startTap(); });
     setNext(true, false);
-    setReplay(() => { v.currentTime = 0; v.play(); });
+    setReplay(() => { v.currentTime = 0; v.play().catch(startTap); });
     const view = {};
     return view;
   };
