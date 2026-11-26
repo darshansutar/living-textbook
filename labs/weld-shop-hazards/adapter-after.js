@@ -10,6 +10,21 @@
   document.querySelectorAll("#langs button").forEach(function (b) {
     b.addEventListener("click", function () { try { window.localStorage.setItem("lt-weld-lab-lang", b.dataset.lang); } catch (e) {} });
   });
+  // language button in the top bar, so English / Hindi can be switched at any step (the first screen is skipped by the lesson's Next)
+  (function () {
+    var tools = document.querySelector("#hud .tools");
+    if (!tools || !window.WORKBENCH.hi) return;
+    var cur = document.documentElement.lang === "hi" ? "hi" : "en", to = cur === "hi" ? "en" : "hi";
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "tool"; b.id = "langBtn"; b.lang = to;
+    b.setAttribute("aria-label", to === "hi" ? "हिंदी में देखें" : "Switch to English");
+    b.innerHTML = "<span>" + (to === "hi" ? "हिंदी" : "English") + "</span>";
+    b.addEventListener("click", function () {
+      try { window.localStorage.setItem("lt-weld-lab-lang", to); } catch (e) {}
+      var u = new URL(location.href); u.searchParams.set("lang", to); location.replace(u.toString());
+    });
+    tools.insertBefore(b, tools.firstChild);
+  })();
   var started = false;
   $("t_start").addEventListener("click", function () { if (!started) { started = true; post("lab-started"); } });
   window.LAB_ON_DONE = function () {
