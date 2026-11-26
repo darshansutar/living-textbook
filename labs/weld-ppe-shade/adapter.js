@@ -15,11 +15,13 @@
     return ("0000000" + h.toString(16)).slice(-8);
   }
   var files = {};
-  // two languages live in one lab: English lines in <audio>, Hinglish lines in <audio>hi/. The learner's choice is
-  // remembered between the two labs; inside a lesson the lab shows the language switch on its first screen.
-  try {
+  // two languages live in one lab: English lines in <audio>, Hindi lines in <audio>hi/.
+  // Inside a lesson the chapter's language decides (the lesson's language menu switches it); the lab's own switch is for the standalone lab.
+  var LANG = window.WORKBENCH[Q.get("lang")] ? Q.get("lang") : "en";
+  if (window.LAB_EMBED) window.WORKBENCH_LANGS = window.WORKBENCH_LANGS.filter(function (l) { return l.code === LANG; });
+  else try {
     var want = window.localStorage.getItem("lt-weld-lab-lang");
-    if (want && window.WORKBENCH[want] && Q.get("lang") !== want) { Q.set("lang", want); history.replaceState(null, "", location.pathname + "?" + Q.toString()); }
+    if (want && window.WORKBENCH[want] && !Q.get("lang")) { Q.set("lang", want); history.replaceState(null, "", location.pathname + "?" + Q.toString()); }
   } catch (e) {}
   var DIRS = { en: "", hi: "hi/" };
   Object.keys(window.WORKBENCH).forEach(function (code) {

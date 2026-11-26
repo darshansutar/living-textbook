@@ -519,59 +519,59 @@ window.WORKBENCH = {
  },
  "hi": {
   "id": "weld-ppe-shade",
-  "title": "Safety gear पहनो और सही shade चुनो",
-  "kicker": "ITI · Fitter · Welding · Lab",
-  "sub": "आओ, मल्लेश को protective gear पहनाते हैं, फिर हर job के लिए सही filter glass चुनते हैं।",
+  "title": "सुरक्षा उपकरण पहनो और सही शेड चुनो",
+  "kicker": "आईटीआई · फ़िटर · वेल्डिंग · लैब",
+  "sub": "आओ, मल्लेश को सुरक्षा उपकरण पहनाते हैं, फिर हर काम के लिए सही फ़िल्टर ग्लास चुनते हैं।",
   "guide": "बसवराज अण्णा",
-  "guideRole": "Shop owner और welding teacher",
+  "guideRole": "दुकान के मालिक और वेल्डिंग शिक्षक",
   "ui": {
    "back": "पीछे",
-   "mute": "Mute",
+   "mute": "आवाज़ बंद",
    "next": "आगे",
-   "step": "Step {n} / {total}",
-   "begin": "Lab शुरू करें",
-   "sound": "Sound",
+   "step": "चरण {n} / {total}",
+   "begin": "लैब शुरू करें",
+   "sound": "आवाज़",
    "choose": "",
    "finish": "पूरा करें",
    "listen": "सुनें",
    "replay": "फिर से सुनें",
-   "showMe": "दिखाओ",
-   "chapter": "Lab",
+   "showMe": "दिखाइए",
+   "chapter": "लैब",
    "doneTag": "पूरा",
-   "notThat": "ये नहीं। {hint}।",
-   "chapters": "Steps",
+   "notThat": "यह नहीं। {hint}।",
+   "chapters": "चरण",
    "readout": {
-    "s1": "Gear: कुछ नहीं",
-    "s2": "Gear: apron",
-    "s3": "Gear: apron, gloves",
-    "s4": "Gear: apron, gloves, boots",
-    "s5": "Job: thin plate · 80 A",
-    "s6": "Job: heavy plate · 350 A",
-    "s7": "Weld: ठंडा · Bead पर slag",
-    "s8": "Arc: जला हुआ · पास में seat"
+    "s1": "उपकरण: कुछ नहीं",
+    "s2": "उपकरण: एप्रन",
+    "s3": "उपकरण: एप्रन, दस्ताने",
+    "s4": "उपकरण: एप्रन, दस्ताने, जूते",
+    "s5": "काम: पतली प्लेट · 80 एम्पियर",
+    "s6": "काम: मोटी प्लेट · 350 एम्पियर",
+    "s7": "वेल्ड: ठंडी · जोड़ पर स्लैग",
+    "s8": "आर्क: जल रहा · पास में सीट"
    }
   },
   "end": {
-   "hub": "Steps",
+   "hub": "चरण",
    "more": "",
    "next": "आगे",
-   "again": "फिर से practise करें",
-   "clean": "तुमने हर step सही किया।",
+   "again": "फिर से अभ्यास करें",
+   "clean": "आपने हर चरण सही किया।",
    "allDone": "",
    "heading": "शाबाश!",
-   "mistakes": "इन्हें फिर से practise करें"
+   "mistakes": "इनका फिर से अभ्यास करें"
   },
   "chapters": [
    {
     "id": "job",
-    "title": "Safety gear पहनो और सही shade चुनो",
-    "kind": "Gear और shade",
+    "title": "सुरक्षा उपकरण पहनो और सही शेड चुनो",
+    "kind": "सुरक्षा उपकरण और शेड",
     "intro": "",
-    "done": "मल्लेश ने पूरा gear पहन लिया है, और अब उसे हर current के लिए सही shade और हर खतरे के लिए सही gear पता है।",
+    "done": "मल्लेश ने पूरे सुरक्षा उपकरण पहन लिए हैं, और उसे हर धारा के लिए सही शेड और हर ख़तरे के लिए सही उपकरण का पता है।",
     "steps": [
      {
       "id": "s1",
-      "title": "Body की protection",
+      "title": "शरीर की सुरक्षा",
       "view": "bench",
       "setup": [
        "readout:s1"
@@ -579,20 +579,20 @@ window.WORKBENCH = {
       "chips": [
        {
         "at": "apron",
-        "text": "Tap करो: Leather apron",
+        "text": "टैप करो: चमड़े का एप्रन",
         "gold": true
        }
       ],
       "tasks": [
        {
-        "say": "मल्लेश, सबसे पहले body। Weld से heat, hot spatter और slag उड़ते हैं। Leather apron पहनो।",
+        "say": "मल्लेश, सबसे पहले शरीर। वेल्ड से गर्मी, गर्म छींटे और स्लैग उड़ते हैं। चमड़े का एप्रन पहनो।",
         "tap": "apron",
         "alsoOk": [
-         "cape"
+         "केप"
         ],
-        "hint": "Leather apron पर tap करो",
+        "hint": "चमड़े के एप्रन पर टैप करो",
         "miss": {
-         "say": "ये apron नहीं है। Bench पर रखे leather apron पर tap करो।"
+         "say": "यह एप्रन नहीं है। बेंच पर रखे चमड़े के एप्रन पर टैप करो।"
         },
         "ok": {
          "do": [
@@ -602,7 +602,7 @@ window.WORKBENCH = {
          "then": [
           "gear:apron:on"
          ],
-         "say": "सही। Apron, sleeves वाला cape और leg guard शरीर, बाँहों, गर्दन और छाती को बचाते हैं। Gear ढीला नहीं होना चाहिए।",
+         "say": "सही। एप्रन, आस्तीन वाला केप और लेग गार्ड शरीर, बाँहों, गर्दन और छाती को बचाते हैं। उपकरण ढीले नहीं होने चाहिए।",
          "view": "mallesh"
         },
         "wrong": {
@@ -610,31 +610,31 @@ window.WORKBENCH = {
           "do": [
            "flash:gloves"
           ],
-          "say": "ये apron नहीं है। Bench पर रखे leather apron पर tap करो।"
+          "say": "यह एप्रन नहीं है। बेंच पर रखे चमड़े के एप्रन पर टैप करो।"
          },
          "boots": {
           "do": [
            "flash:boots"
           ],
-          "say": "ये apron नहीं है। Bench पर रखे leather apron पर tap करो।"
+          "say": "यह एप्रन नहीं है। बेंच पर रखे चमड़े के एप्रन पर टैप करो।"
          },
          "helmet": {
           "do": [
            "flash:helmet"
           ],
-          "say": "ये apron नहीं है। Bench पर रखे leather apron पर tap करो।"
+          "say": "यह एप्रन नहीं है। बेंच पर रखे चमड़े के एप्रन पर टैप करो।"
          },
          "screen": {
           "do": [
            "flash:screen"
           ],
-          "say": "ये apron नहीं है। Bench पर रखे leather apron पर tap करो।"
+          "say": "यह एप्रन नहीं है। बेंच पर रखे चमड़े के एप्रन पर टैप करो।"
          },
          "goggles": {
           "do": [
            "flash:goggles"
           ],
-          "say": "ये apron नहीं है। Bench पर रखे leather apron पर tap करो।"
+          "say": "यह एप्रन नहीं है। बेंच पर रखे चमड़े के एप्रन पर टैप करो।"
          }
         }
        }
@@ -650,18 +650,18 @@ window.WORKBENCH = {
       "chips": [
        {
         "at": "gloves",
-        "text": "Tap करो: Leather gloves",
+        "text": "टैप करो: चमड़े के दस्ताने",
         "gold": true
        }
       ],
       "tasks": [
        {
-        "say": "अब हाथ। इन्हें heat, arc radiation, hot spatter और electric shock से बचाना ज़रूरी है।",
+        "say": "अब हाथ। इन्हें गर्मी, आर्क की किरणों, गर्म छींटों और बिजली के झटके से बचाना ज़रूरी है।",
         "tap": "gloves",
         "alsoOk": [],
-        "hint": "Leather gloves पर tap करो",
+        "hint": "चमड़े के दस्तानों पर टैप करो",
         "miss": {
-         "say": "ये gloves नहीं हैं। Leather gloves पर tap करो।"
+         "say": "ये दस्ताने नहीं हैं। चमड़े के दस्तानों पर टैप करो।"
         },
         "ok": {
          "do": [
@@ -669,7 +669,7 @@ window.WORKBENCH = {
           "readout:s3"
          ],
          "then": [],
-         "say": "सही। Leather gloves हाथों को shock, arc radiation, heat और hot spatter से बचाते हैं।",
+         "say": "सही। चमड़े के दस्ताने हाथों को झटके, आर्क की किरणों, गर्मी और गर्म छींटों से बचाते हैं।",
          "view": "mallesh"
         },
         "wrong": {
@@ -677,25 +677,25 @@ window.WORKBENCH = {
           "do": [
            "flash:boots"
           ],
-          "say": "ये gloves नहीं हैं। Leather gloves पर tap करो।"
+          "say": "ये दस्ताने नहीं हैं। चमड़े के दस्तानों पर टैप करो।"
          },
          "helmet": {
           "do": [
            "flash:helmet"
           ],
-          "say": "ये gloves नहीं हैं। Leather gloves पर tap करो।"
+          "say": "ये दस्ताने नहीं हैं। चमड़े के दस्तानों पर टैप करो।"
          },
          "screen": {
           "do": [
            "flash:screen"
           ],
-          "say": "ये gloves नहीं हैं। Leather gloves पर tap करो।"
+          "say": "ये दस्ताने नहीं हैं। चमड़े के दस्तानों पर टैप करो।"
          },
          "goggles": {
           "do": [
            "flash:goggles"
           ],
-          "say": "ये gloves नहीं हैं। Leather gloves पर tap करो।"
+          "say": "ये दस्ताने नहीं हैं। चमड़े के दस्तानों पर टैप करो।"
          }
         }
        }
@@ -711,18 +711,18 @@ window.WORKBENCH = {
       "chips": [
        {
         "at": "boots",
-        "text": "Tap करो: Safety boots",
+        "text": "टैप करो: सुरक्षा जूते",
         "gold": true
        }
       ],
       "tasks": [
        {
-        "say": "अब पैर। Weld से गर्म metal गिरता है, और machine में electric current चलता है।",
+        "say": "अब पैर। वेल्ड से गर्म धातु गिरती है, और मशीन में बिजली की धारा चलती है।",
         "tap": "boots",
         "alsoOk": [],
-        "hint": "Safety boots पर tap करो",
+        "hint": "सुरक्षा जूतों पर टैप करो",
         "miss": {
-         "say": "ये safety boots नहीं हैं। Floor पर रखे boots पर tap करो।"
+         "say": "ये सुरक्षा जूते नहीं हैं। फ़र्श पर रखे जूतों पर टैप करो।"
         },
         "ok": {
          "do": [
@@ -730,7 +730,7 @@ window.WORKBENCH = {
           "readout:s4"
          ],
          "then": [],
-         "say": "सही। Safety boots पैर की उँगलियों और टखनों को बचाते हैं, और उनके shock-resistant sole electric shock से बचाते हैं।",
+         "say": "सही। सुरक्षा जूते पैर की उँगलियों और टखनों को बचाते हैं, और उनके झटका-रोधी तले बिजली के झटके से बचाते हैं।",
          "view": "mallesh"
         },
         "wrong": {
@@ -738,19 +738,19 @@ window.WORKBENCH = {
           "do": [
            "flash:helmet"
           ],
-          "say": "ये safety boots नहीं हैं। Floor पर रखे boots पर tap करो।"
+          "say": "ये सुरक्षा जूते नहीं हैं। फ़र्श पर रखे जूतों पर टैप करो।"
          },
          "screen": {
           "do": [
            "flash:screen"
           ],
-          "say": "ये safety boots नहीं हैं। Floor पर रखे boots पर tap करो।"
+          "say": "ये सुरक्षा जूते नहीं हैं। फ़र्श पर रखे जूतों पर टैप करो।"
          },
          "goggles": {
           "do": [
            "flash:goggles"
           ],
-          "say": "ये safety boots नहीं हैं। Floor पर रखे boots पर tap करो।"
+          "say": "ये सुरक्षा जूते नहीं हैं। फ़र्श पर रखे जूतों पर टैप करो।"
          }
         }
        }
@@ -758,24 +758,24 @@ window.WORKBENCH = {
      },
      {
       "id": "s4",
-      "title": "Helmet या hand screen",
+      "title": "हेलमेट या हैंड स्क्रीन",
       "view": "bench",
       "setup": [
        "readout:s4"
       ],
       "tasks": [
        {
-        "say": "आँखों और चेहरे को arc से बचाने के लिए मल्लेश hand screen या helmet ले सकता है। किससे दोनों हाथ free रहते हैं?",
+        "say": "आँखों और चेहरे को आर्क से बचाने के लिए मल्लेश हैंड स्क्रीन या हेलमेट ले सकता है। किससे दोनों हाथ खाली रहते हैं?",
         "choices": [
          {
-          "text": "Helmet, जो सिर पर पहना जाता है",
-          "say": "हाँ, सही। Helmet screen सिर पर पहना जाता है, इसलिए welder दोनों हाथों से काम कर सकता है।",
+          "text": "हेलमेट, जो सिर पर पहना जाता है",
+          "say": "हाँ, सही। हेलमेट स्क्रीन सिर पर पहनी जाती है, इसलिए वेल्डर दोनों हाथों से काम कर सकता है।",
           "pic": "pics/helmet-head.jpg",
           "right": true
          },
          {
-          "text": "Hand screen",
-          "say": "Hand screen को एक हाथ में पकड़ना पड़ता है। Helmet से दोनों हाथ free रहते हैं।",
+          "text": "हैंड स्क्रीन",
+          "say": "हैंड स्क्रीन को एक हाथ में पकड़ना पड़ता है। हेलमेट से दोनों हाथ खाली रहते हैं।",
           "pic": "pics/hand-screen.jpg",
           "do": [
            "cam:mallesh",
@@ -793,14 +793,14 @@ window.WORKBENCH = {
         ]
        },
        {
-        "say": "मल्लेश helmet पहनता है।",
+        "say": "मल्लेश हेलमेट पहनता है।",
         "view": "mallesh"
        }
       ]
      },
      {
       "id": "s5",
-      "title": "80 amperes के लिए shade",
+      "title": "80 एम्पियर के लिए शेड",
       "view": "shade",
       "setup": [
        "readout:s5",
@@ -810,17 +810,17 @@ window.WORKBENCH = {
       ],
       "tasks": [
        {
-        "say": "पहला job एक thin plate पर है, और उसमें eighty amperes चाहिए। Helmet में कौन सा shade लगेगा?",
+        "say": "पहला काम एक पतली प्लेट पर है, और उसमें 80 एम्पियर चाहिए। हेलमेट में कौन-सा शेड लगेगा?",
         "choices": [
          {
-          "text": "Shade 8 से 9",
-          "say": "हाँ, सही। One hundred amperes तक shade eight to nine लगता है।",
+          "text": "शेड 8 से 9",
+          "say": "हाँ, सही। 100 एम्पियर तक शेड 8 से 9 लगता है।",
           "pic": "pics/shade-light.jpg",
           "right": true
          },
          {
-          "text": "Shade 12 से 14",
-          "say": "ये इस current के लिए बहुत dark है। Shade twelve to fourteen, three hundred amperes से ऊपर के लिए होता है।",
+          "text": "शेड 12 से 14",
+          "say": "यह इस धारा के लिए बहुत गहरा है। शेड 12 से 14, 300 एम्पियर से ऊपर के लिए होता है।",
           "pic": "pics/shade-dark.jpg",
           "do": [
            "pick:p13",
@@ -841,14 +841,14 @@ window.WORKBENCH = {
         ]
        },
        {
-        "say": "जब current one hundred amperes तक हो, तब shade eight to nine लगता है।",
+        "say": "जब धारा 100 एम्पियर तक हो, तब शेड 8 से 9 लगता है।",
         "view": "helm"
        }
       ],
       "chips": [
        {
         "at": "dial",
-        "text": "80 A"
+        "text": "80 एम्पियर"
        },
        {
         "at": "p9",
@@ -866,7 +866,7 @@ window.WORKBENCH = {
      },
      {
       "id": "s6",
-      "title": "350 amperes के लिए shade",
+      "title": "350 एम्पियर के लिए शेड",
       "view": "shade",
       "setup": [
        "readout:s6",
@@ -876,11 +876,11 @@ window.WORKBENCH = {
       ],
       "tasks": [
        {
-        "say": "अब एक heavy job है जिसमें three hundred and fifty amperes चाहिए। अब helmet में कौन सा shade लगेगा?",
+        "say": "अब एक भारी काम है जिसमें 350 एम्पियर चाहिए। अब हेलमेट में कौन-सा शेड लगेगा?",
         "choices": [
          {
-          "text": "Shade 8 से 9",
-          "say": "ये इस current के लिए बहुत हल्का है। Glass welding current के हिसाब से होना चाहिए।",
+          "text": "शेड 8 से 9",
+          "say": "यह इस धारा के लिए बहुत हल्का है। काँच वेल्डिंग की धारा के हिसाब से होना चाहिए।",
           "pic": "pics/shade-light.jpg",
           "do": [
            "pick:p9",
@@ -894,8 +894,8 @@ window.WORKBENCH = {
           ]
          },
          {
-          "text": "Shade 12 से 14",
-          "say": "हाँ, सही। Three hundred amperes से ऊपर shade twelve to fourteen लगता है।",
+          "text": "शेड 12 से 14",
+          "say": "हाँ, सही। 300 एम्पियर से ऊपर शेड 12 से 14 लगता है।",
           "pic": "pics/shade-dark.jpg",
           "right": true
          }
@@ -907,14 +907,14 @@ window.WORKBENCH = {
         ]
        },
        {
-        "say": "जब current three hundred amperes से ऊपर हो, तब shade twelve to fourteen लगता है।",
+        "say": "जब धारा 300 एम्पियर से ऊपर हो, तब शेड 12 से 14 लगता है।",
         "view": "helm"
        }
       ],
       "chips": [
        {
         "at": "dial",
-        "text": "350 A"
+        "text": "350 एम्पियर"
        },
        {
         "at": "p9",
@@ -932,7 +932,7 @@ window.WORKBENCH = {
      },
      {
       "id": "s7",
-      "title": "Slag chip करना",
+      "title": "स्लैग तोड़ना",
       "view": "plate",
       "setup": [
        "readout:s7",
@@ -948,11 +948,11 @@ window.WORKBENCH = {
       ],
       "tasks": [
        {
-        "say": "काम पूरा होने के बाद एक helper slag को chip करके हटाता है। वो आँखों के लिए क्या पहनेगा?",
+        "say": "काम पूरा होने के बाद एक सहायक स्लैग को तोड़कर हटाता है। वह आँखों के लिए क्या पहनेगा?",
         "choices": [
          {
-          "text": "गहरा welding glass",
-          "say": "नहीं। गहरा glass arc के लिए होता है। Chipping के लिए clear glass वाले plain goggles चाहिए।",
+          "text": "गहरा वेल्डिंग काँच",
+          "say": "नहीं। गहरा काँच आर्क के लिए होता है। स्लैग तोड़ने के लिए साफ़ काँच वाले सादे चश्मे चाहिए।",
           "pic": "pics/glass-dark.jpg",
           "do": [
            "helmet:down",
@@ -964,8 +964,8 @@ window.WORKBENCH = {
           ]
          },
          {
-          "text": "Plain chipping goggles",
-          "say": "हाँ, सही। Slag chip करते या grinding करते समय plain goggles आँखों को बचाते हैं।",
+          "text": "सादे चिपिंग चश्मे",
+          "say": "हाँ, सही। स्लैग तोड़ते या ग्राइंडिंग करते समय सादे चश्मे आँखों को बचाते हैं।",
           "pic": "pics/goggles-clear.jpg",
           "right": true
          }
@@ -976,7 +976,7 @@ window.WORKBENCH = {
         ]
        },
        {
-        "say": "आँखों के लिए, slag chip करने और grinding में plain goggles लगते हैं।",
+        "say": "आँखों के लिए, स्लैग तोड़ने और ग्राइंडिंग में सादे चश्मे लगते हैं।",
         "view": "plate"
        }
       ]
@@ -998,11 +998,11 @@ window.WORKBENCH = {
       ],
       "tasks": [
        {
-        "say": "एक और trainee arc के पास काम कर रहा है। उसे arc flash से कैसे बचाया जाएगा?",
+        "say": "एक और प्रशिक्षु आर्क के पास काम कर रहा है। उसे आर्क की चमक से कैसे बचाया जाएगा?",
         "choices": [
          {
           "text": "कुछ नहीं। थोड़ा दूर खड़े हो जाना काफ़ी है",
-          "say": "नहीं। Arc की किरणें आस-पास के लोगों तक पहुँचती हैं। Canvas screen या welding booth इस्तेमाल करो।",
+          "say": "नहीं। आर्क की किरणें आस-पास के लोगों तक पहुँचती हैं। कैनवास स्क्रीन या वेल्डिंग बूथ इस्तेमाल करो।",
           "pic": "pics/stand-apart.jpg",
           "do": [
            "flare:on"
@@ -1012,8 +1012,8 @@ window.WORKBENCH = {
           ]
          },
          {
-          "text": "Portable fireproof canvas screen",
-          "say": "हाँ, सही। Portable fireproof canvas screen welding area के पास काम करने वालों को arc flash से बचाती है।",
+          "text": "आग-रोधी कैनवास की ढोने योग्य स्क्रीन",
+          "say": "हाँ, सही। आग-रोधी ढोने योग्य कैनवास स्क्रीन वेल्डिंग की जगह के पास काम करने वालों को आर्क की चमक से बचाती है।",
           "pic": "pics/canvas-screen.jpg",
           "right": true
          }
@@ -1025,7 +1025,7 @@ window.WORKBENCH = {
         ]
        },
        {
-        "say": "आस-पास काम करने वालों को portable fireproof canvas screen बचाती है।",
+        "say": "आस-पास काम करने वालों को आग-रोधी कैनवास स्क्रीन बचाती है।",
         "view": "arc"
        }
       ]
@@ -1071,37 +1071,37 @@ window.LAB_LINES = {
   "end": "Mallesh is suited up, and he knows the shade for each current and the gear for each hazard."
  },
  "hi": {
-  "intro": "आओ, मल्लेश को protective gear पहनाते हैं, फिर हर job के लिए सही filter glass चुनते हैं।",
-  "s1_say": "मल्लेश, सबसे पहले body। Weld से heat, hot spatter और slag उड़ते हैं। Leather apron पहनो।",
-  "s1_ok": "सही। Apron, sleeves वाला cape और leg guard शरीर, बाँहों, गर्दन और छाती को बचाते हैं। Gear ढीला नहीं होना चाहिए।",
-  "s1_miss_general": "ये apron नहीं है। Bench पर रखे leather apron पर tap करो।",
-  "s2_say": "अब हाथ। इन्हें heat, arc radiation, hot spatter और electric shock से बचाना ज़रूरी है।",
-  "s2_ok": "सही। Leather gloves हाथों को shock, arc radiation, heat और hot spatter से बचाते हैं।",
-  "s2_miss_general": "ये gloves नहीं हैं। Leather gloves पर tap करो।",
-  "s3_say": "अब पैर। Weld से गर्म metal गिरता है, और machine में electric current चलता है।",
-  "s3_ok": "सही। Safety boots पैर की उँगलियों और टखनों को बचाते हैं, और उनके shock-resistant sole electric shock से बचाते हैं।",
-  "s3_miss_general": "ये safety boots नहीं हैं। Floor पर रखे boots पर tap करो।",
-  "s4_say": "आँखों और चेहरे को arc से बचाने के लिए मल्लेश hand screen या helmet ले सकता है। किससे दोनों हाथ free रहते हैं?",
-  "s4_ok": "मल्लेश helmet पहनता है।",
-  "s4_optA": "हाँ, सही। Helmet screen सिर पर पहना जाता है, इसलिए welder दोनों हाथों से काम कर सकता है।",
-  "s4_optB": "Hand screen को एक हाथ में पकड़ना पड़ता है। Helmet से दोनों हाथ free रहते हैं।",
-  "s5_say": "पहला job एक thin plate पर है, और उसमें eighty amperes चाहिए। Helmet में कौन सा shade लगेगा?",
-  "s5_ok": "जब current one hundred amperes तक हो, तब shade eight to nine लगता है।",
-  "s5_optA": "हाँ, सही। One hundred amperes तक shade eight to nine लगता है।",
-  "s5_optB": "ये इस current के लिए बहुत dark है। Shade twelve to fourteen, three hundred amperes से ऊपर के लिए होता है।",
-  "s6_say": "अब एक heavy job है जिसमें three hundred and fifty amperes चाहिए। अब helmet में कौन सा shade लगेगा?",
-  "s6_ok": "जब current three hundred amperes से ऊपर हो, तब shade twelve to fourteen लगता है।",
-  "s6_optA": "हाँ, सही। Three hundred amperes से ऊपर shade twelve to fourteen लगता है।",
-  "s6_optB": "ये इस current के लिए बहुत हल्का है। Glass welding current के हिसाब से होना चाहिए।",
-  "s7_say": "काम पूरा होने के बाद एक helper slag को chip करके हटाता है। वो आँखों के लिए क्या पहनेगा?",
-  "s7_ok": "आँखों के लिए, slag chip करने और grinding में plain goggles लगते हैं।",
-  "s7_optA": "हाँ, सही। Slag chip करते या grinding करते समय plain goggles आँखों को बचाते हैं।",
-  "s7_optB": "नहीं। गहरा glass arc के लिए होता है। Chipping के लिए clear glass वाले plain goggles चाहिए।",
-  "s8_say": "एक और trainee arc के पास काम कर रहा है। उसे arc flash से कैसे बचाया जाएगा?",
-  "s8_ok": "आस-पास काम करने वालों को portable fireproof canvas screen बचाती है।",
-  "s8_optA": "हाँ, सही। Portable fireproof canvas screen welding area के पास काम करने वालों को arc flash से बचाती है।",
-  "s8_optB": "नहीं। Arc की किरणें आस-पास के लोगों तक पहुँचती हैं। Canvas screen या welding booth इस्तेमाल करो।",
-  "end": "मल्लेश ने पूरा gear पहन लिया है, और अब उसे हर current के लिए सही shade और हर खतरे के लिए सही gear पता है।"
+  "intro": "आओ, मल्लेश को सुरक्षा उपकरण पहनाते हैं, फिर हर काम के लिए सही फ़िल्टर ग्लास चुनते हैं।",
+  "s1_say": "मल्लेश, सबसे पहले शरीर। वेल्ड से गर्मी, गर्म छींटे और स्लैग उड़ते हैं। चमड़े का एप्रन पहनो।",
+  "s1_ok": "सही। एप्रन, आस्तीन वाला केप और लेग गार्ड शरीर, बाँहों, गर्दन और छाती को बचाते हैं। उपकरण ढीले नहीं होने चाहिए।",
+  "s1_miss_general": "यह एप्रन नहीं है। बेंच पर रखे चमड़े के एप्रन पर टैप करो।",
+  "s2_say": "अब हाथ। इन्हें गर्मी, आर्क की किरणों, गर्म छींटों और बिजली के झटके से बचाना ज़रूरी है।",
+  "s2_ok": "सही। चमड़े के दस्ताने हाथों को झटके, आर्क की किरणों, गर्मी और गर्म छींटों से बचाते हैं।",
+  "s2_miss_general": "ये दस्ताने नहीं हैं। चमड़े के दस्तानों पर टैप करो।",
+  "s3_say": "अब पैर। वेल्ड से गर्म धातु गिरती है, और मशीन में बिजली की धारा चलती है।",
+  "s3_ok": "सही। सुरक्षा जूते पैर की उँगलियों और टखनों को बचाते हैं, और उनके झटका-रोधी तले बिजली के झटके से बचाते हैं।",
+  "s3_miss_general": "ये सुरक्षा जूते नहीं हैं। फ़र्श पर रखे जूतों पर टैप करो।",
+  "s4_say": "आँखों और चेहरे को आर्क से बचाने के लिए मल्लेश हैंड स्क्रीन या हेलमेट ले सकता है। किससे दोनों हाथ खाली रहते हैं?",
+  "s4_ok": "मल्लेश हेलमेट पहनता है।",
+  "s4_optA": "हाँ, सही। हेलमेट स्क्रीन सिर पर पहनी जाती है, इसलिए वेल्डर दोनों हाथों से काम कर सकता है।",
+  "s4_optB": "हैंड स्क्रीन को एक हाथ में पकड़ना पड़ता है। हेलमेट से दोनों हाथ खाली रहते हैं।",
+  "s5_say": "पहला काम एक पतली प्लेट पर है, और उसमें 80 एम्पियर चाहिए। हेलमेट में कौन-सा शेड लगेगा?",
+  "s5_ok": "जब धारा 100 एम्पियर तक हो, तब शेड 8 से 9 लगता है।",
+  "s5_optA": "हाँ, सही। 100 एम्पियर तक शेड 8 से 9 लगता है।",
+  "s5_optB": "यह इस धारा के लिए बहुत गहरा है। शेड 12 से 14, 300 एम्पियर से ऊपर के लिए होता है।",
+  "s6_say": "अब एक भारी काम है जिसमें 350 एम्पियर चाहिए। अब हेलमेट में कौन-सा शेड लगेगा?",
+  "s6_ok": "जब धारा 300 एम्पियर से ऊपर हो, तब शेड 12 से 14 लगता है।",
+  "s6_optA": "हाँ, सही। 300 एम्पियर से ऊपर शेड 12 से 14 लगता है।",
+  "s6_optB": "यह इस धारा के लिए बहुत हल्का है। काँच वेल्डिंग की धारा के हिसाब से होना चाहिए।",
+  "s7_say": "काम पूरा होने के बाद एक सहायक स्लैग को तोड़कर हटाता है। वह आँखों के लिए क्या पहनेगा?",
+  "s7_ok": "आँखों के लिए, स्लैग तोड़ने और ग्राइंडिंग में सादे चश्मे लगते हैं।",
+  "s7_optA": "हाँ, सही। स्लैग तोड़ते या ग्राइंडिंग करते समय सादे चश्मे आँखों को बचाते हैं।",
+  "s7_optB": "नहीं। गहरा काँच आर्क के लिए होता है। स्लैग तोड़ने के लिए साफ़ काँच वाले सादे चश्मे चाहिए।",
+  "s8_say": "एक और प्रशिक्षु आर्क के पास काम कर रहा है। उसे आर्क की चमक से कैसे बचाया जाएगा?",
+  "s8_ok": "आस-पास काम करने वालों को आग-रोधी कैनवास स्क्रीन बचाती है।",
+  "s8_optA": "हाँ, सही। आग-रोधी ढोने योग्य कैनवास स्क्रीन वेल्डिंग की जगह के पास काम करने वालों को आर्क की चमक से बचाती है।",
+  "s8_optB": "नहीं। आर्क की किरणें आस-पास के लोगों तक पहुँचती हैं। कैनवास स्क्रीन या वेल्डिंग बूथ इस्तेमाल करो।",
+  "end": "मल्लेश ने पूरे सुरक्षा उपकरण पहन लिए हैं, और उसे हर धारा के लिए सही शेड और हर ख़तरे के लिए सही उपकरण का पता है।"
  }
 };
 window.LAB_UI_HI = {"continue": "आगे बढ़ें", "do_again": "फिर से करें"};

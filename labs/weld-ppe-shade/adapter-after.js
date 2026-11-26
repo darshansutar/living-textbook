@@ -13,7 +13,7 @@
   // language button in the top bar, so English / Hindi can be switched at any step (the first screen is skipped by the lesson's Next)
   (function () {
     var tools = document.querySelector("#hud .tools");
-    if (!tools || !window.WORKBENCH.hi) return;
+    if (!tools || !window.WORKBENCH.hi || EMBED) return;   // inside a lesson the lesson's language menu decides
     var cur = document.documentElement.lang === "hi" ? "hi" : "en", to = cur === "hi" ? "en" : "hi";
     var b = document.createElement("button");
     b.type = "button"; b.className = "tool"; b.id = "langBtn"; b.lang = to;
