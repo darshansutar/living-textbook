@@ -244,8 +244,8 @@ body[data-screen="work"] #panel, body[data-screen="end"] #panel { opacity: 1; vi
 .choice.right { background: oklch(0.79 0.14 152 / 14%); border-color: var(--right); }
 .choice.wrong .mark, .choice.right .mark { display: grid; place-items: center; width: 2.2rem; height: 2.2rem; border-radius: 50%; font: 800 1.2rem/1 var(--text); font-style: normal; }
 .choice.chosen { background: oklch(0.836 0.112 74 / 12%); border-color: var(--primary); }
-.choice.chosen .mark { display: grid; place-items: center; width: 2.2rem; height: 2.2rem; border-radius: 50%; background: var(--primary); color: #2a1a05; font: 800 1rem/1 var(--text); font-style: normal; }
-.choice.chosen .mark::before { content: "\2022"; font-size: 1.6rem; }
+.choice.chosen .mark { display: grid; place-items: center; width: 2.1rem; height: 2.1rem; border-radius: 50%; background: oklch(0.15 0.01 60 / 80%); border: .18rem solid var(--primary); box-sizing: border-box; }
+.choice.chosen .mark::before { content: ""; width: .85rem; height: .85rem; border-radius: 50%; background: var(--primary); }   /* neutral "your pick" radio dot, not a tick */
 .choice.wrong .mark { background: var(--miss); color: #2a1208; }
 .choice.wrong .mark::before { content: "✕"; }
 .choice.right .mark { background: var(--right); color: var(--right-ink); }
