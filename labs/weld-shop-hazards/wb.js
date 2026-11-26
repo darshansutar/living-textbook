@@ -414,7 +414,7 @@
     var steps = chapter().steps;
     var last = stepIndex === steps.length - 1 && taskIndex === steps[stepIndex].tasks.length - 1;
     if (line) {
-      setFeedback("good", line);
+      setFeedback(ok.kind || "good", line);
       say(line);
       button(last ? UI.finish : UI.next, nextTask);
     } else {
@@ -518,11 +518,11 @@
         reading(-1);
         if (c.right) {
           box.querySelectorAll(".pick").forEach(function (x) { x.disabled = true; });
-          card.classList.add("right");
+          card.classList.add(task.predict ? "chosen" : "right");   // LT-WELD: a prediction is a guess, not a right answer: no green tick
           if (c.reveal) { var nt = chapter().steps[stepIndex].tasks[taskIndex + 1]; if (nt) nt.say = c.reveal; }   // LT-WELD
           flushUndo();
           run(task.after);
-          succeed(task, { say: c.say });
+          succeed(task, { say: c.say, kind: task.predict ? "note" : "good" });
         } else {
           card.classList.add("wrong");
           pick.disabled = true;

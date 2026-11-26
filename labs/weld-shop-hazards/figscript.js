@@ -62,20 +62,46 @@
   function cottonBack() { var g = $("cottonGrp"); cancelAnims(g); g.style.opacity = ""; svg.setAttribute("data-cotton", "near"); }
 
   /* ---------------------------------------------------------------- stubs hop from the floor into the steel bin */
+  /* Once in the bin the stubs are scaled down, their floor glow / smoke are hidden, and the group is moved in front of the bin's
+     dark opening inside a clip that only shows the opening and the air above the rim: the lower part of every stub is hidden by
+     the bin's front wall, so they read as standing IN the bin (review 2026-11-26: "the electrode stub looks like it is outside the bin"). */
   var STUB_D = (function () {
-    var a = P(1.4, 3.8, .1), b = P(3.6, 6.1, 1.05);
-    return [b[0] - a[0], b[1] - a[1] - 4];
+    var a = P(1.45, 3.8, .06), b = P(3.6, 6.1, 1.0);
+    return [b[0] - a[0], b[1] - a[1] + 6];
   })();
+  var stubHome = null, stubWrap = null;
+  function stubClipWrap(binG) {
+    if (stubWrap) return stubWrap;
+    var open = binG.querySelector("polygon:last-of-type"), bb = open.getBBox();
+    var defs = svg.querySelector("defs") || svg.insertBefore(document.createElementNS(NS, "defs"), svg.firstChild);
+    var cp = document.createElementNS(NS, "clipPath"); cp.setAttribute("id", "stubClip");
+    var el = document.createElementNS(NS, "ellipse");
+    el.setAttribute("cx", f(bb.x + bb.width / 2)); el.setAttribute("cy", f(bb.y + bb.height / 2));
+    el.setAttribute("rx", f(bb.width / 2 - 3)); el.setAttribute("ry", f(bb.height / 2 - 1));
+    var rc = document.createElementNS(NS, "rect");
+    rc.setAttribute("x", f(bb.x)); rc.setAttribute("y", f(bb.y - 90)); rc.setAttribute("width", f(bb.width)); rc.setAttribute("height", f(90 + bb.height / 2));
+    cp.appendChild(el); cp.appendChild(rc); defs.appendChild(cp);
+    stubWrap = document.createElementNS(NS, "g"); stubWrap.setAttribute("clip-path", "url(#stubClip)");
+    binG.parentNode.insertBefore(stubWrap, binG.nextSibling);
+    return stubWrap;
+  }
+  function stubSide(g, inBin) {
+    var binG = one('[data-obj="bin"]');
+    if (!stubHome) stubHome = { parent: g.parentNode, next: g.nextSibling };
+    var junk = g.querySelectorAll(".stub-smoke, .heat-glow");
+    if (inBin) { stubClipWrap(binG).appendChild(g); junk.forEach(function (n) { n.style.display = "none"; }); }
+    else { if (g.parentNode === stubWrap) stubHome.parent.insertBefore(g, stubHome.next); junk.forEach(function (n) { n.style.display = ""; }); }
+  }
   function stubs(inBin, instant) {
     var g = one('[data-obj="stubs"]');
     cancelAnims(g);
-    var end = "translate(" + f(STUB_D[0]) + "px," + f(STUB_D[1]) + "px) rotate(-50deg)";
-    if (!inBin) { g.style.transform = ""; g.style.transformOrigin = ""; g.style.opacity = ""; return; }
+    var end = "translate(" + f(STUB_D[0]) + "px," + f(STUB_D[1]) + "px) rotate(-62deg) scale(.6)";
+    if (!inBin) { stubSide(g, false); g.style.transform = ""; g.style.transformOrigin = ""; g.style.opacity = ""; return; }
     g.style.transformBox = "fill-box"; g.style.transformOrigin = "50% 50%";
-    if (instant || reduced) { g.style.transform = end; return; }
-    var mid = "translate(" + f(STUB_D[0] / 2) + "px," + f(STUB_D[1] / 2 - 90) + "px) rotate(-120deg)";
-    var an = g.animate([{ transform: "translate(0,0) rotate(0deg)" }, { transform: mid }, { transform: end }], { duration: 950, easing: "ease-in-out" });
-    an.onfinish = function () { g.style.transform = end; };
+    if (instant || reduced) { stubSide(g, true); g.style.transform = end; return; }
+    var mid = "translate(" + f(STUB_D[0] / 2) + "px," + f(STUB_D[1] / 2 - 90) + "px) rotate(-120deg) scale(.8)";
+    var an = g.animate([{ transform: "translate(0,0) rotate(0deg) scale(1)" }, { transform: mid, offset: .55 }, { transform: end }], { duration: 950, easing: "ease-in-out" });
+    an.onfinish = function () { stubSide(g, true); g.style.transform = end; };
   }
 
   /* ---------------------------------------------------------------- extinguisher: in the locked store, or standing at its marked spot */

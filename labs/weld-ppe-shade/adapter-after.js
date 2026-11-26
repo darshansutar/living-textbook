@@ -6,6 +6,10 @@
   var EMBED = window.LAB_EMBED;
   var post = function (lt) { if (EMBED) window.parent.postMessage({ lt: lt, lab: "weld-ppe-shade" }, "*"); };
   ["t_more", "m_more", "end_more", "end_hub", "toHub", "end_all"].forEach(function (id) { var el = $(id); if (el) el.hidden = true; });
+  // remember the language between the two welding labs
+  document.querySelectorAll("#langs button").forEach(function (b) {
+    b.addEventListener("click", function () { try { window.localStorage.setItem("lt-weld-lab-lang", b.dataset.lang); } catch (e) {} });
+  });
   var started = false;
   $("t_start").addEventListener("click", function () { if (!started) { started = true; post("lab-started"); } });
   window.LAB_ON_DONE = function () {

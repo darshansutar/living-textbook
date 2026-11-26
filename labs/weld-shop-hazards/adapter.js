@@ -14,11 +14,22 @@
     for (var i = 0; i < text.length; i++) { h ^= text.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
     return ("0000000" + h.toString(16)).slice(-8);
   }
-  var files = {}, TEXTS = window.LAB_LINES.en || {};
-  // answer-choice pictures: the workbench looks them up by their own path
-  window.WORKBENCH.en.chapters.forEach(function (c) { c.steps.forEach(function (s) { s.tasks.forEach(function (t) {
-    (t.choices || []).forEach(function (o) { if (o.pic) files[o.pic] = o.pic; });
-  }); }); });
-  if (LINES) Object.keys(TEXTS).forEach(function (key) { files["say/" + hashOf(TEXTS[key]) + ".mp3"] = AUDIO + LINES + key + ".mp3"; });
+  var files = {};
+  // two languages live in one lab: English lines in <audio>, Hinglish lines in <audio>hi/. The learner's choice is
+  // remembered between the two labs; inside a lesson the lab shows the language switch on its first screen.
+  try {
+    var want = window.localStorage.getItem("lt-weld-lab-lang");
+    if (want && window.WORKBENCH[want] && Q.get("lang") !== want) { Q.set("lang", want); history.replaceState(null, "", location.pathname + "?" + Q.toString()); }
+  } catch (e) {}
+  var DIRS = { en: "", hi: "hi/" };
+  Object.keys(window.WORKBENCH).forEach(function (code) {
+    window.WORKBENCH[code].chapters.forEach(function (c) { c.steps.forEach(function (s) { s.tasks.forEach(function (t) {
+      (t.choices || []).forEach(function (o) { if (o.pic) files[o.pic] = o.pic; });
+    }); }); });
+    var TEXTS = window.LAB_LINES[code] || {};
+    if (LINES) Object.keys(TEXTS).forEach(function (key) {
+      files["say/" + hashOf(TEXTS[key]) + ".mp3"] = AUDIO + (DIRS[code] || "") + LINES + key + ".mp3";
+    });
+  });
   window.STORY_FILES = { files: files, texts: {} };
 })();
