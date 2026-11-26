@@ -219,6 +219,26 @@
     S.view = r(sc, screenEl) || {};
     drawRail(sc);
     drawTeacher(sc);
+    prefetchNext();
+  }
+  // the next video in the lesson is fetched quietly once the current one has buffered, so it starts without a wait
+  // (the lab and vote screens between a story and its answer video give it time to arrive)
+  function prefetchNext() {
+    if (!S.ep) return;
+    const nxt = S.ep.screens.slice(S.idx + 1, S.idx + 6).find(s => s.type === 'video' && s.src);
+    if (!nxt || S.prefetched === nxt.src) return;
+    let done = false;
+    const go = () => {
+      if (done) return; done = true;
+      S.prefetched = nxt.src;
+      const p = document.createElement('video');
+      p.preload = 'auto'; p.muted = true; p.src = nxt.src;
+      S.prefetchEl = p;   // kept so the browser finishes the download
+    };
+    const cur = screenEl.querySelector('video');
+    if (cur && cur.readyState < 4) cur.addEventListener('canplaythrough', go, { once: true });
+    else setTimeout(go, 1200);
+    setTimeout(go, 9000);   // never wait forever
   }
   // ---------------- step rail: the four steps of the topic loop (story, vote, answer, check) ----------------
   function loopStep(sc) {
